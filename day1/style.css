@@ -51,7 +51,7 @@ textarea{
     border-width: 1px;
     border-color: gray;
     outline: none;
-    
+    overflow-y: scroll;
 }
 
 .error-message{

@@ -1,0 +1,64 @@
+Day 1
+
+Question 1: What is HTML? Give basic structure of the HTML page. 
+
+HTML stand for Hyper text markup language. It is the code used to structure content of the webpage — like text, links, images, etc.
+
+Structure: 
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Page Title</title>
+    </head>
+    <body>
+    </body>
+    </html>
+
+Question 2: Difference between inline and block level element.
+Inline vs Block Elements
+Block: Starts on a new line, takes full width.
+Examples: <div>, <p>, <h1>
+
+Inline: Stays in line, only as wide as content.
+Examples: <span>, <a>, <img>
+
+Topic 2: CSS
+Question 1: Explain the different ways in which CSS can be applied to HTML, what is the preferred way and why. 
+
+There are three ways to apply CSS on an HTML file: 
+    1. Inline css:
+        This is added directly inside html tag using "style" attribute
+
+    2. Internal css:
+        In this, styles are written inside a <style> tag in <head> tag within the same HTML file.
+    
+    3. External CSS
+        Written in a separate .css file and linked using <link> tag.
+
+External CSS is preferred due to following reasons:
+    - Easier to read and understand.
+    - Easier to maintain and update styles across multiple pages
+    - We can reuse the styles for consistent design
+
+Question 2: What are different CSS selectors, with example explain Element, Class and Id selectors. 
+
+Different CSS Selectors: 
+Element Selector: Targets all elements of a specific type.
+
+Class Selector: Targets all elements with a specific class attribute.
+
+ID Selector: Targets one unique element with a specific id attribute.
+
+
+Topic 3: JavaScript
+
+Question 2: 
+There are three ways to apply JavaScript on an HTML file: 
+    1. Inline css:
+        Adding JavaScript code directly inside an HTML element using the onclick, onload, or other event attributes
+
+    2. Internal css:
+        Writing JavaScript code inside a <script> tag within the HTML document, usually inside the <head> or at the end of the <body>.
+
+    3. External CSS
+        Linking an external .js file using the <script> tag with the src attribute.
