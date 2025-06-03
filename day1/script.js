@@ -13,20 +13,23 @@ submitButton.addEventListener("click", (e) => {
     if (nameInput.value.trim().length === 0) {
         console.log("name invalid")
         errorMessage.innerHTML = "Name field must not be empty"
-        return
+        nameInput.focus()
+        return false
     }
-
+    
     if (commentsInput.value.trim().length === 0) {
         console.log("comments invalid")
         errorMessage.innerHTML = "Comment field must not be empty"
-        return
+        commentsInput.focus()
+        return false
     }
     
     if (maleInput.checked === false && femaleInput.checked === false) {
         console.log("Male invalid")
         errorMessage.innerHTML = "One of the gender must be selected."
-        return
+        return false
     }
 
     errorMessage.innerHTML = ""
+    return true
 })

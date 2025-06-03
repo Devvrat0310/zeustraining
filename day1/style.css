@@ -1,5 +1,9 @@
+a{
+    text-decoration: none;
+}
+
 body{
-    background-color: lightgoldenrodyellow;
+    background-color: #feffcc;
     font-family:sans-serif;
     font-size:small;
     padding: 0px 10px 0px 10px;
@@ -18,7 +22,7 @@ h1{
     border-color: #ca0c0c;
     letter-spacing: 17px;
     font-style: italic;
-    color: lightgoldenrodyellow;
+    color: #feffcc;
     padding: 3px 0px 3px 0px;
 }
 
@@ -33,11 +37,16 @@ h3{
     color: gray;
 }
 
+
+::placeholder{
+    color: black
+}
 input{
     border-radius: 0%;
     border-width: 1px;
     border-color: gray;
     outline: none;
+    color: black;
 }
 
 table{
@@ -47,11 +56,13 @@ table{
 }
 
 textarea{
+    resize: none;
     border-radius: 0%;
     border-width: 1px;
     border-color: gray;
     outline: none;
     overflow-y: scroll;
+    background-color: rgb(245, 245, 245);
 }
 
 .error-message{
@@ -62,7 +73,7 @@ textarea{
     background-color: white;
     border-style: dashed;
     border-color: lightgray;
-    /* border-width: 3px; */
+    border-width: 2px;
     padding: 10px;
     padding-right: 40px;
     padding-top: 20px;
@@ -71,10 +82,14 @@ textarea{
 
 .submit-button{
     padding: 5px 10px 5px 10px;
+    background-image: linear-gradient(white, lightgray);
+}
+
+:hover.submit-button{
+    cursor: pointer;
 }
 
 .why-list{
     font-style: italic;
     color: #980404;
 }
-
