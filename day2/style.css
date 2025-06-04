@@ -1,0 +1,79 @@
+@font-face {
+    font-family: inter-500;
+    src: url("assets/fonts/inter-v19-latin-500.woff2");
+}
+
+@font-face {
+    font-family: inter-regular;
+    src: url("assets/fonts/inter-v19-latin-regular.woff2");
+}
+
+body { 
+    font-family: inter-500;
+    font-weight: normal;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f88582;
+}
+
+.profile-card {
+    display: flex;
+    gap: 20px;
+    width: fit-content;
+    padding: 15px;
+    background-color: white;
+    box-shadow: 0 2px 5px black;
+}
+
+.tweet {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+}
+
+.tweet * {
+    margin: 0;
+}
+
+.tweet-content {
+    font-size: 18px;
+}
+
+.tweet-data {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.tweet-stats {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    opacity: 50%;   
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.tweet-stats-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tweet-stats-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.tweet-username {
+    font-family: inter-regular;
+}
+
+.user-profile-pic {
+    object-fit: cover;
+}
+

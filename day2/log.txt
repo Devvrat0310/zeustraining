@@ -1,0 +1,50 @@
+1. Tips to keep CSS organized: 
+    a. Always use a CSS preprocessor (Eg. Scss)
+    b. Write HTML before CSS.
+    c. Organize components using BEM model.
+        - Block: 
+            Represents a standalone component that is meaningful on its own.
+        - Element:
+            A part of a block that has no standalone meaning and is semantically tied to its block.
+        - Modifier:
+            A flag on a block or element. Use it to change appearance, behavior, or state.
+    d. Don’t reference IDs in the CSS.
+    e. Use Github’s CSS guidelines.
+    f. Avoid using !important at all costs.
+        - Breaks CSS specificity rules – It overrides all other styles, making debugging harder.
+
+        - Hard to maintain – You or others may struggle to figure out why a rule is being applied.
+
+        - Encourages bad practices – Often used to "quick-fix" issues instead of solving them properly.
+
+        - Makes overrides harder – If you use !important, someone else may have to use another !important just to override it.
+    g. Use bootstrap only when needed, (make sure you understand it before using it).
+    h. Keep your HTML simple and readable.
+ 
+2. Fonts:
+    a. font: 
+        The font property is a shorthand property for:
+            - font-style
+            - font-variant
+            - font-weight
+            - font-size/line-height
+            - font-family
+    
+    b. font-style: 
+        normal - The browser displays a normal font style. This is default	
+        italic - The browser displays an italic font style	
+        oblique	- The browser displays an oblique font style	
+        initial	- Sets this property to its default value. 
+        inherit - Inherits this property from its parent element.
+    
+    c. font-weight:
+        normal, bold, medium, 100, 200, ... 900 etc.
+    
+    d. font- variant: 
+        normal: normal
+        small: All caps, first letter large.
+
+3. Webfonts:
+    1. Self host fonts to make it more reliable.
+    2. Pre load fonts for fast page loading.
+    3. Use a variable font.

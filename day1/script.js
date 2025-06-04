@@ -1,5 +1,7 @@
 var submitButton = document.getElementsByClassName("submit-button")[0]
 
+var form = document.getElementsByClassName("user-form")[0]
+
 submitButton.addEventListener("click", (e) => {
     e.preventDefault()
     
