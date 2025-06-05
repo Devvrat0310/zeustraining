@@ -1,37 +1,46 @@
 @font-face {
-    font-family: inter-500;
-    src: url("assets/fonts/inter-v19-latin-500.woff2");
+    font-family: roboto-bold;
+    src: url("assets/fonts/roboto-v48-latin-700.woff2");
 }
 
 @font-face {
-    font-family: inter-regular;
-    src: url("assets/fonts/inter-v19-latin-regular.woff2");
+    font-family: roboto-regular;
+    src: url("assets/fonts/roboto-v48-latin-regular.woff2");
+}
+
+@font-face {
+    font-family: roboto-medium;
+    src: url("assets/fonts/roboto-v48-latin-500.woff2");
 }
 
 body { 
-    font-family: inter-500;
+    font-family: roboto-500;
     font-weight: normal;
     height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f88582;
+    /* background-color: #f88582; */
 }
 
 .profile-card {
     display: flex;
-    gap: 20px;
+    gap: 14px;
     width: fit-content;
-    padding: 15px;
+    padding: 4px;
     background-color: white;
     box-shadow: 0 2px 5px black;
+    height: 130px;
+    width: 449px;
+    /* justify-content: center; */
+    align-items: center;
 }
 
 .tweet {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 15px;
+    gap: 24px;
 }
 
 .tweet * {
@@ -39,41 +48,44 @@ body {
 }
 
 .tweet-content {
-    font-size: 18px;
+    font-family: roboto-regular;
+    font-size: 20px;
 }
 
 .tweet-data {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 14px;
 }
 
 .tweet-stats {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 24px;
     opacity: 50%;   
-    font-weight: 500;
-    font-size: 14px;
+    font-family: roboto-medium;
+    /* font-weight: 500; */
+    font-size: 15px;
 }
 
-.tweet-stats-info {
+/* .tweet-stats-info {
     display: flex;
     align-items: center;
     gap: 10px;
-}
+} */
 
 .tweet-stats-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
 }
 
 .tweet-username {
-    font-family: inter-regular;
+    font-family: roboto-bold;
+    font-size: 20px;
 }
 
-.user-profile-pic {
-    object-fit: cover;
-}
+/* .user-profile-pic {
+    margin-left: 4px;
+} */
 

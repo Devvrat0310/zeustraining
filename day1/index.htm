@@ -69,20 +69,23 @@
     <p><b>Note: </b> It looks the part, but won't do a anything.</p>
     
     <form class="user-form">
-        <div>
+        <div class="user-form-input">
             <label for="name-input">Name: </label>
             <br>
             <br>
             <input type="text" placeholder="Your name" id = "name-input">
         </div>
-        <br>
-        <div>
+
+        <p class="error-message"></p>
+
+        <div class="user-form-input">
             <label for="comments-input">Comments: </label>
             <br>
             <br>
-            <textarea id="comments-input" placeholder="Your comments" rows="8" cols="25"></textarea>
+            <textarea id="comments-input" class="comments-input" placeholder="Your comments" rows="8" cols="25"></textarea>
         </div>
 
+        <p class="error-message"></p>
         <p>Are you:</p>
         
         <div>
@@ -94,10 +97,10 @@
             <input type="radio" value="Female" id="female-radio" name = "group1"> 
             <label for="female-radio">Female</label>
         </div>
-        
+
         <p class="error-message"></p>
 
-        <input type="button" name="submit" id="submit-button" class="submit-button" value="Submit Query">
+        <input type="submit" name="submit" id="submit-button" class="submit-button" value="Submit Query">
         
     </form>
     

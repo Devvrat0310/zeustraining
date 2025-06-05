@@ -34,20 +34,24 @@ h2{
 }
 
 h3{
-    color: gray;
+    color: rgb(148, 148, 148);
 }
 
 
 ::placeholder{
     color: black
+    
 }
+
 input{
     border-radius: 0%;
     border-width: 1px;
     border-color: gray;
     outline: none;
     color: black;
+    width: fit-content;
 }
+
 
 table{
     background-color: lightgray;
@@ -63,6 +67,11 @@ textarea{
     outline: none;
     overflow-y: scroll;
     background-color: rgb(245, 245, 245);
+    width: fit-content;
+}
+
+.comments-input {
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .error-message{
@@ -88,8 +97,20 @@ textarea{
 :hover.submit-button{
     cursor: pointer;
 }
+/* 
+.user-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.user-form-input {
+    display: flex;
+    flex-direction: column;
+    gap: 2em;
+} */
 
 .why-list{
     font-style: italic;
     color: #980404;
+    /* color: #980404; */
 }

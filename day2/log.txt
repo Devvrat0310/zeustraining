@@ -48,3 +48,6 @@
     1. Self host fonts to make it more reliable.
     2. Pre load fonts for fast page loading.
     3. Use a variable font.
+
+
+Write a javascript program to compute factorial of a very large number.

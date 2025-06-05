@@ -1,0 +1,9 @@
+1. Day 1 Task:
+    - Fixed error message validation to be shown below each input field.
+
+2. Day 2 Task: 
+    - Updated code to be pixel perfect as given in the photo.
+
+3. Day 3 Task:
+    - Wrote a program to calculate factorial of vary large numbers: eg. 1000, 5000.
+    - Updated the program to have multiple digit for a single element in array instead of just one digit.

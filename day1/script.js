@@ -10,28 +10,48 @@ submitButton.addEventListener("click", (e) => {
     var maleInput = document.getElementById("male-radio")
     var femaleInput = document.getElementById("female-radio")
     
-    var errorMessage = document.getElementsByClassName("error-message")[0];
+    var errorMessage = document.getElementsByClassName("error-message");
+
+    for (var i = 0; i < errorMessage.length; i++){
+        errorMessage[i].innerHTML = "";
+    }
+
+    var isValidated = true;
 
     if (nameInput.value.trim().length === 0) {
         console.log("name invalid")
-        errorMessage.innerHTML = "Name field must not be empty"
+        errorMessage[0].innerHTML = "Name field must not be empty"
         nameInput.focus()
-        return false
+        isValidated = false
     }
     
+    if (isValidated) errorMessage[0].innerHTML = "";
+
     if (commentsInput.value.trim().length === 0) {
         console.log("comments invalid")
-        errorMessage.innerHTML = "Comment field must not be empty"
-        commentsInput.focus()
-        return false
+        errorMessage[1].innerHTML = "Comment field must not be empty"
+
+        if (isValidated) commentsInput.focus()
+        isValidated = false
     }
+    
+    if (isValidated) errorMessage[1].innerHTML = "";
     
     if (maleInput.checked === false && femaleInput.checked === false) {
         console.log("Male invalid")
-        errorMessage.innerHTML = "One of the gender must be selected."
-        return false
+        errorMessage[2].innerHTML = "One of the gender must be selected."
+        isValidated = false
+    }
+    
+    if (isValidated) errorMessage[2].innerHTML = "";
+    
+    if (!isValidated) return false;
+    
+    alert("Data submitted successfully")
+
+    for (var i = 0; i < errorMessage.length; i++){
+        errorMessage[i].innerHTML = "";
     }
 
-    errorMessage.innerHTML = ""
-    return true
+    return true;
 })
