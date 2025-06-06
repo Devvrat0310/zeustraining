@@ -1,0 +1,6 @@
+1. Why learn CSS grid: 
+    - Easier to create two dimensional layouts.
+    - Simpler Markup.
+    - Flexible.
+    - Skip frameworks.
+    - Browser support.
