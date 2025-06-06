@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Quantum</title>
+		<link rel="stylesheet" href="login-style.css" />
+	</head>
+	<body>
+		<header class="header">
+			<img
+				src="assets/icons/logo used in header.svg"
+				alt=""
+				class="header-logo"
+			/>
+		</header>
+		<main class="login-wrapper">
+			<div class="login">
+				<div class="title">Log in with Quantum</div>
+				<form action="">
+					<div class="school-type">
+						<div class="school-type--input-label">
+							<input
+								type="radio"
+								name="school-type-group"
+								class="radio-button"
+								id="district"
+							/>
+							<label for="district">District</label>
+						</div>
+
+						<div class="school-type--input-label">
+							<div class="radio-class">
+								<input
+									type="radio"
+									name="school-type-group"
+									class="radio-button"
+									id="independent"
+								/>
+								<div></div>
+							</div>
+							<label for="independent">Independent School</label>
+						</div>
+					</div>
+					<div class="user-details">
+						<div class="user-details--address">
+							<div class="user-details--input-label">
+								<label for="state">State*</label>
+								<div>
+									<input type="text" id="state" class="dropdown" />
+									<img
+										src="assets/icons/arrow-down.svg"
+										alt=""
+										class="dropdown-image"
+										height="20"
+									/>
+								</div>
+							</div>
+							<div class="user-details--input-label">
+								<label for="district">District*</label>
+								<div>
+									<input type="text" id="district" class="dropdown" />
+									<img
+										src="assets/icons/arrow-down.svg"
+										alt=""
+										class="dropdown-image"
+										height="20"
+									/>
+								</div>
+							</div>
+						</div>
+
+						<div class="user-details--credentials">
+							<div class="user-details--input-label">
+								<div class="user-details--input">
+									<input
+										type="text"
+										placeholder="Username/Email ID*"
+										class="user-detail"
+									/>
+								</div>
+								<a href="/forgot-username">FORGOT USERNAME?</a>
+							</div>
+							<div class="user-details--input-label">
+								<div class="user-details--input">
+									<input
+										type="password"
+										placeholder="Password*"
+										class="user-detail"
+									/>
+								</div>
+								<a href="/forgot-password">FORGOT PASSWORD?</a>
+							</div>
+						</div>
+
+						<div>
+							<input
+								type="checkbox"
+								id="remember-me"
+								class="remember-me-button"
+							/>
+							<label for="remember-me">Remember Me</label>
+						</div>
+					</div>
+
+					<input type="submit" value="LOG IN" class="login-button" />
+				</form>
+			</div>
+			<div>
+				<a href="/about-us">About</a>
+				<a href="/contact-us">Contact Us</a>
+			</div>
+		</main>
+		<footer class="footer">
+			<img src="assets/icons/logo used in footer.svg" alt="" />
+			<p>Copyright © 2020-2021</p>
+			<p>Zeus Systems Pvt.Ltd.</p>
+			<p>All rights reserved</p>
+		</footer>
+	</body>
+</html>
