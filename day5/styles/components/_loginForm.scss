@@ -1,0 +1,97 @@
+.login-button {
+	padding: 10px 85px;
+	font-size: 14px;
+	background: #3fd28b 0% 0% no-repeat padding-box;
+	box-shadow: 0px 3px 5px #0000003d;
+	opacity: 1;
+	cursor: pointer;
+}
+
+.remember-me-container {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+	width: fit-content;
+}
+
+.remember-me-label {
+	font-family: quicksand-semibold;
+}
+
+.school-type {
+	display: flex;
+	gap: 20px;
+	align-self: flex-start;
+}
+
+.school-type--input-label {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.show-password-button {
+	cursor: pointer;
+}
+
+.user-details {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 56px;
+}
+
+.user-details--address {
+	display: flex;
+	flex-direction: column;
+	gap: 36px;
+}
+
+.user-details--credentials {
+	display: flex;
+	flex-direction: column;
+	gap: 36px;
+	input {
+		margin-bottom: 5px;
+	}
+}
+
+.user-details--input {
+	border-bottom: 1px solid #dadada;
+}
+.user-details--input-label {
+	display: flex;
+	flex-direction: column;
+	/* border-width: 0; */
+
+	a {
+		font-size: 14px;
+		font-family: quicksand-semibold;
+		color: #1f7a54;
+		margin-top: 5px;
+		align-self: end;
+	}
+}
+.user-details--input-label input {
+	flex-grow: 1;
+}
+
+.user-details--input-label label {
+	color: gray;
+	width: 100%;
+}
+
+.user-details--input-label div {
+	display: flex;
+	width: 100%;
+}
+
+.user-details--input-label:focus-within {
+	div {
+		border-color: black;
+	}
+
+	label {
+		color: rgb(109, 109, 109);
+	}
+}

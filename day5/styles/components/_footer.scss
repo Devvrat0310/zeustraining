@@ -1,0 +1,30 @@
+.footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 16px;
+	height: 40px;
+
+	background: #e0e1e1 0% 0% no-repeat padding-box;
+	opacity: 1;
+	padding: 8px;
+	color: #616161;
+}
+
+.footer-separator {
+	height: 100%;
+	border-right: 1px solid #0000001f;
+}
+
+.footer-content {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 8px;
+}
+
+.footer-content-p2 {
+	font-size: 12px/16px;
+	font-family: quicksand-bold;
+	color: #616161;
+}

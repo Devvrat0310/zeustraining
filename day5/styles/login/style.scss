@@ -1,0 +1,101 @@
+@use "../components/variables";
+
+@import "../components/dropdown";
+@import "../components/navbar";
+@import "../components/footer";
+@import "../components/variables";
+@import "../components/loginForm";
+@import "../components/fonts";
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+body {
+	margin: 0;
+	min-height: 100vh;
+	width: 100%;
+	font-family: quicksand-semibold;
+	font-size: 16px;
+	display: flex;
+	flex-direction: column;
+}
+
+p {
+	padding: 0;
+	margin: 0;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	gap: 25px;
+}
+
+img {
+	padding: 0;
+	height: fit-content;
+	width: fit-content;
+}
+
+input {
+	border: none;
+	outline: none;
+	font-family: quicksand-semibold;
+	font-size: 16px;
+	margin: 5px 0px;
+}
+
+.back-button {
+	cursor: pointer;
+}
+
+.form-header {
+	font-family: quicksand-semibold;
+	font-size: 24px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+}
+
+.navbar {
+	padding: 10.5px 24px;
+	border-bottom: variables.$border-bottom-color;
+}
+
+.login {
+	margin-top: 50px;
+	width: 488px;
+	padding: 20px 32px;
+	background-color: white;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 34px;
+
+	border-top: 4px solid #3ac7ec;
+	border-radius: 3px;
+}
+
+.login-wrapper {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background-color: #eeeeee;
+	flex-grow: 1;
+}
+
+::placeholder {
+	font-family: quicksand-semibold;
+	font-size: 16px;
+}

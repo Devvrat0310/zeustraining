@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<link rel="stylesheet" href="./styles/dashboard/style.css" />
+	</head>
+	<body>
+		<nav class="navbar">
+			<img src="assets/icons/logo used in header.svg" alt="" />
+			<div class="navbar-links">
+				<p class="navbar-collapsible current-page">DASHBOARD</p>
+				<p class="navbar-collapsible">CONTENT</p>
+				<p class="navbar-collapsible">USERS</p>
+				<p class="navbar-collapsible">REPORTS</p>
+				<p class="navbar-collapsible">ADMIN</p>
+				<div class="notification-wrapper">
+					<div class="notification-icon">
+						<img src="assets/icons/alerts.svg" alt="" class="bell" />
+						<p class="notification-badge">2</p>
+					</div>
+					<div class="notifications-wrapper">
+						<div class="notifications">
+							<!-- <div class="notification-item read">
+							<div class="notification-item-content">
+								<p>
+									License for Introduction to Algebra has been assigned to your
+									school
+								</p>
+								<img
+									src="assets/icons/checkbox-circle.svg"
+									alt=""
+									class="checked"
+									height="24px"
+								/>
+							</div>
+							<p class="notification-item-datetime show-courses">
+								15-Sep-2018 at 07:21pm
+							</p>
+						</div>
+						<div class="notification-item unread">
+							<div class="notification-item-content">
+								<p>
+									License for Introduction to Algebra has been assigned to your
+									school
+								</p>
+								<img src="assets/icons/stop.svg" alt="" height="24px" />
+							</div>
+							<p class="show-courses">
+								Course: <span style="color: black">Advanced Mathematics</span>
+							</p>
+							<p class="notification-item-datetime show-courses">
+								15-Sep-2018 at 07:21pm
+							</p>
+						</div> -->
+						</div>
+						<div class="show-all-button show-all-wrapper">Show All</div>
+					</div>
+				</div>
+				<div class="notification-wrapper">
+					<div class="notification-icon">
+						<img src="assets/icons/announcements.svg" alt="" />
+						<p class="notification-badge">1</p>
+					</div>
+					<div class="notifications-wrapper">
+						<div class="notifications">
+							<!-- <div class="notification-item read">
+								<div class="notification-item-content">
+									<p class="show-courses">
+										PA:
+										<span style="color: black">Wilson Kumar</span>
+									</p>
+									<img
+										src="assets/icons/checkbox-circle.svg"
+										alt=""
+										class="checked"
+										height="18px"
+									/>
+								</div>
+								<p style="font-size: 14px">
+									No classes will be held on 21st Nov
+								</p>
+								<div class="flex justify-between">
+									<div class="flex">
+										<img
+											src="assets/icons/attachment.svg"
+											alt=""
+											height="15px"
+										/>
+										<p class="show-courses">2 files are attached</p>
+									</div>
+									<p class="notification-item-datetime show-courses">
+										15-Sep-2018 at 07:21pm
+									</p>
+								</div>
+							</div>
+							<div class="notification-item unread">
+								<div class="notification-item-content">
+									<p>
+										License for Introduction to Algebra has been assigned to
+										your school
+									</p>
+									<img src="assets/icons/stop.svg" alt="" height="24px" />
+								</div>
+								<p class="show-courses">
+									Course: <span style="color: black">Advanced Mathematics</span>
+								</p>
+								<p class="notification-item-datetime show-courses">
+									15-Sep-2018 at 07:21pm
+								</p>
+							</div> -->
+						</div>
+						<div class="flex show-all-wrapper">
+							<button class="show-all-button">Show All</button>
+							<button class="show-all-button">Show All</button>
+						</div>
+					</div>
+				</div>
+				<img src="assets/icons/account_circle.svg" alt="" />
+				<div class="navbar-menu">
+					<img
+						src="assets/icons/hamburger-menu.svg"
+						alt=""
+						class="navbar-menu-image"
+					/>
+
+					<div class="navbar-dropdown-menu">
+						<!-- <div class="select-wrapper">
+							<div class="select-container">
+								<p>Course Name</p>
+								<img
+									src="assets/icons/arrow-down-line.svg"
+									alt="Dropdown Arrow"
+									class="dropdown-arrow"
+									height="15px"
+								/>
+							</div>
+							<ul class="select-dropdown-list">
+								<li>COURSE CATALOG</li>
+							</ul>
+						</div> -->
+					</div>
+				</div>
+			</div>
+		</nav>
+		<div class="main-content">
+			<nav class="dashboard-navbar">
+				<div class="dashboard-navbar-link selected">
+					<img src="assets/icons/courses.svg" alt="" class="courses-icon" />
+					<p class="dashboard-navbar-link-count">4</p>
+					<p class="dashboard-navbar-link-name">Courses</p>
+				</div>
+				<div class="dashboard-navbar-link">
+					<img src="assets/icons/classes.svg" alt="" class="courses-icon" />
+					<p class="dashboard-navbar-link-count">4</p>
+					<p class="dashboard-navbar-link-name">Classes</p>
+				</div>
+			</nav>
+			<div class="all-courses">
+				<div class="courses-metadata">
+					<p class="show-courses">Showing 4 of 4 courses</p>
+					<div class="sort-container first">
+						<label for="sort-by">Sort By:</label>
+						<div class="sort-by-dropdown">
+							<div class="dropdown-header">
+								<input
+									type="text"
+									value="Course Name"
+									id="sort-by"
+									readonly
+									class="dropdown-input"
+								/>
+								<img
+									src="assets/icons/arrow-down.svg"
+									alt="Dropdown Arrow"
+									class="dropdown-arrow"
+								/>
+							</div>
+							<ul class="dropdown-menu">
+								<li>Course Name</li>
+							</ul>
+						</div>
+
+						<img src="assets/icons/sort.svg" alt="" />
+					</div>
+				</div>
+				<div class="course-cards"></div>
+			</div>
+			<div class="link-about-contact-page">
+				<a href="/about-us" class="about-us-link">About</a>
+				<div class="link-separator"></div>
+				<a href="/contact-us">Contact Us</a>
+			</div>
+		</div>
+		<footer class="footer">
+			<img src="assets/icons/logo used in footer.svg" alt="" />
+			<div class="footer-separator"></div>
+			<div class="footer-content">
+				<p class="footer-content-p1">Copyright © 2020-2021</p>
+				<p class="footer-content-p2">Zeus Systems Pvt.Ltd.</p>
+				<p class="footer-content-p1">All rights reserved</p>
+			</div>
+		</footer>
+		<script type="module" src="dashboard.js"></script>
+	</body>
+</html>

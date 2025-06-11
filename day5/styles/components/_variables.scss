@@ -1,0 +1,28 @@
+$border-bottom-color: 2px solid #31b9e4;
+
+.link-separator {
+	border-right: 1px solid #0000001f;
+}
+
+.link-about-contact-page {
+	display: flex;
+	margin-top: 32px;
+	gap: 8px;
+	color: #1f7a54;
+	justify-content: center;
+
+	a {
+		color: #1f7a54;
+	}
+}
+
+// .link-about-contact-page {
+// 	display: flex;
+// 	margin-top: 32px;
+// 	gap: 8px;
+// 	color: #1f7a54;
+
+// 	a {
+// 		color: #1f7a54;
+// 	}
+// }
