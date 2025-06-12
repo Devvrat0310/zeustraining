@@ -3,33 +3,6 @@ import { courseCardsTemp } from "./components/courseCardItem.js";
 import { notificationWrapper } from "./components/notifications.js";
 import { announcementsWrapper } from "./components/announcements.js";
 
-const selectContainer = document.querySelectorAll(".select-container");
-const selectDropdownList = document.querySelectorAll(".select-dropdown-list");
-
-const arrowSelect = document.querySelectorAll(".dropdown-arrow-select");
-selectContainer.forEach((item, index) => {
-	item.addEventListener("click", (e) => {
-		e.preventDefault();
-		console.log("arrowSelect", arrowSelect);
-		if (selectDropdownList[index].style.opacity == "1") {
-			selectDropdownList[index].style.opacity = "0";
-			selectDropdownList[index].style.maxHeight = "0";
-			selectDropdownList[index].style.transform = "translateY(-10px)";
-
-			arrowSelect[index].style.transform = "rotate(0deg)";
-		} else {
-			selectDropdownList[index].style.opacity = "1";
-			selectDropdownList[index].style.maxHeight = "200px";
-			selectDropdownList[index].style.transform = "translateY(0)";
-			arrowSelect[index].style.transform = "rotate(180deg)";
-		}
-	});
-
-	item.addEventListener("mouseout", (e) => {});
-});
-
-// document.body.innerHTML = test;
-
 const dropdownHeader = document.querySelectorAll(".dropdown-header");
 const dropdownMenu = document.getElementsByClassName("dropdown-menu");
 const inputField = document.querySelectorAll(".dropdown-header input");
@@ -54,9 +27,14 @@ dropdownHeader.forEach((item, index) => {
 
 document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
 	// console.log("index:", index);
+	const targetDiv = item.parentElement.parentElement.children[0].children[0];
+	const parentDropdown = item.parentElement;
+	console.log("targetDiv", targetDiv);
 	item.addEventListener("click", () => {
-		inputField[index].value = item.textContent;
-		dropdownMenu[index].style.display = "none";
+		const tempContent = targetDiv.value;
+		targetDiv.value = item.textContent;
+		item.textContent = tempContent;
+		parentDropdown.style.display = "none";
 	});
 });
 
@@ -84,7 +62,9 @@ navbarMenuImage.addEventListener("click", (e) => {
 
 	if (showHambugerMenu) {
 		navbarDropdownMenu.style.display = "none";
-	} else navbarDropdownMenu.style.display = "flex";
+	} else {
+		navbarDropdownMenu.style.display = "flex";
+	}
 	showHambugerMenu = !showHambugerMenu;
 });
 
@@ -108,7 +88,7 @@ showAllButton.forEach((button, index) => {
 	button.addEventListener("click", (e) => {
 		e.preventDefault();
 
-		if (button.innerHTML == "Show All") {
+		if (button.innerHTML === "Show All") {
 			notifications[index].style.height = "fit-content";
 			notifications[index].style.overflowY = "hidden";
 			button.innerHTML = "Show Less";
@@ -119,3 +99,14 @@ showAllButton.forEach((button, index) => {
 		}
 	});
 });
+
+function normal() {
+	console.log("this", this);
+}
+
+const arr = () => {
+	console.log("this", this);
+};
+
+normal();
+arr();

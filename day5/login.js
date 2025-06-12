@@ -32,7 +32,7 @@ let radioButtonTwo = document.getElementsByClassName("radio-button")[1];
 // 	rO.src = "assets/icons/radio-button-on.svg";
 // 	tO = true;
 
-// 	if (tT == true) {
+// 	if (tT === true) {
 // 		rT.src = "assets/icons/radio-button-off.svg";
 // 		tT = false;
 // 	}
@@ -53,7 +53,7 @@ radioDistrictOne.addEventListener("click", (e) => {
 	radioButtonOne.src = "assets/icons/radio-button-on.svg";
 	toggleRadioOne = true;
 
-	if (toggleRadioTwo == true) {
+	if (toggleRadioTwo === true) {
 		radioButtonTwo.src = "assets/icons/radio-button-off.svg";
 		toggleRadioTwo = false;
 	}
@@ -78,7 +78,7 @@ radioDistrictTwo.addEventListener("click", (e) => {
 	radioButtonTwo.src = "assets/icons/radio-button-on.svg";
 	toggleRadioTwo = true;
 
-	if (toggleRadioOne == true) {
+	if (toggleRadioOne === true) {
 		radioButtonOne.src = "assets/icons/radio-button-off.svg";
 		toggleRadioOne = false;
 	}

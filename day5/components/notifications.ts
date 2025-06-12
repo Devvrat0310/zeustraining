@@ -1,10 +1,26 @@
-const notifications = [
+interface notification {
+	id: number;
+	type: string;
+	message: string;
+	description: {
+		key: string;
+		value: string;
+	};
+	timestamp: string;
+	status: string;
+	icon: string;
+}
+
+const notifications: notification[] = [
 	{
 		id: 1,
 		type: "license_assignment",
 		message:
 			"License for Introduction to Algebra has been assigned to your school",
-		description: {},
+		description: {
+			key: "",
+			value: "",
+		},
 		timestamp: "15-Sep-2018 at 07:21 pm",
 		status: "unread",
 		icon: "info",
@@ -25,7 +41,10 @@ const notifications = [
 		id: 3,
 		type: "students_created",
 		message: "25 new students created",
-		description: {},
+		description: {
+			key: "",
+			value: "",
+		},
 		timestamp: "14-Sep-2018 at 01:21 pm",
 		status: "unread",
 		icon: "info",
@@ -47,7 +66,10 @@ const notifications = [
 		type: "license_assignment",
 		message:
 			"License for Basic Concepts in Geometry has been assigned to your...",
-		description: {},
+		description: {
+			key: "",
+			value: "",
+		},
 		timestamp: "15-Sep-2018 at 07:21 pm",
 		status: "unread",
 		icon: "info",
@@ -91,7 +113,7 @@ ${notifications
                     />
             </div>
             ${
-							item.description.key
+							item.description.key.length > 0
 								? `<p class="show-courses"> ${item.description.key}:
                     <span style="color: black">
                         ${item.description.value}

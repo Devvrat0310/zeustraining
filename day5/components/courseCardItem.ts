@@ -5,7 +5,6 @@ const markup = `
 		.map(
 			(data) => `
     <div class="course-card-item">
-    ${data.expired ? `<div class = "expired-card" > EXPIRED </div>` : ``}
       <div class="course-card">
         <img src="${data.img}" alt="" />
         <div class="course-card-information">
@@ -51,9 +50,7 @@ const markup = `
                 />
               </div>
               <ul class="dropdown-menu">
-                <li>${data.class} 1</li>
-                <li>${data.class} 2</li>
-                <li>${data.class} 3</li>
+                <li>${data.class}</li>
               </ul>
             </div>
             <div class="class-metadata">

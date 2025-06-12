@@ -98,6 +98,7 @@
 
 .notification-wrapper {
   position: relative;
+  padding: 15px 0px;
 }
 
 .notifications {
@@ -132,11 +133,10 @@
   display: block;
   position: absolute;
   width: 335px;
-  top: 43px;
+  top: 58px;
   right: 0px;
   z-index: 1;
   color: black;
-  box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.2392156863);
   opacity: 0;
   transition: all 200ms ease-in-out;
   max-height: 0;
@@ -150,10 +150,20 @@
   justify-content: center;
   padding: 15px 0;
   color: #1f7a54;
-  font-size: 16px;
+  font-size: 14px;
+  border-width: 0;
+  background-color: white;
 }
 
 .show-all-wrapper {
+  padding: 10px 0;
+}
+.show-all-wrapper button {
+  padding: 5px 0;
+  background-color: white;
+}
+
+.box-shadow {
   box-shadow: 0px 1px 6px rgba(0, 0, 0, 0.2392156863);
 }
 
@@ -204,6 +214,11 @@
   }
   .select-wrapper .select-dropdown-list li {
     padding: 15px;
+    padding-left: 30px;
+  }
+  .select-wrapper .select-dropdown-list li:hover {
+    background-color: rgb(215, 215, 215);
+    transition: all 300ms ease-in-out;
   }
   .dropdown-arrow-select {
     transition: 300ms;
@@ -254,6 +269,9 @@
     max-height: fit-content;
     transform: translateY(0px);
   }
+  .navbar-menu:hover .navbar-menu-image {
+    filter: grayscale(100%) brightness(1000%);
+  }
   .navbar {
     border-bottom: 1px solid #ccc;
   }
@@ -264,7 +282,35 @@
     max-height: fit-content;
     transform: translateY(0px);
   }
+  .notification-wrapper:hover .notification-badge {
+    visibility: hidden;
+  }
+  .notification-wrapper:hover .notification-icon {
+    filter: grayscale(100%) brightness(1000%);
+  }
 }
+/* width */
+::-webkit-scrollbar {
+  width: 4px;
+  position: fixed;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #a1a1a1;
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
 .dropdown-arrow {
   transition: 300ms;
 }
