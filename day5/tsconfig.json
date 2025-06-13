@@ -1,0 +1,11 @@
+{
+	"compilerOptions": {
+		"target": "ES2015", // modern enough for browsers with modules
+		"module": "ESNext", // output ES modules syntax (import/export)
+		"outDir": "./dist", // output folder for compiled JS
+		"strict": true, // optional but recommended
+		"esModuleInterop": true, // better compatibility
+		"skipLibCheck": true
+	},
+	"include": ["src/**/*"] // where your ts files are, adjust if needed
+}

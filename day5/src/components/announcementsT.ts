@@ -95,7 +95,9 @@ ${announcements
 	.join("")}
 `;
 
-export const announcementsWrapper =
-	document.getElementsByClassName("notifications")[1];
+const announcementsWrapperList: NodeListOf<HTMLDivElement> =
+	document.querySelectorAll(".notifications");
+
+export const announcementsWrapper = announcementsWrapperList[1];
 
 announcementsWrapper.innerHTML = markup;

@@ -1,38 +1,3 @@
-// const announcements = [
-// 	{
-// 		sender: "Wilson Kumar",
-// 		status: "read",
-// 		message: "No classes will be held on 21st Nov",
-// 		attachments: "2 files are attached",
-// 		timestamp: "15-Sep-2018 at 07:21 pm",
-// 	},
-// 	{
-// 		sender: "Samson White",
-// 		status: "unread",
-// 		message: "Guest lecture on Geometry on 20th September",
-// 		attachments: "2 files are attached",
-// 		timestamp: "15-Sep-2018 at 07:21 pm",
-// 	},
-// 	{
-// 		sender: "Wilson Kumar",
-// 		status: "read",
-// 		message: "Additional course materials available on request",
-// 		course: "Mathematics 101",
-// 		timestamp: "15-Sep-2018 at 07:21 pm",
-// 	},
-// 	{
-// 		sender: "Wilson Kumar",
-// 		status: "unread",
-// 		message: "No classes will be held on 25th Dec",
-// 		timestamp: "15-Sep-2018 at 07:21 pm",
-// 	},
-// 	{
-// 		sender: "Wilson Kumar",
-// 		status: "unread",
-// 		message: "Additional course materials available on request",
-// 		timestamp: "15-Sep-2018 at 07:21 pm",
-// 	},
-// ];
 const announcements = [
 	{
 		sender: "Wilson Kumar",

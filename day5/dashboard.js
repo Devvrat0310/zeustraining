@@ -1,7 +1,7 @@
-import { navbarDropdownMenu } from "./components/hamburgerDropdown.js";
-import { courseCardsTemp } from "./components/courseCardItem.js";
-import { notificationWrapper } from "./components/notifications.js";
-import { announcementsWrapper } from "./components/announcements.js";
+import { navbarDropdownMenu } from "./src/components/hamburgerDropdown.js";
+import { courseCardsTemp } from "./src/components/courseCardItem.js";
+import { notificationWrapper } from "./src/components/notifications.js";
+import { announcementsWrapper } from "./src/components/announcements.js";
 
 const dropdownHeader = document.querySelectorAll(".dropdown-header");
 const dropdownMenu = document.getElementsByClassName("dropdown-menu");
@@ -100,13 +100,7 @@ showAllButton.forEach((button, index) => {
 	});
 });
 
-function normal() {
-	console.log("this", this);
-}
-
-const arr = () => {
-	console.log("this", this);
-};
-
-normal();
-arr();
+let [person, fruit, , day] = ["Monty", "apple", "reading", "tomorrow"];
+var sentence = `${person} will eat an ${fruit} ${day}.`;
+console.log(sentence);
+// Output: Monty will eat an apple tomorrow.

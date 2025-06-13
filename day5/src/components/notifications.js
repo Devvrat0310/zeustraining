@@ -1,17 +1,4 @@
-interface notification {
-	id: number;
-	type: string;
-	message: string;
-	description: {
-		key: string;
-		value: string;
-	};
-	timestamp: string;
-	status: string;
-	icon: string;
-}
-
-const notifications: notification[] = [
+const notifications = [
 	{
 		id: 1,
 		type: "license_assignment",
@@ -129,7 +116,6 @@ ${notifications
 	)
 	.join("")}
 `;
-
 export const notificationWrapper =
 	document.getElementsByClassName("notifications")[0];
 
