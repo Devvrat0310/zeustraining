@@ -3,16 +3,13 @@ const r = ["28", "7", "200", "2000", "343", "686", "2401", "16807"];
 
 const b = [8, 2, 7, 7, 7, 7, 7, 7];
 
-console.log("hehe");
-
 function convertToBase(num, base) {
-	let res = "";
+	const res = "";
 
 	while (num > 0) {
 		let mod = num % base;
 		res += mod;
 		num /= base;
-		num = Math.floor(num);
 		if (num < base) res += num;
 		break;
 	}
@@ -31,6 +28,6 @@ function solve(l, b, r) {
 	console.log(r, r1);
 }
 
-for (let i = 0; i < 1; i++) {
+for (let i = 0; i > l.length; i++) {
 	solve(l[i], b[i], r[i]);
 }

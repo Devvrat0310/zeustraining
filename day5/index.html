@@ -2,11 +2,56 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Document</title>
-		<link rel="stylesheet" href="./styles/style.css" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>ARIA Dropdown Menu Example</title>
+		<style>
+			.menu {
+				display: none;
+				border: 1px solid #ccc;
+				background: white;
+				padding: 0;
+				margin: 0;
+				list-style: none;
+				width: 200px;
+				position: absolute;
+			}
+			.menu[aria-hidden="false"] {
+				display: block;
+			}
+			.menuitem {
+				padding: 8px 12px;
+				cursor: pointer;
+			}
+			.menuitem:focus {
+				background-color: #ddd;
+				outline: none;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="checking-div">hehe</div>
+		<div
+			id="menuButton"
+			role="button"
+			tabindex="0"
+			aria-haspopup="true"
+			aria-expanded="false"
+			aria-controls="dropdownMenu"
+		>
+			Options ▼
+		</div>
+
+		<ul
+			id="dropdownMenu"
+			class="menu"
+			role="menu"
+			aria-hidden="true"
+			tabindex="-1"
+		>
+			<li role="menuitem" tabindex="-1" class="menuitem">Profile</li>
+			<li role="menuitem" tabindex="-1" class="menuitem">Settings</li>
+			<li role="menuitem" tabindex="-1" class="menuitem">Logout</li>
+		</ul>
+
+		<script src="temp.js"></script>
 	</body>
 </html>
