@@ -244,6 +244,20 @@
   background-color: #ffffee;
 }
 
+.notification-wrapper:hover .notifications-wrapper {
+  visibility: visible;
+  opacity: 1;
+  max-height: -moz-fit-content;
+  max-height: fit-content;
+  transform: translateY(0px);
+}
+.notification-wrapper:hover .notification-badge {
+  visibility: hidden;
+}
+.notification-wrapper:hover .notification-icon {
+  filter: grayscale(100%) brightness(1000%);
+}
+
 @media only screen and (max-width: 960px) {
   .select-dashboard {
     padding: 15px;
@@ -347,19 +361,6 @@
   }
   .navbar {
     border-bottom: 1px solid #ccc;
-  }
-  .notification-wrapper:hover .notifications-wrapper {
-    visibility: visible;
-    opacity: 1;
-    max-height: -moz-fit-content;
-    max-height: fit-content;
-    transform: translateY(0px);
-  }
-  .notification-wrapper:hover .notification-badge {
-    visibility: hidden;
-  }
-  .notification-wrapper:hover .notification-icon {
-    filter: grayscale(100%) brightness(1000%);
   }
 }
 /* width */

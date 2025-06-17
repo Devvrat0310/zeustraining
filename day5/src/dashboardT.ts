@@ -19,25 +19,41 @@ const arrow: NodeListOf<HTMLImageElement> =
 
 let isRotated = false;
 
-const openDropdownMenu = (index: number) => {
-	dropdownMenu[index].style.display =
-		dropdownMenu[index].style.display === "block" ? "none" : "block";
+const openDropdownMenu = (
+	index: number,
+	currDropdownMenu: HTMLUListElement
+) => {
+	currDropdownMenu.style.display =
+		currDropdownMenu.style.display === "block" ? "none" : "block";
 
 	isRotated = !isRotated;
-	arrow[index].style.transform = isRotated ? "rotate(180deg)" : "rotate(0deg)";
+	arrow[index].style.transform = isRotated
+		? "rotate(180deg)"
+		: "rotate(0deg)";
 };
 
 dropdownHeader.forEach((item, index) => {
 	// console.log("index: ", index);
 	// console.log("item: ", item);
+	const dropdownMenu: HTMLUListElement = item.parentElement
+		?.children[1] as HTMLUListElement;
+
 	item.addEventListener("click", (e) => {
 		e.preventDefault();
-		openDropdownMenu(index);
+		openDropdownMenu(index, dropdownMenu);
 	});
 	item.addEventListener("keydown", (e: KeyboardEvent) => {
 		if (e.key === "Enter") {
 			// e.preventDefault(); // optional: prevent default form submission
-			openDropdownMenu(index);
+			openDropdownMenu(index, dropdownMenu);
+		}
+		if (e.key === "ArrowDown") {
+			openDropdownMenu(index, dropdownMenu);
+			const dropdownList: HTMLLIElement = item?.parentElement?.children[1]
+				.children[0] as HTMLLIElement;
+
+			// console.log("first eleemtn", dropdownList);
+			dropdownList.focus();
 		}
 	});
 });
@@ -56,6 +72,34 @@ document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
 		item.textContent = tempContent;
 		parentDropdown.style.display = "none";
 	});
+
+	let focusedIndex = 0;
+
+	// const menuItems: HTMLLIElement[] = item?.parentElement
+	// 	?.children as HTMLLIElement[];
+
+	// item.addEventListener("keydown", (e: KeyboardEvent) => {
+	// 	if (e.key === "ArrowDown") {
+	// 		e.preventDefault();
+	// 		focusedIndex = (focusedIndex + 1) % menuItems.length;
+	// 		menuItems[focusedIndex].focus();
+	// 	} else if (e.key === "ArrowUp") {
+	// 		e.preventDefault();
+	// 		focusedIndex =
+	// 			(focusedIndex - 1 + menuItems.length) % menuItems.length;
+	// 		menuItems[focusedIndex].focus();
+	// 	} else if (e.key === "Escape") {
+	// 		e.preventDefault();
+	// 		openDropdownMenu();
+	// 	} else if (e.key === "Tab") {
+	// 		openDropdownMenu();
+	// 	} else if (e.key === "Enter") {
+	// 		e.preventDefault();
+	// 		alert(`You selected: ${menuItems[focusedIndex].textContent}`);
+	// 		closeMenu();
+	// 		break;
+	// 	}
+	// });
 });
 
 document.addEventListener("click", (event: Event) => {
@@ -121,30 +165,6 @@ showAllButton.forEach((button, index) => {
 		}
 	});
 });
-
-let [person, fruit, , day] = ["Monty", "apple", "reading", "tomorrow"];
-var sentence = `${person} will eat an ${fruit} ${day}.`;
-console.log(sentence);
-
-const f1 = async () => {
-	setTimeout(() => {
-		console.log(`3 seconds have passed`);
-	}, 3000);
-};
-
-const fetchUrl = () => {
-	setTimeout(() => {
-		console.log(`3 seconds have passed`);
-	}, 3000);
-};
-
-const f2 = async () => {
-	const temp = await fetchUrl();
-	const temp2 = await fetchUrl();
-};
-
-f1();
-f2();
 
 // const urls = [
 // 	"https://en.wikipedia.org/wiki/Canada",

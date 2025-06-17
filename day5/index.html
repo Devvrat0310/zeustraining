@@ -52,6 +52,89 @@
 			<li role="menuitem" tabindex="-1" class="menuitem">Logout</li>
 		</ul>
 
-		<script src="temp.js"></script>
+		<script>
+			const button = document.getElementById("menuButton");
+			const menu = document.getElementById("dropdownMenu");
+			const menuItems = menu.querySelectorAll('[role="menuitem"]');
+			let menuOpen = false;
+			let focusedIndex = -1;
+
+			function openMenu() {
+				menuOpen = true;
+				menu.setAttribute("aria-hidden", "false");
+				button.setAttribute("aria-expanded", "true");
+				menu.focus();
+				focusedIndex = 0;
+				menuItems[focusedIndex].focus();
+			}
+
+			function closeMenu() {
+				menuOpen = false;
+				menu.setAttribute("aria-hidden", "true");
+				button.setAttribute("aria-expanded", "false");
+				button.focus();
+				focusedIndex = -1;
+			}
+
+			button.addEventListener("click", () => {
+				if (menuOpen) {
+					closeMenu();
+				} else {
+					openMenu();
+				}
+			});
+
+			button.addEventListener("keydown", (e) => {
+				if (
+					e.key === "ArrowDown" ||
+					e.key === "Enter" ||
+					e.key === " "
+				) {
+					e.preventDefault();
+					openMenu();
+				}
+			});
+
+			menu.addEventListener("keydown", (e) => {
+				switch (e.key) {
+					case "ArrowDown":
+						e.preventDefault();
+						focusedIndex = (focusedIndex + 1) % menuItems.length;
+						menuItems[focusedIndex].focus();
+						break;
+					case "ArrowUp":
+						e.preventDefault();
+						focusedIndex =
+							(focusedIndex - 1 + menuItems.length) %
+							menuItems.length;
+						menuItems[focusedIndex].focus();
+						break;
+					case "Escape":
+						e.preventDefault();
+						closeMenu();
+						break;
+					case "Tab":
+						closeMenu();
+						break;
+					case "Enter":
+					case " ":
+						e.preventDefault();
+						alert(
+							`You selected: ${menuItems[focusedIndex].textContent}`
+						);
+						closeMenu();
+						break;
+				}
+			});
+
+			// Close menu if click happens outside
+			document.addEventListener("click", (e) => {
+				if (!menu.contains(e.target) && e.target !== button) {
+					if (menuOpen) {
+						closeMenu();
+					}
+				}
+			});
+		</script>
 	</body>
 </html>

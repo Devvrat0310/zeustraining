@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import { navbarDropdownMenu } from "./components/hamburgerDropdownT.js";
 import { courseCardsTemp } from "./components/courseCardItemT.js";
 import { notificationWrapper } from "./components/notificationsT.js";
@@ -19,23 +10,34 @@ const dropdownMenu = document.querySelectorAll(".dropdown-menu");
 const inputField = document.querySelectorAll(".dropdown-header input");
 const arrow = document.querySelectorAll(".dropdown-arrow");
 let isRotated = false;
-const openDropdownMenu = (index) => {
-    dropdownMenu[index].style.display =
-        dropdownMenu[index].style.display === "block" ? "none" : "block";
+const openDropdownMenu = (index, currDropdownMenu) => {
+    currDropdownMenu.style.display =
+        currDropdownMenu.style.display === "block" ? "none" : "block";
     isRotated = !isRotated;
-    arrow[index].style.transform = isRotated ? "rotate(180deg)" : "rotate(0deg)";
+    arrow[index].style.transform = isRotated
+        ? "rotate(180deg)"
+        : "rotate(0deg)";
 };
 dropdownHeader.forEach((item, index) => {
+    var _a;
     // console.log("index: ", index);
     // console.log("item: ", item);
+    const dropdownMenu = (_a = item.parentElement) === null || _a === void 0 ? void 0 : _a.children[1];
     item.addEventListener("click", (e) => {
         e.preventDefault();
-        openDropdownMenu(index);
+        openDropdownMenu(index, dropdownMenu);
     });
     item.addEventListener("keydown", (e) => {
+        var _a;
         if (e.key === "Enter") {
             // e.preventDefault(); // optional: prevent default form submission
-            openDropdownMenu(index);
+            openDropdownMenu(index, dropdownMenu);
+        }
+        if (e.key === "ArrowDown") {
+            openDropdownMenu(index, dropdownMenu);
+            const dropdownList = (_a = item === null || item === void 0 ? void 0 : item.parentElement) === null || _a === void 0 ? void 0 : _a.children[1].children[0];
+            // console.log("first eleemtn", dropdownList);
+            dropdownList.focus();
         }
     });
 });
@@ -52,6 +54,31 @@ document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
         item.textContent = tempContent;
         parentDropdown.style.display = "none";
     });
+    let focusedIndex = 0;
+    // const menuItems: HTMLLIElement[] = item?.parentElement
+    // 	?.children as HTMLLIElement[];
+    // item.addEventListener("keydown", (e: KeyboardEvent) => {
+    // 	if (e.key === "ArrowDown") {
+    // 		e.preventDefault();
+    // 		focusedIndex = (focusedIndex + 1) % menuItems.length;
+    // 		menuItems[focusedIndex].focus();
+    // 	} else if (e.key === "ArrowUp") {
+    // 		e.preventDefault();
+    // 		focusedIndex =
+    // 			(focusedIndex - 1 + menuItems.length) % menuItems.length;
+    // 		menuItems[focusedIndex].focus();
+    // 	} else if (e.key === "Escape") {
+    // 		e.preventDefault();
+    // 		openDropdownMenu();
+    // 	} else if (e.key === "Tab") {
+    // 		openDropdownMenu();
+    // 	} else if (e.key === "Enter") {
+    // 		e.preventDefault();
+    // 		alert(`You selected: ${menuItems[focusedIndex].textContent}`);
+    // 		closeMenu();
+    // 		break;
+    // 	}
+    // });
 });
 document.addEventListener("click", (event) => {
     event.preventDefault();
@@ -103,25 +130,6 @@ showAllButton.forEach((button, index) => {
         }
     });
 });
-let [person, fruit, , day] = ["Monty", "apple", "reading", "tomorrow"];
-var sentence = `${person} will eat an ${fruit} ${day}.`;
-console.log(sentence);
-const f1 = () => __awaiter(void 0, void 0, void 0, function* () {
-    setTimeout(() => {
-        console.log(`3 seconds have passed`);
-    }, 3000);
-});
-const fetchUrl = () => {
-    setTimeout(() => {
-        console.log(`3 seconds have passed`);
-    }, 3000);
-};
-const f2 = () => __awaiter(void 0, void 0, void 0, function* () {
-    const temp = yield fetchUrl();
-    const temp2 = yield fetchUrl();
-});
-f1();
-f2();
 // const urls = [
 // 	"https://en.wikipedia.org/wiki/Canada",
 // 	"https://en.wikipedia.org/wiki/Nigeria",
