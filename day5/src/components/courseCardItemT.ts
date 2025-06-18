@@ -7,14 +7,14 @@ const markup = `
     <div class="course-card-item">
     ${data.expired ? `<div class = "expired-card" > EXPIRED </div>` : ``}
       <div class="course-card">
-        <img src="${data.img}" alt="" />
+        <img src="${data.img}" alt="course book image" />
         <div class="course-card-information">
           <div class="course-card-container">
             <div class="course-card-title-wrapper">
               <p class="course-card-title">${data.title}</p>
-              <img src="assets/icons/favourite.svg" alt="" class = ${
-								data.favourite ? `` : `disabled-star`
-							} />
+              <img src="assets/icons/favourite.svg" alt="favourite icon" class = ${
+					data.favourite ? `` : `disabled-star`
+				} />
             </div>
             <div class="course-card-subject-standard">
               <p>${data.subject}</p>
@@ -50,22 +50,22 @@ const markup = `
                   class="dropdown-arrow"
                 />
               </div>
-              <ul class="dropdown-menu">
-                <li>${data.class} 1</li>
-                <li>${data.class} 2</li>
-                <li>${data.class} 3</li>
+              <ul class="dropdown-menu" role="menu">
+                <li tabindex="0" role="menuitem">${data.class} 1</li> 
+                <li tabindex="0" role="menuitem">${data.class} 2</li>
+                <li tabindex="0" role="menuitem">${data.class} 3</li>
               </ul>
             </div>
             <div class="class-metadata">
               <p>${
-								data.classMeta.students > 0
-									? `${data.classMeta.students} Students`
-									: ``
-							}</p>
+					data.classMeta.students > 0
+						? `${data.classMeta.students} Students`
+						: ``
+				}</p>
 							
               <div class=${
-								data.classMeta.fromDate != "" ? `"link-separator"` : ``
-							}></div>
+					data.classMeta.fromDate != "" ? `"link-separator"` : ``
+				}></div>
               <div class="course-dates">
                 <p>${data.classMeta.fromDate}</p>
                 <p>${data.classMeta.fromDate != "" ? `-` : ``} </p>
@@ -77,18 +77,18 @@ const markup = `
       </div>
       <div class="course-card-hr"></div>
       <div class="course-card-options">
-        <img src="assets/icons/preview.svg" alt="" class = ${
-					data.options.preview ? `` : `disabled-option`
-				} />
-        <img src="assets/icons/manage course.svg" alt="" class = ${
-					data.options.manageCourse ? `` : `disabled-option`
-				} />
-        <img src="assets/icons/grade submissions.svg" alt="" class = ${
-					data.options.gradeSubmission ? `` : `disabled-option`
-				} />
-        <img src="assets/icons/reports.svg" alt="" class = ${
-					data.options.reports ? `` : `disabled-option`
-				} />
+        <img src="assets/icons/preview.svg" alt="preview icon" class = ${
+			data.options.preview ? `` : `disabled-option`
+		} />
+        <img src="assets/icons/manage course.svg" alt="manage course icon" class = ${
+			data.options.manageCourse ? `` : `disabled-option`
+		} />
+        <img src="assets/icons/grade submissions.svg" alt="grade submissions icon" class = ${
+			data.options.gradeSubmission ? `` : `disabled-option`
+		} />
+        <img src="assets/icons/reports.svg" alt="reports icon" class = ${
+			data.options.reports ? `` : `disabled-option`
+		} />
       </div>
     </div>`
 		)

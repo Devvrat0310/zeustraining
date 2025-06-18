@@ -1,11 +1,25 @@
-<form action="" class="w-fit p-10" onsubmit="addtodo">
-    <div class="flex flex-col gap-5">
+<form action="">
+    <div class="flex p-5 justify-center items-start flex-col gap-2">
+        <button
+            type="submit"
+            (click)="updateNewTodo($event)"
+            class="bg-blue-400 p-3"
+        >
+            Add todo
+        </button>
         <input
-            type="text"
-            placeholder="Task"
-            class="border p-2 w-fit"
-            onchange=""
+            (input)="newTask($event)"
+            placeholder="add new task..."
+            class="border border-black p-2"
+            [value]="newTodo()"
         />
-        <button type="submit" class="bg-green-500 rounded">Create Task</button>
+        <p>{{newTodo()}}</p>
+
+        <div class="flex flex-col gap-2 border border-black p-5 min-w-48">
+            <h1 class="bg-blue-400 p-2 rounded">All Todos</h1>
+            @for (item of todos(); track $index) {
+            <p>{{item}}</p>
+            }
+        </div>
     </div>
 </form>

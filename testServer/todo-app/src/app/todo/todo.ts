@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 
 @Component({
     selector: 'app-todo',
@@ -7,18 +7,30 @@ import { Component } from '@angular/core';
     styleUrl: '../app.css',
 })
 export class Todo {
-    todos: string[] = [];
-    newTodo: string = '';
+    // todos: string[] = [];
+    // newTodo: string = '';
+    todos = signal<string[]>([]);
 
-    addTodo() {
-        console.log('todo submitted');
-        if (this.newTodo.trim()) {
-            this.todos.push(this.newTodo.trim());
-            this.newTodo = '';
-        }
+    newTodo = signal<string>('');
+
+    updateNewTodo(e: Event) {
+        e.preventDefault();
+
+        if (this.newTodo() === '') return;
+
+        console.log('Clicked mee');
+
+        this.todos.update((t) => [...t, this.newTodo()]);
+
+        this.newTodo.set('');
+
+        return 'Updated todo list';
     }
 
-    removeTodo(index: number) {
-        this.todos.splice(index, 1);
+    newTask(e: Event) {
+        let currentValue = (e.target as HTMLInputElement).value.trim();
+        console.log((e.target as HTMLInputElement).value);
+        // this.newTodo = (e.target as HTMLInputElement).value.trim();
+        this.newTodo.set(currentValue);
     }
 }

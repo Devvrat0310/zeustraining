@@ -8,20 +8,53 @@
 	</head>
 	<body>
 		<nav class="navbar">
-			<img src="assets/icons/logo used in header.svg" alt="" />
+			<img
+				src="assets/icons/logo used in header.svg"
+				alt="Quantum Logo"
+			/>
 			<div class="navbar-links">
-				<p class="navbar-collapsible current-page">DASHBOARD</p>
-				<p class="navbar-collapsible">CONTENT</p>
-				<p class="navbar-collapsible">USERS</p>
-				<p class="navbar-collapsible">REPORTS</p>
-				<p class="navbar-collapsible">ADMIN</p>
-				<div class="notification-wrapper">
+				<a
+					href="/dashboard.html"
+					tabindex="0"
+					class="navbar-collapsible current-page"
+				>
+					DASHBOARD
+				</a>
+				<a
+					href="/dashboard.html"
+					tabindex="0"
+					class="navbar-collapsible"
+					>CONTENT</a
+				>
+				<a
+					href="/dashboard.html"
+					tabindex="0"
+					class="navbar-collapsible"
+					>USERS</a
+				>
+				<a
+					href="/dashboard.html"
+					tabindex="0"
+					class="navbar-collapsible"
+					>REPORTS</a
+				>
+				<a
+					href="/dashboard.html"
+					tabindex="0"
+					class="navbar-collapsible"
+					>ADMIN</a
+				>
+				<div class="notification-wrapper" tabindex="0">
 					<div class="notification-icon">
-						<img src="assets/icons/alerts.svg" alt="" class="bell" />
+						<img
+							src="assets/icons/alerts.svg"
+							alt="alerts icon"
+							class="bell"
+						/>
 						<p class="notification-badge">2</p>
 					</div>
 					<div class="notifications-wrapper">
-						<div class="notifications">
+						<div class="notifications" tabindex="0">
 							<!-- <div class="notification-item read">
 							<div class="notification-item-content">
 								<p>
@@ -55,12 +88,17 @@
 							</p>
 						</div> -->
 						</div>
-						<button class="show-all-button box-shadow">Show All</button>
+						<button class="show-all-button box-shadow">
+							Show All
+						</button>
 					</div>
 				</div>
-				<div class="notification-wrapper">
+				<div class="notification-wrapper" tabindex="0">
 					<div class="notification-icon">
-						<img src="assets/icons/announcements.svg" alt="" />
+						<img
+							src="assets/icons/announcements.svg"
+							alt="announcements icon"
+						/>
 						<p class="notification-badge">1</p>
 					</div>
 					<div class="notifications-wrapper">
@@ -118,11 +156,11 @@
 						</div>
 					</div>
 				</div>
-				<img src="assets/icons/account_circle.svg" alt="" />
+				<img src="assets/icons/account_circle.svg" alt="account icon" />
 				<div class="navbar-menu">
 					<img
 						src="assets/icons/hamburger-menu.svg"
-						alt=""
+						alt="hamburger menu"
 						class="navbar-menu-image"
 					/>
 
@@ -148,12 +186,20 @@
 		<div class="main-content">
 			<nav class="dashboard-navbar">
 				<div class="dashboard-navbar-link selected">
-					<img src="assets/icons/courses.svg" alt="" class="courses-icon" />
+					<img
+						src="assets/icons/courses.svg"
+						alt="courses icon"
+						class="courses-icon"
+					/>
 					<p class="dashboard-navbar-link-count">4</p>
 					<p class="dashboard-navbar-link-name">Courses</p>
 				</div>
 				<div class="dashboard-navbar-link">
-					<img src="assets/icons/classes.svg" alt="" class="courses-icon" />
+					<img
+						src="assets/icons/classes.svg"
+						alt="classes icon"
+						class="courses-icon"
+					/>
 					<p class="dashboard-navbar-link-count">4</p>
 					<p class="dashboard-navbar-link-name">Classes</p>
 				</div>
@@ -178,12 +224,14 @@
 									class="dropdown-arrow"
 								/>
 							</div>
-							<ul class="dropdown-menu">
-								<li>Course Name</li>
+							<ul class="dropdown-menu" role="menu">
+								<li tabindex="0" role="menuitem">
+									Course Name
+								</li>
 							</ul>
 						</div>
 
-						<img src="assets/icons/sort.svg" alt="" />
+						<img src="assets/icons/sort.svg" alt="sort by icon" />
 					</div>
 				</div>
 				<div class="course-cards"></div>
@@ -195,7 +243,10 @@
 			</div>
 		</div>
 		<footer class="footer">
-			<img src="assets/icons/logo used in footer.svg" alt="" />
+			<img
+				src="assets/icons/logo used in footer.svg"
+				alt="Quantum logo"
+			/>
 			<div class="footer-separator"></div>
 			<div class="footer-content">
 				<p class="footer-content-p1">Copyright © 2020-2021</p>

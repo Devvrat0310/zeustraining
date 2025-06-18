@@ -56,8 +56,8 @@ ${announcements
 		(item) =>
 			` 
             <div class="notification-item ${
-							item.status === "read" ? `read` : `unread`
-						}">
+				item.status === "read" ? `read` : `unread`
+			}" tabindex = "0">
                 <div class="notification-item-content">
                     <p class="show-courses">
                         PA:
@@ -65,11 +65,15 @@ ${announcements
                     </p>
                     <img
                         src=${
-													item.status === "unread"
-														? `assets/icons/stop.svg`
-														: `assets/icons/checkbox-circle.svg`
-												}
-                        alt=""
+							item.status === "unread"
+								? `assets/icons/stop.svg`
+								: `assets/icons/checkbox-circle.svg`
+						}
+                        alt=${
+							item.status === "unread"
+								? `message not read icon`
+								: `message read icon`
+						}
                         height="18px"
                     />
                 </div>
@@ -80,7 +84,7 @@ ${announcements
                     <div class="flex">
                         <img
                             src="assets/icons/attachment.svg"
-                            alt=""
+                            alt="file attachment icon"
                             height="15px"
                         />
                         <p class="show-courses">2 files are attached</p>

@@ -1,10 +1,10 @@
 import { navbarDropdownMenu } from "./components/hamburgerDropdownT.js";
 import { courseCardsTemp } from "./components/courseCardItemT.js";
-import { notificationWrapper } from "./components/notificationsT.js";
+import { notificationsWrapper } from "./components/notificationsT.js";
 import { announcementsWrapper } from "./components/announcementsT.js";
 
 const courseCardsTempRead: HTMLDivElement = courseCardsTemp;
-const notificationWrapperRead: HTMLDivElement = notificationWrapper;
+const notificationWrapperRead: HTMLDivElement = notificationsWrapper;
 const announcementsWrapperRead: HTMLDivElement = announcementsWrapper;
 
 const dropdownHeader: NodeListOf<HTMLDivElement> =
@@ -18,18 +18,21 @@ const arrow: NodeListOf<HTMLImageElement> =
 	document.querySelectorAll(".dropdown-arrow");
 
 let isRotated = false;
+let focusedIndex = 0;
 
-const openDropdownMenu = (
-	index: number,
-	currDropdownMenu: HTMLUListElement
-) => {
+const openDropdownMenu = (currDropdownMenu: HTMLUListElement) => {
 	currDropdownMenu.style.display =
 		currDropdownMenu.style.display === "block" ? "none" : "block";
 
-	isRotated = !isRotated;
-	arrow[index].style.transform = isRotated
-		? "rotate(180deg)"
-		: "rotate(0deg)";
+	const currArrow: HTMLImageElement = currDropdownMenu.parentElement
+		?.children[0].children[1] as HTMLImageElement;
+
+	if (currArrow.style.transform === "rotate(180deg)") {
+		currArrow.style.transform = "rotate(0deg)";
+	} else {
+		currArrow.style.transform = "rotate(180deg)";
+	}
+	// currArrow.style.transform = isRotated ? "rotate(180deg)" : "rotate(0deg)";
 };
 
 dropdownHeader.forEach((item, index) => {
@@ -40,26 +43,26 @@ dropdownHeader.forEach((item, index) => {
 
 	item.addEventListener("click", (e) => {
 		e.preventDefault();
-		openDropdownMenu(index, dropdownMenu);
+		openDropdownMenu(dropdownMenu);
 	});
 	item.addEventListener("keydown", (e: KeyboardEvent) => {
 		if (e.key === "Enter") {
 			// e.preventDefault(); // optional: prevent default form submission
-			openDropdownMenu(index, dropdownMenu);
+			openDropdownMenu(dropdownMenu);
 		}
 		if (e.key === "ArrowDown") {
-			openDropdownMenu(index, dropdownMenu);
+			openDropdownMenu(dropdownMenu);
 			const dropdownList: HTMLLIElement = item?.parentElement?.children[1]
 				.children[0] as HTMLLIElement;
 
-			// console.log("first eleemtn", dropdownList);
+			focusedIndex = 1;
+			console.log("dropdownList:", dropdownList);
 			dropdownList.focus();
 		}
 	});
 });
 
 document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
-	// console.log("index:", index);
 	const targetDiv: HTMLInputElement = item?.parentElement?.parentElement
 		?.children[0].children[0] as HTMLInputElement;
 
@@ -70,36 +73,46 @@ document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
 		const tempContent = targetDiv.value;
 		targetDiv.value = item.textContent ?? "";
 		item.textContent = tempContent;
-		parentDropdown.style.display = "none";
+		openDropdownMenu(parentDropdown);
 	});
 
-	let focusedIndex = 0;
+	const menuItems: HTMLUListElement = item?.parentElement as HTMLUListElement;
 
-	// const menuItems: HTMLLIElement[] = item?.parentElement
-	// 	?.children as HTMLLIElement[];
+	item.addEventListener("keydown", (e: Event) => {
+		console.log("event Listendd:", item);
+		e.preventDefault();
+		const keyboardEvent = e as KeyboardEvent;
+		keyboardEvent.preventDefault();
 
-	// item.addEventListener("keydown", (e: KeyboardEvent) => {
-	// 	if (e.key === "ArrowDown") {
-	// 		e.preventDefault();
-	// 		focusedIndex = (focusedIndex + 1) % menuItems.length;
-	// 		menuItems[focusedIndex].focus();
-	// 	} else if (e.key === "ArrowUp") {
-	// 		e.preventDefault();
-	// 		focusedIndex =
-	// 			(focusedIndex - 1 + menuItems.length) % menuItems.length;
-	// 		menuItems[focusedIndex].focus();
-	// 	} else if (e.key === "Escape") {
-	// 		e.preventDefault();
-	// 		openDropdownMenu();
-	// 	} else if (e.key === "Tab") {
-	// 		openDropdownMenu();
-	// 	} else if (e.key === "Enter") {
-	// 		e.preventDefault();
-	// 		alert(`You selected: ${menuItems[focusedIndex].textContent}`);
-	// 		closeMenu();
-	// 		break;
-	// 	}
-	// });
+		const menuItemsLen: number = menuItems.children.length;
+		focusedIndex = focusedIndex % menuItemsLen;
+
+		const currLiElement: HTMLLIElement = menuItems.children[
+			focusedIndex
+		] as HTMLLIElement;
+
+		if (keyboardEvent.key === "ArrowDown") {
+			focusedIndex = (focusedIndex + 1) % menuItemsLen;
+			currLiElement.focus();
+			console.log(currLiElement, "currLiElement");
+		} else if (keyboardEvent.key === "ArrowUp") {
+			// keyboardEvent.preventDefault();
+			focusedIndex = (focusedIndex - 1 + menuItemsLen) % menuItemsLen;
+			currLiElement.focus();
+		} else if (keyboardEvent.key === "Escape") {
+			// keyboardEvent.preventDefault();
+			openDropdownMenu(parentDropdown);
+		} else if (keyboardEvent.key === "Tab") {
+			openDropdownMenu(parentDropdown);
+		} else if (keyboardEvent.key === "Enter") {
+			const tempContent = targetDiv.value;
+			targetDiv.value = item.textContent ?? "";
+			item.textContent = tempContent;
+			// e.preventDefault();
+			// alert(`You selected: ${currLiElement.textContent}`);
+			openDropdownMenu(parentDropdown);
+		}
+	});
 });
 
 document.addEventListener("click", (event: Event) => {

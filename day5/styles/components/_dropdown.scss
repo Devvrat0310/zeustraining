@@ -50,6 +50,11 @@
 	background-color: #f0f0f0;
 }
 
+.dropdown-menu li:focus-within {
+	outline: none;
+	background-color: #f0f0f0;
+}
+
 .sort-by-dropdown {
 	position: relative;
 	margin-right: 24px;

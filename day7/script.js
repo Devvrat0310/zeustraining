@@ -187,6 +187,9 @@ const parent2 = new BackgroundBox().element;
 const draggableDiv2 = new ChildBox(parent2);
 draggableDiv2.enableDrag;
 
-// const parent3 = new BackgroundBox().element;
-// const draggableDiv3 = new ChildBox(parent3);
-// draggableDiv3.enableDrag;
+const parent3 = new BackgroundBox().element;
+const draggableDiv4 = new ChildBox(parent3);
+draggableDiv4.enableDrag;
+const parent4 = new BackgroundBox().element;
+const draggableDiv5 = new ChildBox(parent4);
+draggableDiv5.enableDrag;

@@ -13,8 +13,8 @@ const markup = `
             <div class="course-card-title-wrapper">
               <p class="course-card-title">${data.title}</p>
               <img src="assets/icons/favourite.svg" alt="" class = ${
-								data.favourite ? `` : `disabled-star`
-							} />
+					data.favourite ? `` : `disabled-star`
+				} />
             </div>
             <div class="course-card-subject-standard">
               <p>${data.subject}</p>
@@ -58,14 +58,14 @@ const markup = `
             </div>
             <div class="class-metadata">
               <p>${
-								data.classMeta.students > 0
-									? `${data.classMeta.students} Students`
-									: ``
-							}</p>
+					data.classMeta.students > 0
+						? `${data.classMeta.students} Students`
+						: ``
+				}</p>
 							
               <div class=${
-								data.classMeta.fromDate != "" ? `"link-separator"` : ``
-							}></div>
+					data.classMeta.fromDate != "" ? `"link-separator"` : ``
+				}></div>
               <div class="course-dates">
                 <p>${data.classMeta.fromDate}</p>
                 <p>${data.classMeta.fromDate != "" ? `-` : ``} </p>
@@ -78,17 +78,17 @@ const markup = `
       <div class="course-card-hr"></div>
       <div class="course-card-options">
         <img src="assets/icons/preview.svg" alt="" class = ${
-					data.options.preview ? `` : `disabled-option`
-				} />
+			data.options.preview ? `` : `disabled-option`
+		} />
         <img src="assets/icons/manage course.svg" alt="" class = ${
-					data.options.manageCourse ? `` : `disabled-option`
-				} />
+			data.options.manageCourse ? `` : `disabled-option`
+		} />
         <img src="assets/icons/grade submissions.svg" alt="" class = ${
-					data.options.gradeSubmission ? `` : `disabled-option`
-				} />
+			data.options.gradeSubmission ? `` : `disabled-option`
+		} />
         <img src="assets/icons/reports.svg" alt="" class = ${
-					data.options.reports ? `` : `disabled-option`
-				} />
+			data.options.reports ? `` : `disabled-option`
+		} />
       </div>
     </div>`
 		)

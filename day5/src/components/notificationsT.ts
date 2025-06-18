@@ -94,33 +94,35 @@ ${notifications
 		(item) =>
 			` 
         <div class="notification-item ${
-					item.status === "read" ? `read` : `unread`
-				}">
+			item.status === "read" ? `read` : `unread`
+		}" tabindex="0">
                <div class="notification-item-content">
-
-                
                     <p> 
                         ${item.message}
                     </p>
                     <img
                         src=${
-													item.status === "unread"
-														? `assets/icons/stop.svg`
-														: `assets/icons/checkbox-circle.svg`
-												}
-                        alt=""
+							item.status === "unread"
+								? `assets/icons/stop.svg`
+								: `assets/icons/checkbox-circle.svg`
+						}
+                        alt=${
+							item.status === "unread"
+								? `message not read icon`
+								: `message read icon`
+						}
                         height="20px"
                     />
             </div>
             ${
-							item.description.key.length > 0
-								? `<p class="show-courses"> ${item.description.key}:
+				item.description.key.length > 0
+					? `<p class="show-courses"> ${item.description.key}:
                     <span style="color: black">
                         ${item.description.value}
                     </span>
                 </p>`
-								: ``
-						}
+					: ``
+			}
             <p class="notification-item-datetime show-courses">
                 ${item.timestamp}
             </p>
@@ -130,9 +132,65 @@ ${notifications
 	.join("")}
 `;
 
-const notificationWrapperList: NodeListOf<HTMLDivElement> =
+const notificationsWrapperList: NodeListOf<HTMLDivElement> =
 	document.querySelectorAll(".notifications");
 
-export const notificationWrapper: HTMLDivElement = notificationWrapperList[0];
+export const notificationsWrapper: HTMLDivElement = notificationsWrapperList[0];
 
-notificationWrapper.innerHTML = markup;
+notificationsWrapper.innerHTML = markup;
+
+// const notificationsDiv: NodeListOf<HTMLDivElement> =
+// 	document.querySelectorAll(".notifications");
+
+// let focusedIndex = 0;
+
+// notificationsDiv.forEach((item: HTMLDivElement, index) => {
+// 	item.addEventListener("keydown", (e: KeyboardEvent) => {
+// 		e.preventDefault();
+
+// 		const firstElement: HTMLDivElement = item.children[0] as HTMLDivElement;
+// 		focusedIndex = 1;
+// 		console.log("focus before: ", firstElement);
+// 		if (e.key === "ArrowDown") {
+// 			firstElement.focus();
+// 			console.log("focus on first element");
+// 		}
+// 	});
+// });
+
+// const notificationItem: NodeListOf<HTMLLIElement> =
+// 	document.querySelectorAll(".notification-item");
+
+// notificationItem.forEach((item, index) => {
+// 	const menuItems: HTMLDivElement = item?.parentElement as HTMLDivElement;
+
+// 	console.log("menuItems", menuItems, focusedIndex);
+// 	item.addEventListener("keydown", (e: KeyboardEvent) => {
+// 		const menuItemsLen: number = menuItems.children.length;
+// 		const currNotification: HTMLLIElement = menuItems.children[
+// 			focusedIndex
+// 		] as HTMLLIElement;
+// 		console.log("currNotification: ", currNotification);
+// 		if (e.key === "ArrowDown") {
+// 			focusedIndex = (focusedIndex + 1) % menuItemsLen;
+// 			currNotification.focus();
+// 			console.log(currNotification, "currNotification[focusedIndex]");
+// 		} else if (e.key === "ArrowUp") {
+// 			focusedIndex = (focusedIndex - 1 + menuItemsLen) % menuItemsLen;
+// 			currNotification.focus();
+// 		}
+// 		// else if (e.key === "Escape") {
+// 		// 	// e.preventDefault();
+// 		// 	openDropdownMenu(parentDropdown);
+// 		// } else if (e.key === "Tab") {
+// 		// 	openDropdownMenu(parentDropdown);
+// 		// } else if (e.key === "Enter") {
+// 		// 	const tempContent = targetDiv.value;
+// 		// 	targetDiv.value = item.textContent ?? "";
+// 		// 	item.textContent = tempContent;
+// 		// 	// e.preventDefault();
+// 		// 	// alert(`You selected: ${currNotification.textContent}`);
+// 		// 	openDropdownMenu(parentDropdown);
+// 		// }
+// 	});
+// });

@@ -65,6 +65,11 @@
   background-color: #f0f0f0;
 }
 
+.dropdown-menu li:focus-within {
+  outline: none;
+  background-color: #f0f0f0;
+}
+
 .sort-by-dropdown {
   position: relative;
   margin-right: 24px;
@@ -122,6 +127,7 @@
 }
 
 .navbar-collapsible {
+  color: #3fd28b;
   cursor: pointer;
   padding: 19px 0;
 }
@@ -244,17 +250,23 @@
   background-color: #ffffee;
 }
 
-.notification-wrapper:hover .notifications-wrapper {
+.notification-wrapper:hover .notifications-wrapper,
+.notification-wrapper:focus-within .notifications-wrapper,
+.notifications-wrapper:focus-within .notifications-wrapper {
   visibility: visible;
   opacity: 1;
   max-height: -moz-fit-content;
   max-height: fit-content;
   transform: translateY(0px);
 }
-.notification-wrapper:hover .notification-badge {
+.notification-wrapper:hover .notification-badge,
+.notification-wrapper:focus-within .notification-badge,
+.notifications-wrapper:focus-within .notification-badge {
   visibility: hidden;
 }
-.notification-wrapper:hover .notification-icon {
+.notification-wrapper:hover .notification-icon,
+.notification-wrapper:focus-within .notification-icon,
+.notifications-wrapper:focus-within .notification-icon {
   filter: grayscale(100%) brightness(1000%);
 }
 

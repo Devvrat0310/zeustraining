@@ -41,6 +41,7 @@
 }
 
 .navbar-collapsible {
+	color: #3fd28b;
 	cursor: pointer;
 	padding: 19px 0;
 }
@@ -160,7 +161,9 @@
 	background-color: #ffffee;
 }
 
-.notification-wrapper:hover {
+.notification-wrapper:hover,
+.notification-wrapper:focus-within,
+.notifications-wrapper:focus-within {
 	.notifications-wrapper {
 		@include visible();
 	}

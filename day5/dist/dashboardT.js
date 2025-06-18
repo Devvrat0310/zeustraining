@@ -1,22 +1,28 @@
 import { navbarDropdownMenu } from "./components/hamburgerDropdownT.js";
 import { courseCardsTemp } from "./components/courseCardItemT.js";
-import { notificationWrapper } from "./components/notificationsT.js";
+import { notificationsWrapper } from "./components/notificationsT.js";
 import { announcementsWrapper } from "./components/announcementsT.js";
 const courseCardsTempRead = courseCardsTemp;
-const notificationWrapperRead = notificationWrapper;
+const notificationWrapperRead = notificationsWrapper;
 const announcementsWrapperRead = announcementsWrapper;
 const dropdownHeader = document.querySelectorAll(".dropdown-header");
 const dropdownMenu = document.querySelectorAll(".dropdown-menu");
 const inputField = document.querySelectorAll(".dropdown-header input");
 const arrow = document.querySelectorAll(".dropdown-arrow");
 let isRotated = false;
-const openDropdownMenu = (index, currDropdownMenu) => {
+let focusedIndex = 0;
+const openDropdownMenu = (currDropdownMenu) => {
+    var _a;
     currDropdownMenu.style.display =
         currDropdownMenu.style.display === "block" ? "none" : "block";
-    isRotated = !isRotated;
-    arrow[index].style.transform = isRotated
-        ? "rotate(180deg)"
-        : "rotate(0deg)";
+    const currArrow = (_a = currDropdownMenu.parentElement) === null || _a === void 0 ? void 0 : _a.children[0].children[1];
+    if (currArrow.style.transform === "rotate(180deg)") {
+        currArrow.style.transform = "rotate(0deg)";
+    }
+    else {
+        currArrow.style.transform = "rotate(180deg)";
+    }
+    // currArrow.style.transform = isRotated ? "rotate(180deg)" : "rotate(0deg)";
 };
 dropdownHeader.forEach((item, index) => {
     var _a;
@@ -25,25 +31,25 @@ dropdownHeader.forEach((item, index) => {
     const dropdownMenu = (_a = item.parentElement) === null || _a === void 0 ? void 0 : _a.children[1];
     item.addEventListener("click", (e) => {
         e.preventDefault();
-        openDropdownMenu(index, dropdownMenu);
+        openDropdownMenu(dropdownMenu);
     });
     item.addEventListener("keydown", (e) => {
         var _a;
         if (e.key === "Enter") {
             // e.preventDefault(); // optional: prevent default form submission
-            openDropdownMenu(index, dropdownMenu);
+            openDropdownMenu(dropdownMenu);
         }
         if (e.key === "ArrowDown") {
-            openDropdownMenu(index, dropdownMenu);
+            openDropdownMenu(dropdownMenu);
             const dropdownList = (_a = item === null || item === void 0 ? void 0 : item.parentElement) === null || _a === void 0 ? void 0 : _a.children[1].children[0];
-            // console.log("first eleemtn", dropdownList);
+            focusedIndex = 1;
+            console.log("dropdownList:", dropdownList);
             dropdownList.focus();
         }
     });
 });
 document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
     var _a, _b;
-    // console.log("index:", index);
     const targetDiv = (_b = (_a = item === null || item === void 0 ? void 0 : item.parentElement) === null || _a === void 0 ? void 0 : _a.parentElement) === null || _b === void 0 ? void 0 : _b.children[0].children[0];
     const parentDropdown = item.parentElement;
     console.log("targetDiv", targetDiv);
@@ -52,33 +58,44 @@ document.querySelectorAll(".dropdown-menu li").forEach((item, index) => {
         const tempContent = targetDiv.value;
         targetDiv.value = (_a = item.textContent) !== null && _a !== void 0 ? _a : "";
         item.textContent = tempContent;
-        parentDropdown.style.display = "none";
+        openDropdownMenu(parentDropdown);
     });
-    let focusedIndex = 0;
-    // const menuItems: HTMLLIElement[] = item?.parentElement
-    // 	?.children as HTMLLIElement[];
-    // item.addEventListener("keydown", (e: KeyboardEvent) => {
-    // 	if (e.key === "ArrowDown") {
-    // 		e.preventDefault();
-    // 		focusedIndex = (focusedIndex + 1) % menuItems.length;
-    // 		menuItems[focusedIndex].focus();
-    // 	} else if (e.key === "ArrowUp") {
-    // 		e.preventDefault();
-    // 		focusedIndex =
-    // 			(focusedIndex - 1 + menuItems.length) % menuItems.length;
-    // 		menuItems[focusedIndex].focus();
-    // 	} else if (e.key === "Escape") {
-    // 		e.preventDefault();
-    // 		openDropdownMenu();
-    // 	} else if (e.key === "Tab") {
-    // 		openDropdownMenu();
-    // 	} else if (e.key === "Enter") {
-    // 		e.preventDefault();
-    // 		alert(`You selected: ${menuItems[focusedIndex].textContent}`);
-    // 		closeMenu();
-    // 		break;
-    // 	}
-    // });
+    const menuItems = item === null || item === void 0 ? void 0 : item.parentElement;
+    item.addEventListener("keydown", (e) => {
+        var _a;
+        console.log("event Listendd:", item);
+        e.preventDefault();
+        const keyboardEvent = e;
+        keyboardEvent.preventDefault();
+        const menuItemsLen = menuItems.children.length;
+        focusedIndex = focusedIndex % menuItemsLen;
+        const currLiElement = menuItems.children[focusedIndex];
+        if (keyboardEvent.key === "ArrowDown") {
+            focusedIndex = (focusedIndex + 1) % menuItemsLen;
+            currLiElement.focus();
+            console.log(currLiElement, "currLiElement");
+        }
+        else if (keyboardEvent.key === "ArrowUp") {
+            // keyboardEvent.preventDefault();
+            focusedIndex = (focusedIndex - 1 + menuItemsLen) % menuItemsLen;
+            currLiElement.focus();
+        }
+        else if (keyboardEvent.key === "Escape") {
+            // keyboardEvent.preventDefault();
+            openDropdownMenu(parentDropdown);
+        }
+        else if (keyboardEvent.key === "Tab") {
+            openDropdownMenu(parentDropdown);
+        }
+        else if (keyboardEvent.key === "Enter") {
+            const tempContent = targetDiv.value;
+            targetDiv.value = (_a = item.textContent) !== null && _a !== void 0 ? _a : "";
+            item.textContent = tempContent;
+            // e.preventDefault();
+            // alert(`You selected: ${currLiElement.textContent}`);
+            openDropdownMenu(parentDropdown);
+        }
+    });
 });
 document.addEventListener("click", (event) => {
     event.preventDefault();
