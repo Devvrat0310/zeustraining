@@ -138,7 +138,10 @@ class ChildBox {
 
 			divLeft = Math.max(
 				0,
-				Math.min(divLeft, boundRight - draggableDivCurr.clientWidth)
+				Math.min(
+					divLeft,
+					boundRight - draggableDivCurr.clientWidth - 0.1
+				)
 			);
 
 			// console.log(divTop, divLeft, "top, left before");

@@ -2,138 +2,22 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<title>ARIA Dropdown Menu Example</title>
-		<style>
-			.menu {
-				display: none;
-				border: 1px solid #ccc;
-				background: white;
-				padding: 0;
-				margin: 0;
-				list-style: none;
-				width: 200px;
-				position: absolute;
-			}
-			.menu[aria-hidden="false"] {
-				display: block;
-			}
-			.menuitem {
-				padding: 8px 12px;
-				cursor: pointer;
-			}
-			.menuitem:focus {
-				background-color: #ddd;
-				outline: none;
-			}
-		</style>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 	</head>
-	<body>
+	<body class="flex justify-center items-center h-screen">
 		<div
-			id="menuButton"
-			role="button"
-			tabindex="0"
-			aria-haspopup="true"
-			aria-expanded="false"
-			aria-controls="dropdownMenu"
+			class="w-24 h-12 border border-black p-2 rounded-full flex items-center"
 		>
-			Options ▼
+			<div
+				class="rounded-full bg-yellow-500 h-8 w-8 slider translate-x-12"
+			></div>
 		</div>
-
-		<ul
-			id="dropdownMenu"
-			class="menu"
-			role="menu"
-			aria-hidden="true"
-			tabindex="-1"
-		>
-			<li role="menuitem" tabindex="-1" class="menuitem">Profile</li>
-			<li role="menuitem" tabindex="-1" class="menuitem">Settings</li>
-			<li role="menuitem" tabindex="-1" class="menuitem">Logout</li>
-		</ul>
-
 		<script>
-			const button = document.getElementById("menuButton");
-			const menu = document.getElementById("dropdownMenu");
-			const menuItems = menu.querySelectorAll('[role="menuitem"]');
-			let menuOpen = false;
-			let focusedIndex = -1;
-
-			function openMenu() {
-				menuOpen = true;
-				menu.setAttribute("aria-hidden", "false");
-				button.setAttribute("aria-expanded", "true");
-				menu.focus();
-				focusedIndex = 0;
-				menuItems[focusedIndex].focus();
-			}
-
-			function closeMenu() {
-				menuOpen = false;
-				menu.setAttribute("aria-hidden", "true");
-				button.setAttribute("aria-expanded", "false");
-				button.focus();
-				focusedIndex = -1;
-			}
-
-			button.addEventListener("click", () => {
-				if (menuOpen) {
-					closeMenu();
-				} else {
-					openMenu();
-				}
-			});
-
-			button.addEventListener("keydown", (e) => {
-				if (
-					e.key === "ArrowDown" ||
-					e.key === "Enter" ||
-					e.key === " "
-				) {
-					e.preventDefault();
-					openMenu();
-				}
-			});
-
-			menu.addEventListener("keydown", (e) => {
-				switch (e.key) {
-					case "ArrowDown":
-						e.preventDefault();
-						focusedIndex = (focusedIndex + 1) % menuItems.length;
-						menuItems[focusedIndex].focus();
-						break;
-					case "ArrowUp":
-						e.preventDefault();
-						focusedIndex =
-							(focusedIndex - 1 + menuItems.length) %
-							menuItems.length;
-						menuItems[focusedIndex].focus();
-						break;
-					case "Escape":
-						e.preventDefault();
-						closeMenu();
-						break;
-					case "Tab":
-						closeMenu();
-						break;
-					case "Enter":
-					case " ":
-						e.preventDefault();
-						alert(
-							`You selected: ${menuItems[focusedIndex].textContent}`
-						);
-						closeMenu();
-						break;
-				}
-			});
-
-			// Close menu if click happens outside
-			document.addEventListener("click", (e) => {
-				if (!menu.contains(e.target) && e.target !== button) {
-					if (menuOpen) {
-						closeMenu();
-					}
-				}
+			const slider = document.getElementsByClassName("slider")[0];
+			slider.addEventListener("click", (e) => {
+				slider.style.translateX = "10px";
 			});
 		</script>
 	</body>
