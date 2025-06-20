@@ -1,3 +1,16 @@
-.test-canvas {
+body,
+html {
+  margin: 0;
+}
+
+.bottom {
+  height: 1000px;
+  width: 100%;
+  background-color: black;
+}
+
+.canvas {
   border: 1px solid black;
+  top: 0;
+  left: 0;
 }/*# sourceMappingURL=style.css.map */
