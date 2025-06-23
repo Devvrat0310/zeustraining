@@ -1,6 +1,8 @@
 body,
 html {
   margin: 0;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 .bottom {
@@ -9,8 +11,19 @@ html {
   background-color: black;
 }
 
-.canvas {
-  border: 1px solid black;
-  top: 0;
-  left: 0;
+.columns {
+  display: flex;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.rows {
+  width: -moz-fit-content;
+  width: fit-content;
+  display: flex;
+  flex-direction: column;
+}
+
+.rows--canvas {
+  display: flex;
 }/*# sourceMappingURL=style.css.map */

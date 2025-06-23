@@ -1,6 +1,7 @@
 body,
 html {
 	margin: 0;
+	width: fit-content;
 }
 
 .bottom {
@@ -10,9 +11,26 @@ html {
 }
 
 .canvas {
-	border: 1px solid black;
+	// border: 1px solid black;
 	// position: absolute;
-	top: 0;
-	left: 0;
+	// top: 0;
+	// left: 0;
+	// cursor: col-resize;
 	// transform: scale(0.5);
+}
+
+.columns {
+	display: flex;
+	width: fit-content;
+	// flex-direction: column;
+}
+
+.rows {
+	width: fit-content;
+	display: flex;
+	flex-direction: column;
+}
+
+.rows--canvas {
+	display: flex;
 }
