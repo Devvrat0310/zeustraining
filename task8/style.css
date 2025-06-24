@@ -26,4 +26,10 @@ html {
 
 .rows--canvas {
   display: flex;
+}
+
+.main-canvas {
+  display: flex;
+  width: -moz-fit-content;
+  width: fit-content;
 }/*# sourceMappingURL=style.css.map */
