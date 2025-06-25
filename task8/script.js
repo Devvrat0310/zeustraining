@@ -1,258 +1,202 @@
-import { columnsCanvas, allColumns } from "./components/columnHeader.js";
-
+import { ColumnsCanvas, allColumns } from "./components/columnHeader.js";
 import { createLine, handleDynamicDPI } from "./components/canvasComponents.js";
-import { allRows, rowsCanvas } from "./components/rowSidebar.js";
-import { createExcelGrid, allCanvases } from "./components/excelGrid.js";
+import { allRows, RowsCanvas } from "./components/RowSidebar.js";
+import { ExcelGrid, allCanvases } from "./components/ExcelGrid.js";
 
-let zoom = 1;
-let totalCanvas = 0;
+class ZoomManager {
+    constructor () {
+        this.zoom = 1;
+        this.loadZoom();
+    }
 
-let startColumnInView = 0;
+    loadZoom() {
+        const temp = window.localStorage.getItem("zoom");
+        this.zoom = temp ? parseFloat(temp) : 1;
+        window.localStorage.setItem("zoom", this.zoom);
+    }
 
-/**
- * Checks if a zoom value is stored in localstorage and zooms in the page.
- */
-function getZoom() {
-	let temp = window.localStorage.getItem("zoom");
-
-	console.log("temp zoom : ", temp);
-	if (!temp) {
-		zoom = 1;
-		window.localStorage.setItem("zoom", 1);
-	} else {
-		zoom = parseFloat(temp);
-	}
-
-	console.log("updated zoom", zoom);
+    setZoom(delta) {
+        this.zoom = Math.min(3, Math.max(0.6, this.zoom + delta));
+        this.zoom = parseFloat(this.zoom.toFixed(1));
+        window.localStorage.setItem("zoom", this.zoom);
+        this.loadZoom();
+    }
 }
 
-getZoom();
+class CanvasManager {
+    constructor (mainCanvas, zoomManager) {
+        this.mainCanvas = mainCanvas;
+        this.zoomManager = zoomManager;
+        this.totalCanvas = 0;
+        this.canvases = [];
+    }
 
-const mainCanvas = document.querySelector(".main-canvas");
+    createCanvas() {
+        const canvas = new ExcelGrid(this.mainCanvas, this.totalCanvas, this.zoomManager.zoom);
+        this.canvases.push(canvas);
+        allCanvases.push(canvas);
+        this.totalCanvas++;
+    }
 
-/**
- * Creates a new canvas and updates the calue of total number of canvases
- */
-function createNewCanvas() {
-	allCanvases.push(new createExcelGrid(mainCanvas, totalCanvas, zoom));
-	totalCanvas++;
+    zoomAll() {
+        this.canvases.forEach(canvas => canvas.setZoom(this.zoomManager.zoom));
+    }
 }
 
-for (let i = 0; i < 5; i++) {
-	createNewCanvas();
+class ColumnManager {
+    constructor (columnsDiv, pushedOverlayColumns, zoomManager) {
+        this.columnsDiv = columnsDiv;
+        this.pushedOverlayColumns = pushedOverlayColumns;
+        this.zoomManager = zoomManager;
+        this.totalColumnSheet = 0;
+        this.lastColumnEnd = 0;
+        this.columns = [];
+        this.startColumnInView = 0;
+    }
+
+    createColumn() {
+        const column = new ColumnsCanvas(
+            this.columnsDiv,
+            this.totalColumnSheet,
+            20,
+            1000,
+            this.zoomManager.zoom
+        );
+        this.totalColumnSheet++;
+        console.log("Creating column:", column);
+        this.columns.push(column);
+        allColumns.push(column);
+    }
+
+    removeLastColumn() {
+        if (this.columnsDiv.children.length > 2) {
+            const childElement = this.columnsDiv.removeChild(this.columnsDiv.lastElementChild);
+            this.columns.pop();
+            allColumns.pop();
+            this.totalColumnSheet--;
+            this.lastColumnEnd -= childElement.width / (this.columns[ this.columns.length - 1 ]?.colWidth || 1);
+        }
+    }
+
+    zoomAll() {
+        console.log("This.columns:", this.columns);
+        this.columns.forEach(col => {
+            console.log("Zooming column:", col);
+            col.setZoom(this.zoomManager.zoom);
+        });
+    }
 }
 
-let totalColumnSheet = 0;
+class RowManager {
+    constructor (rowsDiv, zoomManager) {
+        this.rowsDiv = rowsDiv;
+        this.zoomManager = zoomManager;
+        this.totalRowSheet = 0;
+        this.lastRowEnd = 0;
+        this.rows = [];
+    }
 
-let lastColumnEnd = 0;
+    createRow() {
+        const row = new RowsCanvas(this.rowsDiv, this.totalRowSheet, 1000, 50, this.zoomManager.zoom);
+        this.totalRowSheet++;
+        this.lastRowEnd = row.lastRowEnd;
+        this.rows.push(row);
+        allRows.push(row);
+    }
 
-const columnsDiv = document.getElementsByClassName("columns")[0];
+    removeLastRow() {
+        if (this.rowsDiv.children.length > 2) {
+            this.rowsDiv.removeChild(this.rowsDiv.lastElementChild);
+            this.rows.pop();
+            allRows.pop();
+            this.totalRowSheet--;
+        }
+    }
 
-const pushedOverlayColumns = document.querySelector(".pushed-overlay");
-
-/**
- * Create a new column header canvas, updates lastColumnEnd value
- */
-function createNewColumn() {
-	let columnInstant = new columnsCanvas(
-		columnsDiv,
-		totalColumnSheet,
-		lastColumnEnd,
-		zoom
-	);
-	totalColumnSheet++;
-	lastColumnEnd = columnInstant.lastColumnEnd;
-	allColumns.push(columnInstant.this);
+    zoomAll() {
+        this.rows.forEach(row => {
+            row.setZoom(this.zoomManager.zoom);
+        });
+    }
 }
 
-/**
- * Handles virtual scrolling effect for column header, scrolling towards right.
- */
-function virtualScrollingColumnUp() {
-	let width = 0;
+class Spreadsheet {
+    constructor () {
+        this.zoomManager = new ZoomManager();
+        this.mainCanvas = document.querySelector(".main-canvas");
+        this.columnsDiv = document.getElementsByClassName("columns")[ 0 ];
+        this.pushedOverlayColumns = document.querySelector(".pushed-overlay");
+        this.rowsDiv = document.querySelector(".rows");
 
-	if (allColumns.length > 3) {
-		allColumns.shift();
-		const currentColumn = columnsDiv.removeChild(
-			columnsDiv.firstElementChild
-		);
+        this.canvasManager = new CanvasManager(this.mainCanvas, this.zoomManager);
+        this.columnManager = new ColumnManager(this.columnsDiv, this.pushedOverlayColumns, this.zoomManager);
+        this.rowManager = new RowManager(this.rowsDiv, this.zoomManager);
 
-		// console.log("currentColumn", currentColumn);
-		// console.log("currentColumn.width", currentColumn.width);
+        this.totalDeltaHorizontal = 0;
+        this.totalDeltaVertical = 0;
 
-		width += currentColumn.width;
-		startColumnInView++;
-	}
+        this.init();
+        this.addEventListeners();
+    }
 
-	if (pushedOverlayColumns.style.width) {
-		let tempWidth = pushedOverlayColumns.style.width;
+    init() {
+        for (let i = 0; i < 5; i++) this.canvasManager.createCanvas();
+        for (let i = 0; i < 3; i++) this.columnManager.createColumn();
+        for (let i = 0; i < 2; i++) this.rowManager.createRow();
+    }
 
-		let resWidth = tempWidth.slice(0, tempWidth.length - 2);
+    handleScroll(deltaY, isHorizontal) {
+        if (isHorizontal) {
+            this.totalDeltaHorizontal += deltaY;
+            if (this.totalDeltaHorizontal >= 900) {
+                this.columnManager.createColumn();
+                this.canvasManager.createCanvas();
+                this.totalDeltaHorizontal = 0;
+            } else if (this.totalDeltaHorizontal <= -900) {
+                this.columnManager.removeLastColumn();
+                this.totalDeltaHorizontal = 0;
+            }
+        } else {
+            this.totalDeltaVertical += deltaY;
+            if (this.totalDeltaVertical >= 900) {
+                this.rowManager.createRow();
+                this.canvasManager.createCanvas();
+                this.canvasManager.createCanvas();
+                this.totalDeltaVertical = 0;
+            } else if (this.totalDeltaVertical <= -900) {
+                this.rowManager.removeLastRow();
+                this.totalDeltaVertical = 0;
+            }
+        }
+    }
 
-		width += parseInt(resWidth);
-	}
+    zoomEachCanvas(currZoom) {
+        this.zoomManager.setZoom(currZoom);
+        this.canvasManager.zoomAll();
+        this.columnManager.zoomAll();
+        this.rowManager.zoomAll();
+    }
 
-	pushedOverlayColumns.style.width = `${width}px`;
+    handleZoom(e) {
+        e.preventDefault();
+        this.zoomEachCanvas(e.deltaY < 0 ? 0.2 : -0.2);
+    }
+
+    addEventListeners() {
+        document.addEventListener(
+            "wheel",
+            (e) => {
+                if (e.shiftKey) {
+                    this.handleScroll(e.deltaY, true);
+                } else if (e.ctrlKey) {
+                    this.handleZoom(e);
+                } else {
+                    this.handleScroll(e.deltaY, false);
+                }
+            },
+            { passive: false }
+        );
+    }
 }
 
-/**
- * Handles virtual scrolling effect for header column, scrolling towards left
- *
- * @param {number} canvasWidth - Width of a canvas
- * @param {number} colWidth - Width of a column in a canvas
- * @param {number} totalColumnSheet - Total number of columns
- */
-function virtualScrollingColumnDown(canvasWidth, colWidth, totalColumnSheet) {
-	console.log(
-		"canvasWidth, colWidth, totalColumnSheet",
-		canvasWidth,
-		colWidth,
-		totalColumnSheet
-	);
-
-	let width = 0;
-
-	if (allColumns.length > 3) {
-		allColumns.pop();
-	}
-}
-
-for (let i = 0; i < 3; i++) {
-	createNewColumn();
-}
-
-let lastRowEnd = 0;
-let totalRowSheet = 0;
-const rowsDiv = document.querySelector(".rows");
-
-function createNewRow() {
-	let rowInstant = new rowsCanvas(rowsDiv, totalRowSheet, lastRowEnd, zoom);
-
-	totalRowSheet++;
-	lastRowEnd = rowInstant.lastRowEnd;
-	allRows.push(rowInstant.this);
-}
-
-for (let i = 0; i < 2; i++) {
-	createNewRow();
-}
-
-let totalDeltaHorizontal = 0;
-let totalDeltaVertical = 0;
-
-/**
- * Adds and removes canvas in view as per scrolling.
- *
- * @param {number} deltaY - delta scroll in either direction vertically or horizontally.
- * @param {boolean} isHorizontalScrolling - True if shift is pressed, false if not.
- */
-function handleScroll(deltaY, isHorizontalScrolling) {
-	console.log("deltaY", deltaY);
-	if (isHorizontalScrolling) {
-		totalDeltaHorizontal += deltaY;
-		if (totalDeltaHorizontal >= 900) {
-			// virtualScrollingColumnUp();
-			createNewColumn();
-			createNewCanvas();
-			totalDeltaHorizontal = 0;
-			console.log("totalColumnSheet", totalColumnSheet);
-		} else if (totalDeltaHorizontal <= -900) {
-			let len = columnsDiv.children.length;
-
-			if (len > 2) {
-				const childElement = columnsDiv.removeChild(
-					columnsDiv.children[len - 1]
-				);
-
-				const columnClass = allColumns.pop();
-
-				let canvasWidth = childElement.width;
-				let colWidth = columnClass.colWidth;
-
-				totalColumnSheet--;
-				lastColumnEnd -= canvasWidth / colWidth;
-			}
-			totalDeltaHorizontal = 0;
-			console.log("totalColumnSheet", totalColumnSheet);
-		}
-	} else {
-		totalDeltaVertical += deltaY;
-		if (totalDeltaVertical >= 900) {
-			totalDeltaVertical = 0;
-			createNewRow();
-			createNewCanvas();
-			createNewCanvas();
-			totalDeltaVertical = 0;
-		} else if (totalDeltaVertical <= -900) {
-			let len = rowsDiv.children.length;
-			if (len > 2) {
-				rowsDiv.removeChild(rowsDiv.children[len - 1]);
-			}
-			lastRowEnd--;
-			totalRowSheet--;
-			totalDeltaVertical = 0;
-		}
-	}
-}
-
-/**
- *
- * @param {number} currZoom - Amount of zoom
- */
-function zoomEachCanvas(currZoom) {
-	zoom += currZoom;
-	zoom = Math.min(3, Math.max(0.6, zoom));
-	zoom = parseFloat(zoom.toFixed(1));
-
-	window.localStorage.setItem("zoom", zoom);
-
-	getZoom();
-
-	lastColumnEnd = 0;
-	lastRowEnd = 0;
-
-	allCanvases.forEach((element) => {
-		element.setZoom(zoom);
-	});
-
-	allColumns.forEach((element) => {
-		lastColumnEnd = element.setZoom(zoom, lastColumnEnd);
-	});
-
-	allRows.forEach((element) => {
-		lastRowEnd = element.setZoom(zoom, lastRowEnd);
-	});
-}
-
-/**
- *
- * @param {Event} e - event listener for wheel event
- */
-function handleZoom(e) {
-	e.preventDefault();
-
-	// Zoom in
-	if (e.deltaY < 0) {
-		zoomEachCanvas(0.2);
-	}
-
-	// Zoom Out
-	else {
-		zoomEachCanvas(-0.2);
-	}
-}
-
-document.addEventListener(
-	"wheel",
-	(e) => {
-		if (e.shiftKey) {
-			handleScroll(e.deltaY, true);
-		} else if (e.ctrlKey) {
-			handleZoom(e);
-		} else {
-			console.log("unshifted");
-			handleScroll(e.deltaY, false);
-		}
-	},
-	{ passive: false }
-);
+new Spreadsheet();

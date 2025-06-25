@@ -1,253 +1,143 @@
 import { createLine, handleDynamicDPI } from "./canvasComponents.js";
+import { Grid } from "./CreateGrid.js";
+export class ColumnsCanvas extends Grid {
+    constructor (parent, gridIndex, height, width, zoom) {
+        super(parent, gridIndex, height, width, zoom);
+        this.drawCols();
+        this.handleColumnOffset();
+    }
 
-export class columnsCanvas {
-	constructor(parent, totalCanvas, lastColumnEnd, zoom) {
-		this.parent = parent;
+    colCoordinate(idx) {
+        let n = idx + 1;
+        let label = "";
+        while (n > 0) {
+            n -= 1;
+            label = String.fromCharCode(65 + (n % 26)) + label;
+            n = Math.floor(n / 26);
+        }
+        return label;
+    }
 
-		this.index = totalCanvas;
-		totalCanvas++;
+    handleColumnOffset() {
+        this.parent.style.marginLeft = `${this.colWidth}px`;
+    }
 
-		this.lastColumnEnd = lastColumnEnd;
+    setZoom(zoom) {
+        this.zoom = zoom;
+        this.colWidth = 50 * this.zoom;
+        this.rowHeight = 20 * this.zoom;
 
-		this.canvas = document.createElement("canvas");
-		this.canvas.setAttribute("id", `canvas_${totalCanvas}`);
+        this.canvas.width = this.canvas.width - (this.canvas.width % this.colWidth);
+        this.canvas.height = this.canvas.height * this.zoom;
 
-		this.canvas.classList.add("canvas");
+        this.ctx.font = `${10 * this.zoom}px arial`;
 
-		parent.appendChild(this.canvas);
+        this.drawCols();
+    }
 
-		this.ctx = this.canvas.getContext("2d");
+    drawCols() {
+        const colsFit = Math.floor(this.canvas.width / this.colWidth);
+        const startIdx = this.gridIndex * colsFit;
+        const endIdx = startIdx + colsFit;
 
-		this.outlinedOriginX;
-		this.outlinedOriginY;
+        console.log("Drawing columns from", startIdx, "to", endIdx);
 
-		this.ctx = this.canvas.getContext("2d");
+        this.updateCanvasOffsets();
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = "#e9e9e9";
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-		this.dpr = handleDynamicDPI(this.canvas, this.ctx);
-		console.log("dpr test column: ", this.dpr);
-		// this.ctx.scale(dpr, dpr);
-		this.zoom = zoom;
+        for (let i = startIdx; i <= endIdx; i++) {
+            const x = (i - startIdx) * this.colWidth;
+            createLine(this.ctx, x + 0.5, 0, x + 0.5, this.canvas.height, 1, "#ccc");
 
-		this.rowHeight = 20 * this.zoom;
-		this.colWidth = 50 * this.zoom;
+            const label = this.colCoordinate(i);
+            this.ctx.fillStyle = "#5c6b72";
+            this.ctx.font = `${10 * this.zoom}px arial`;
+            this.ctx.textAlign = "center";
+            this.ctx.fillText(label, x + this.colWidth / 2, 15 * this.zoom);
+        }
 
-		this.canvas.width = 1000 - (1000 % this.colWidth);
-		this.canvas.height = 20 * this.zoom;
+        this.lastColumnEnd = endIdx;
+        return this.lastColumnEnd;
+    }
 
-		this.parent.style.paddingLeft = `${this.colWidth}px`;
+    initResizeHandlers() {
+        this.colLine = 50;
+        this.rowLine = 20;
+        this.hoverColLine = false;
+        this.hoverRowLine = false;
+        this.dragColLine = false;
+        this.dragRowLine = false;
 
-		this.canvasOffsetX;
-		this.canvasOffsetY;
+        this.canvas.addEventListener("mousemove", this.handleMouseMove.bind(this));
+        this.canvas.addEventListener("mousedown", this.handleMouseDown.bind(this));
+        this.canvas.addEventListener("mousemove", this.handleDragMove.bind(this));
+        this.canvas.addEventListener("mouseup", this.handleMouseUp.bind(this));
+    }
 
-		this.updateCanvasOffsets();
+    handleMouseMove(e) {
+        const x = e.clientX - this.canvasOffsetX;
+        const y = e.clientY - this.canvasOffsetY;
 
-		const check = this.drawCols();
+        this.hoverColLine = false;
+        this.hoverRowLine = false;
 
-		return { lastColumnEnd: check, this: this };
-	}
+        if (Math.floor(y / 20) === 0 && x % 50 === 0) {
+            this.colLine = x - (x % 50);
+            this.canvas.style.cursor = "col-resize";
+            this.hoverColLine = true;
+        } else if (Math.floor(x / 50) === 0 && y % 20 === 0) {
+            this.rowLine = y - (y % 20);
+            this.canvas.style.cursor = "row-resize";
+            this.hoverRowLine = true;
+        } else {
+            this.canvas.style.cursor = "auto";
+        }
+    }
 
-	updateCanvasOffsets() {
-		const rect = this.canvas.getBoundingClientRect();
-		this.canvasOffsetX = rect.left;
-		this.canvasOffsetY = rect.top;
+    handleMouseDown() {
+        if (this.hoverColLine) this.dragColLine = true;
+        if (this.hoverRowLine) this.dragRowLine = true;
+    }
 
-		console.log(
-			"updated offsets, x, y: ",
-			this.canvasOffsetX,
-			this.canvasOffsetY
-		);
-	}
+    handleDragMove(e) {
+        if (!this.dragColLine && !this.dragRowLine) return;
 
-	setZoom(zoom, lastColumnEnd) {
-		this.lastColumnEnd = lastColumnEnd;
+        const x = e.clientX - this.canvasOffsetX;
+        const y = e.clientY - this.canvasOffsetY;
 
-		this.zoom = zoom;
+        if (this.dragColLine) {
+            this.eraseLine(this.colLine, 0, this.colLine, this.canvas.height);
+            this.drawLine(x, 0, x, this.canvas.height, "#d0d0d0");
+            this.colLine = x;
+        } else if (this.dragRowLine) {
+            this.eraseLine(0, this.rowLine, this.canvas.width, this.rowLine);
+            this.drawLine(0, y, this.canvas.width, y, "#d0d0d0");
+            this.rowLine = y;
+        }
+    }
 
-		this.rowHeight = 20 * this.dpr * this.zoom;
-		this.colWidth = 50 * this.dpr * this.zoom;
+    handleMouseUp() {
+        this.dragColLine = false;
+        this.dragRowLine = false;
+    }
 
-		this.canvas.width = 1000 - (1000 % this.colWidth);
-		this.canvas.height = 20 * this.zoom;
+    drawLine(x1, y1, x2, y2, color) {
+        this.ctx.beginPath();
+        this.ctx.lineWidth = 2;
+        this.ctx.strokeStyle = color;
+        this.ctx.moveTo(x1, y1);
+        this.ctx.lineTo(x2, y2);
+        this.ctx.stroke();
+    }
 
-		console.log("new width", this.colWidth);
-		this.parent.style.paddingLeft = `${this.colWidth}px`;
-
-		this.drawCols();
-
-		return this.lastColumnEnd;
-	}
-
-	colCoordinate(idx) {
-		let n = idx + 1;
-		let label = "";
-		while (n > 0) {
-			n -= 1;
-			label = String.fromCharCode(65 + (n % 26)) + label;
-			n = Math.floor(n / 26);
-		}
-		return label;
-	}
-
-	drawCols() {
-		const colsFit = Math.floor(this.canvas.width / this.colWidth);
-		const startIdx = this.lastColumnEnd;
-		const endIdx = startIdx + colsFit;
-
-		this.updateCanvasOffsets();
-
-		this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-		this.ctx.fillStyle = "#e9e9e9";
-
-		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-		for (let i = startIdx; i < endIdx + 1; i++) {
-			const x = (i - startIdx) * this.colWidth;
-
-			createLine(
-				this.ctx,
-				x + 0.5,
-				0,
-				x + 0.5,
-				this.canvas.height,
-				1,
-				"#ccc"
-			);
-
-			const label = this.colCoordinate(i);
-			this.ctx.fillStyle = "#5c6b72";
-			this.ctx.font = `${15 * this.zoom}px monospace`;
-			this.ctx.textAlign = "center";
-			this.ctx.fillText(label, x + this.colWidth / 2, 15 * this.zoom);
-		}
-
-		this.lastColumnEnd = endIdx;
-		// console.log("✅ Updated this.lastColumnEnd to", this.lastColumnEnd);
-
-		return this.lastColumnEnd;
-	}
-	resizeRow() {
-		let colLine = 50;
-		let rowLine = 20;
-
-		let hoverColLine = false;
-		let hoverRowLine = false;
-
-		let dragColLine = false;
-		let dragRowLine = false;
-
-		this.canvas.addEventListener("mousemove", (e) => {
-			const x = e.clientX - this.canvasOffsetX;
-			const y = e.clientY - this.canvasOffsetY;
-
-			if (Math.floor(y / 20) == 0 && Math.floor(x / 50) == 0) return;
-
-			// Check if the cursor is in proximity of 5px to a column line in the first row.
-			// if (Math.floor(y / 20) == 0 && (x % 50 < 10 || x % 50 > 40)) {
-			if (Math.floor(y / 20) == 0 && x % 50 == 0) {
-				// if (x % 50 > 40) {
-				// 	colLine = x - (x % 50) + 50;
-				// } else {
-				// 	colLine = x - (x % 50);
-				// }
-				if (x % 50 == 0) {
-					colLine = x - (x % 50);
-				}
-
-				this.canvas.style.cursor = "col-resize";
-				hoverColLine = true;
-			}
-
-			// Check if the cursor is in proximity of 5px to a row line in the first column.
-			else if (Math.floor(x / 50) == 0 && (y % 20 < 5 || y % 20 > 20)) {
-				// if (y % 20 > 20) {
-				// 	rowLine = y - (y % 20) + 20;
-				// } else {
-				// 	rowLine = y - (y % 20);
-				// }
-				if (y % 20 == 0) {
-					rowLine = y - (y % 20);
-				}
-
-				this.canvas.style.cursor = "row-resize";
-				hoverRowLine = true;
-			} else {
-				this.canvas.style.cursor = "auto";
-				hoverColLine = false;
-				hoverRowLine = false;
-			}
-		});
-
-		this.canvas.addEventListener("mousedown", (e) => {
-			if (!hoverColLine && !hoverRowLine) return;
-
-			if (hoverColLine) dragColLine = true;
-			if (hoverRowLine) dragRowLine = true;
-			// console.log("mousedowned");
-		});
-
-		this.canvas.addEventListener("mousemove", (e) => {
-			if (!dragColLine && !dragRowLine) return;
-
-			const x = e.clientX - this.canvasOffsetX;
-			const y = e.clientY - this.canvasOffsetY;
-
-			// console.log(
-			// 	"hoverColLine, hoverRowLine",
-			// 	hoverColLine,
-			// 	hoverRowLine
-			// );
-
-			console.log("colLine, x: ", colLine, x);
-
-			if (dragColLine) {
-				// erase current line
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 2;
-				this.ctx.strokeStyle = "white";
-				this.ctx.moveTo(colLine, 0);
-				this.ctx.lineTo(colLine, this.canvas.height);
-				this.ctx.stroke();
-
-				// create new line
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 2;
-				this.ctx.strokeStyle = "#d0d0d0";
-				this.ctx.moveTo(x, 0);
-				this.ctx.lineTo(x, this.canvas.height);
-				this.ctx.stroke();
-				colLine = x;
-			} else if (dragRowLine) {
-				// erase current line
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 2;
-				this.ctx.strokeStyle = "white";
-				this.ctx.moveTo(0, rowLine);
-				this.ctx.lineTo(this.canvas.width, rowLine);
-				this.ctx.stroke();
-
-				// create new line
-				this.ctx.beginPath();
-				this.ctx.lineWidth = 2;
-				this.ctx.strokeStyle = "#d0d0d0";
-				this.ctx.moveTo(0, y);
-				this.ctx.lineTo(this.canvas.width, y);
-				this.ctx.stroke();
-				rowLine = y;
-				// this.ctx.moveTo(0, rowLine);
-				// this.ctx.lineTo(this.canvas.width, rowLine);
-				// this.ctx.stroke();
-				// rowLine = y;
-			}
-		});
-
-		this.canvas.addEventListener("mouseup", (e) => {
-			dragColLine = false;
-			dragRowLine = false;
-		});
-	}
+    eraseLine(x1, y1, x2, y2) {
+        this.ctx.save();
+        this.ctx.globalCompositeOperation = "destination-out";
+        this.drawLine(x1, y1, x2, y2, "white");
+        this.ctx.restore();
+    }
 }
-
-// Usage
 
 export let allColumns = [];
