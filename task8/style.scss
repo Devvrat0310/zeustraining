@@ -10,34 +10,33 @@ html {
 	background-color: black;
 }
 
-.canvas {
-	// border: 1px solid black;
-	// position: absolute;
-	// top: 0;
-	// left: 0;
-	// cursor: col-resize;
-	// transform: scale(0.5);
-}
-
 .columns {
 	display: flex;
 	width: fit-content;
-	// flex-direction: column;
+}
+
+.column-wrapper {
+	display: flex;
 }
 
 .rows {
 	width: fit-content;
 	display: flex;
 	flex-direction: column;
+	background-color: white;
 }
 
 .rows--canvas {
-	// margin-top: 100px;
-	// margin-left: 100px;
 	display: flex;
 }
 
 .main-canvas {
-	display: flex;
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
 	width: fit-content;
 }
+
+// .pushed-overlay {
+// 	width: 100px;
+// 	height: 1px;
+// }

@@ -1,38 +1,17 @@
 import { createLine, handleDynamicDPI } from "./canvasComponents.js";
 
 export class columnsCanvas {
-	// constructor(sheetIndex) {
-	// 	const parentDiv = document.querySelector(".columns");
-	// 	if (!parentDiv) throw new Error("Parent .columns element not found");
-
-	// 	this.canvas = document.createElement("canvas");
-	// 	this.canvas.width = 1000;
-	// 	this.canvas.height = 20;
-	// 	this.canvas.classList.add("canvas");
-	// 	parentDiv.appendChild(this.canvas);
-
-	// 	this.ctx = this.canvas.getContext("2d");
-
-	// 	handleDynamicDPI(this.canvas, this.ctx);
-
-	// 	this.colWidth = 50;
-	// 	this.rowHeight = 20;
-
-	// 	console.log(
-	// 		`Creating sheet ${sheetIndex}, starting at global index ${this.lastColumnEnd}`
-	// 	);
-	// 	this.drawCols();
-	// }
 	constructor(parent, totalCanvas, lastColumnEnd, zoom) {
 		this.parent = parent;
+
+		this.index = totalCanvas;
 		totalCanvas++;
 
 		this.lastColumnEnd = lastColumnEnd;
 
 		this.canvas = document.createElement("canvas");
 		this.canvas.setAttribute("id", `canvas_${totalCanvas}`);
-		this.canvas.setAttribute("height", 20);
-		this.canvas.setAttribute("width", 1000);
+
 		this.canvas.classList.add("canvas");
 
 		parent.appendChild(this.canvas);
@@ -45,15 +24,17 @@ export class columnsCanvas {
 		this.ctx = this.canvas.getContext("2d");
 
 		this.dpr = handleDynamicDPI(this.canvas, this.ctx);
-		console.log("dpr : ", this.dpr);
+		console.log("dpr test column: ", this.dpr);
 		// this.ctx.scale(dpr, dpr);
-
-		this.rowHeight = 20;
-		this.colWidth = 50;
-
 		this.zoom = zoom;
 
-		this.parent.style.marginLeft = `${this.colWidth * this.zoom}px`;
+		this.rowHeight = 20 * this.zoom;
+		this.colWidth = 50 * this.zoom;
+
+		this.canvas.width = 1000 - (1000 % this.colWidth);
+		this.canvas.height = 20 * this.zoom;
+
+		this.parent.style.paddingLeft = `${this.colWidth}px`;
 
 		this.canvasOffsetX;
 		this.canvasOffsetY;
@@ -62,11 +43,7 @@ export class columnsCanvas {
 
 		const check = this.drawCols();
 
-		console.log("check", check);
 		return { lastColumnEnd: check, this: this };
-
-		// return this.lastColumnEnd;
-		// this.selectCell();
 	}
 
 	updateCanvasOffsets() {
@@ -81,37 +58,23 @@ export class columnsCanvas {
 		);
 	}
 
-	setZoom(change, lastColumnEnd) {
+	setZoom(zoom, lastColumnEnd) {
 		this.lastColumnEnd = lastColumnEnd;
 
-		// const previousZoom
-		this.zoom += change;
-		this.zoom = Math.min(3, Math.max(0.4, this.zoom));
-		// this.zoom = Math.max(0.5, this.zoom);
-		this.zoom = parseFloat(this.zoom.toFixed(1)); // => 3
-		console.log("this.zoom", this.zoom);
+		this.zoom = zoom;
 
 		this.rowHeight = 20 * this.dpr * this.zoom;
 		this.colWidth = 50 * this.dpr * this.zoom;
 
-		console.log("this.rowHeight,", this.rowHeight);
-
 		this.canvas.width = 1000 - (1000 % this.colWidth);
 		this.canvas.height = 20 * this.zoom;
-		// this.canvas.height = 20 - (20 % this.rowHeight);
 
-		console.log(
-			"this.canvas.width, this.canvas.height, column header",
-			this.canvas.width,
-			this.canvas.height
-		);
-
-		this.parent.style.marginLeft = `${this.colWidth}px`;
+		console.log("new width", this.colWidth);
+		this.parent.style.paddingLeft = `${this.colWidth}px`;
 
 		this.drawCols();
 
 		return this.lastColumnEnd;
-		// this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 	}
 
 	colCoordinate(idx) {
@@ -138,14 +101,6 @@ export class columnsCanvas {
 
 		this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-		console.log(
-			"this.canvasOffsetX, this.canvasOffsetY",
-			this.canvasOffsetX,
-			this.canvasOffsetY
-		);
-
-		// console.log("→ Will draw indices", startIdx, "to", endIdx - 1);
-
 		for (let i = startIdx; i < endIdx + 1; i++) {
 			const x = (i - startIdx) * this.colWidth;
 
@@ -160,14 +115,14 @@ export class columnsCanvas {
 			);
 
 			const label = this.colCoordinate(i);
-			this.ctx.fillStyle = "#000000";
+			this.ctx.fillStyle = "#5c6b72";
 			this.ctx.font = `${15 * this.zoom}px monospace`;
 			this.ctx.textAlign = "center";
 			this.ctx.fillText(label, x + this.colWidth / 2, 15 * this.zoom);
 		}
 
 		this.lastColumnEnd = endIdx;
-		console.log("✅ Updated this.lastColumnEnd to", this.lastColumnEnd);
+		// console.log("✅ Updated this.lastColumnEnd to", this.lastColumnEnd);
 
 		return this.lastColumnEnd;
 	}
@@ -228,7 +183,7 @@ export class columnsCanvas {
 
 			if (hoverColLine) dragColLine = true;
 			if (hoverRowLine) dragRowLine = true;
-			console.log("mousedowned");
+			// console.log("mousedowned");
 		});
 
 		this.canvas.addEventListener("mousemove", (e) => {
@@ -237,11 +192,11 @@ export class columnsCanvas {
 			const x = e.clientX - this.canvasOffsetX;
 			const y = e.clientY - this.canvasOffsetY;
 
-			console.log(
-				"hoverColLine, hoverRowLine",
-				hoverColLine,
-				hoverRowLine
-			);
+			// console.log(
+			// 	"hoverColLine, hoverRowLine",
+			// 	hoverColLine,
+			// 	hoverRowLine
+			// );
 
 			console.log("colLine, x: ", colLine, x);
 
@@ -295,4 +250,4 @@ export class columnsCanvas {
 
 // Usage
 
-export const allColumns = [];
+export let allColumns = [];
