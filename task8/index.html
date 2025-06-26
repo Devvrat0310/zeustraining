@@ -7,12 +7,16 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
+		<canvas class="corner"></canvas>
 		<div class="column-wrapper">
-			<div class="pushed-overlay"></div>
+			<div class="pushed-overlay-column" style="width: 0px"></div>
 			<div class="columns"></div>
 		</div>
 		<div class="rows--canvas">
-			<div class="rows"></div>
+			<div class="row-wrapper">
+				<div class="pushed-overlay-row" style="height: 0px"></div>
+				<div class="rows"></div>
+			</div>
 			<div class="main-canvas"></div>
 		</div>
 		<script type="module" src="script.js"></script>
