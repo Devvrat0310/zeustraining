@@ -36,7 +36,7 @@ export class Grid {
 	}
 
 	_initDimensions(height, width) {
-		this.rowHeight = 20 * this.zoom;
+		this.rowHeight = 15 * this.zoom;
 		this.colWidth = 50 * this.zoom;
 		if (height < 800) {
 			this.canvas.height = height * this.zoom;
@@ -93,5 +93,3 @@ export class Grid {
 	//     }
 	// }
 }
-
-export const allCanvases = [];

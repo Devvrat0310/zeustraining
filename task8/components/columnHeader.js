@@ -3,7 +3,7 @@ import { Grid } from "./CreateGrid.js";
 
 export class ColumnsCanvas extends Grid {
 	constructor(parent, gridIndex, height, width, zoom) {
-		super(parent, gridIndex, height, width, zoom, "column");
+		super(parent, gridIndex, height, width, zoom, "column_");
 		this.drawCols();
 		this.handleColumnOffset();
 	}
@@ -26,10 +26,11 @@ export class ColumnsCanvas extends Grid {
 	setZoom(zoom) {
 		this.zoom = zoom;
 		console.log("this.zoom, zoom", this.zoom, zoom);
-		super._initDimensions(20, 1000);
+		super._initDimensions(15, 1000);
 
 		this.ctx.font = `${10 * this.zoom}px arial`;
 
+		// this.
 		this.drawCols();
 		this.handleColumnOffset();
 	}
@@ -73,7 +74,7 @@ export class ColumnsCanvas extends Grid {
 			this.ctx.fillStyle = "#5c6b72";
 			this.ctx.font = `${10 * this.zoom}px arial`;
 			this.ctx.textAlign = "center";
-			this.ctx.fillText(label, x + this.colWidth / 2, 15 * this.zoom);
+			this.ctx.fillText(label, x + this.colWidth / 2, 12 * this.zoom);
 		}
 
 		this.lastColumnEnd = endIdx;
@@ -82,7 +83,7 @@ export class ColumnsCanvas extends Grid {
 
 	initResizeHandlers() {
 		this.colLine = 50;
-		this.rowLine = 20;
+		this.rowLine = 15;
 		this.hoverColLine = false;
 		this.hoverRowLine = false;
 		this.dragColLine = false;
@@ -110,12 +111,12 @@ export class ColumnsCanvas extends Grid {
 		this.hoverColLine = false;
 		this.hoverRowLine = false;
 
-		if (Math.floor(y / 20) === 0 && x % 50 === 0) {
+		if (Math.floor(y / 15) === 0 && x % 50 === 0) {
 			this.colLine = x - (x % 50);
 			this.canvas.style.cursor = "col-resize";
 			this.hoverColLine = true;
-		} else if (Math.floor(x / 50) === 0 && y % 20 === 0) {
-			this.rowLine = y - (y % 20);
+		} else if (Math.floor(x / 50) === 0 && y % 15 === 0) {
+			this.rowLine = y - (y % 15);
 			this.canvas.style.cursor = "row-resize";
 			this.hoverRowLine = true;
 		} else {
@@ -182,7 +183,7 @@ export class ColumnManager {
 		const column = new ColumnsCanvas(
 			this.columnsDiv,
 			this.totalColumnSheet,
-			20,
+			15,
 			1000,
 			this.zoomManager.zoom
 		);
@@ -204,7 +205,7 @@ export class ColumnManager {
 			this.columnsDiv.firstElementChild
 		);
 		// Update id for new column div
-		removedChildElement.id = `canvas_${this.totalColumnSheet}`;
+		removedChildElement.id = `column_${this.totalColumnSheet}`;
 		// Add removed child to the end
 		this.columnsDiv.appendChild(removedChildElement);
 
@@ -228,15 +229,12 @@ export class ColumnManager {
 			this.columnsDiv.lastElementChild
 		);
 		// Update id for new column div
-		removedChildElement.id = `canvas_${this.totalColumnSheet - 5}`;
+		removedChildElement.id = `column_${this.totalColumnSheet - 5}`;
 		// Insert removed child to the front
 		this.columnsDiv.insertBefore(
 			removedChildElement,
 			this.columnsDiv.firstChild
 		);
-
-		// const rect = removedChildElement.getBoundingClientRect();
-		// console.log("this.removedChildElement", this.removedChildElement);
 
 		// pop and get child element class at first index, update its grid index, redraw and append it to the arraw.
 		const removedChildClass = this.columns.pop();
@@ -275,5 +273,9 @@ export class ColumnManager {
 		this.columns.forEach((col) => {
 			col.setZoom(this.zoomManager.zoom);
 		});
+		if (this.totalColumnSheet > 4) {
+			this.pushedOverlayColumns.style.width =
+				this.columns[0].canvas.width + "px";
+		}
 	}
 }

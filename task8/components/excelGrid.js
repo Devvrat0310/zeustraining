@@ -3,16 +3,7 @@ import { Grid } from "./CreateGrid.js";
 
 export class ExcelGrid extends Grid {
 	constructor(parent, gridIndex, height, width, zoom = 1) {
-		super(parent, gridIndex, height, width, zoom, "grid");
-		// this.parent = parent;
-		// this.zoom = zoom;
-		// this.dpr = window.devicePixelRatio || 1;
-		// this.canvas = this._createCanvas(gridIndex);
-		// this.ctx = this.canvas.getContext("2d");
-		// this._initDimensions();
-		// this._appendCanvas();
-		// this._bindEvents();
-		// this.outlinedCell = null;
+		super(parent, gridIndex, height, width, zoom, "grid_");
 		this.drawGrid();
 	}
 
@@ -61,64 +52,6 @@ export class ExcelGrid extends Grid {
 		}
 	}
 
-	outlineCell(originX, originY) {
-		const { ctx, colWidth, rowHeight } = this;
-		ctx.save();
-		ctx.strokeStyle = "green";
-		ctx.fillStyle = "#e8f2ec";
-		ctx.lineWidth = 2;
-		ctx.fillRect(originX, originY, colWidth, rowHeight);
-		ctx.strokeRect(originX, originY, colWidth, rowHeight);
-		ctx.restore();
-
-		this.outlinedCell = { x: originX, y: originY };
-	}
-
-	eraseOutlineCell() {
-		if (!this.outlinedCell) return;
-		const { ctx, colWidth, rowHeight } = this;
-		const { x, y } = this.outlinedCell;
-
-		ctx.save();
-		ctx.clearRect(x - 2, y - 2, colWidth + 4, rowHeight + 4);
-		ctx.restore();
-
-		this.drawGrid();
-		this.outlinedCell = null;
-	}
-
-	strokeEachCorner(originX, originY, endX, endY) {
-		createLine(
-			this.ctx,
-			originX,
-			originY,
-			originX + endX,
-			originY + endY,
-			1,
-			"#d0d0d0"
-		);
-	}
-
-	strokeAllCorners() {
-		if (!this.outlinedCell) return;
-		const { x, y } = this.outlinedCell;
-		const { zoom } = this;
-
-		const adjOriginX = [0, 50, 50, 0];
-		const adjOriginY = [0, 0, 20, 20];
-		const adjEndX = [-2, 2, 2, -2];
-		const adjEndY = [-2, -2, 2, 2];
-
-		for (let i = 0; i < 4; i++) {
-			this.strokeEachCorner(
-				x + adjOriginX[i] * zoom,
-				y + adjOriginY[i] * zoom,
-				adjEndX[i] * zoom,
-				adjEndY[i] * zoom
-			);
-		}
-	}
-
 	_bindEvents() {
 		this.canvas.addEventListener("click", this._onCanvasClick.bind(this));
 	}
@@ -137,4 +70,213 @@ export class ExcelGrid extends Grid {
 	}
 }
 
-export const allCanvases = [];
+/**
+ * Manages multiple ExcelGrid canvas instances within a main canvas element,
+ * providing creation and zoom synchronization functionality.
+ *
+ * @class CanvasManager
+ * @param {HTMLCanvasElement} mainCanvas - The main canvas DOM element to render on.
+ * @param {Object} zoomManager - An object managing the current zoom level.
+ * @param {number} zoomManager.zoom - The current zoom factor.
+ *
+ * @property {HTMLCanvasElement} mainCanvas - The main canvas DOM element.
+ * @property {Object} zoomManager - The zoom manager object.
+ * @property {number} totalCanvas - The total number of canvases created.
+ * @property {Array<ExcelGrid>} canvases - Array of managed ExcelGrid instances.
+ *
+ * @method createCanvas - Creates a new ExcelGrid canvas, adds it to the manager, and increments the count.
+ * @method zoomAll - Applies the current zoom level to all managed canvases.
+ */
+export class CanvasManager {
+	constructor(mainCanvas, zoomManager, excelLeftSpace, excelTopSpace) {
+		this.mainCanvas = mainCanvas;
+		this.zoomManager = zoomManager;
+		this.totalCanvas = 0;
+		this.canvases = [];
+		this.excelLeftSpace = excelLeftSpace;
+		this.excelTopSpace = excelTopSpace;
+	}
+
+	createCanvas() {
+		const canvas = new ExcelGrid(
+			this.mainCanvas,
+			this.totalCanvas,
+			1000,
+			1000,
+			this.zoomManager.zoom
+		);
+		this.canvases.push(canvas);
+		this.totalCanvas++;
+	}
+
+	updatePushedOverlayHeight(height) {
+		console.log("this.excelTopSpace", this.excelTopSpace);
+		let space = parseInt(this.excelTopSpace.style.height, 10);
+		space += height;
+		this.excelTopSpace.style.height = `${space}px`;
+	}
+
+	addCanvasesToBottom() {
+		// child element div
+		const removedChildElement = this.mainCanvas.removeChild(
+			this.mainCanvas.firstElementChild
+		);
+
+		// Update id for new column div
+		removedChildElement.id = `grid_${this.totalCanvas}`;
+		// Add removed child to the end
+		this.mainCanvas.appendChild(removedChildElement);
+
+		// pop and get child element class at first index, update its grid index, redraw and append it to the arraw.
+		const removedChildClass = this.canvases.shift();
+		removedChildClass.gridIndex = this.totalCanvas;
+		removedChildClass.drawGrid();
+		this.canvases.push(removedChildClass);
+
+		this.totalCanvas++;
+	}
+
+	addCanvasesToTop() {
+		// Check if already at the beggining
+		if (this.totalCanvas == 4) return;
+
+		// child element div
+		const removedChildElement = this.mainCanvas.removeChild(
+			this.mainCanvas.lastElementChild
+		);
+		// Update id for new column div
+		removedChildElement.id = `grid_${this.totalCanvas - 5}`;
+		// Insert removed child to the front
+		this.mainCanvas.insertBefore(
+			removedChildElement,
+			this.mainCanvas.firstChild
+		);
+
+		// pop and get child element class at first index, update its grid index, redraw and append it to the arraw.
+		const removedChildClass = this.canvases.pop();
+		removedChildClass.gridIndex = this.totalCanvas - 5;
+		removedChildClass.drawGrid();
+		this.canvases.unshift(removedChildClass);
+
+		this.totalCanvas--;
+	}
+
+	/**
+	 * Handle scrolling and update column headers based on column index in view.
+	 *
+	 * @param {boolean} scrollRight - Set to true if scrolling towards right.
+	 */
+	scrollCanvasVertical(scrollRight) {
+		// For scrolling Right.
+		// Remove element from beggining from dom tree.
+		// Remove element from beggining of the rows array
+		// Add array push of the length of the column
+		// Append element to the end of the rowsDiv.
+		// Append columnClass to the end of the rows array
+		// Exact reverse for scrolling left.
+		if (scrollRight) {
+			for (let i = 0; i < 3; i++) {
+				this.addCanvasesToBottom();
+			}
+			this.updatePushedOverlayHeight(this.canvases[0].canvas.height);
+		} else {
+			for (let i = 0; i < 3; i++) {
+				this.addCanvasesToTop();
+			}
+			this.updatePushedOverlayHeight(-this.canvases[0].canvas.height);
+		}
+	}
+
+	updatePushedOverlayWidth(width) {
+		// Add empty space:
+		let space = parseInt(this.excelLeftSpace.style.width, 10);
+		space += width;
+		this.excelLeftSpace.style.width = `${space}px`;
+	}
+
+	addCanvasToRight(index) {
+		// child element div
+		const removedChildElement = this.mainCanvas.removeChild(
+			this.mainCanvas.firstElementChild
+		);
+		// Update id for new column div
+		removedChildElement.id = `grid_${this.totalCanvas}`;
+		// Add removed child to the end
+		this.mainCanvas.appendChild(removedChildElement);
+
+		// pop and get child element class at first index, update its grid index, redraw and append it to the arraw.
+		const removedChildClass = this.canvases.shift();
+		removedChildClass.gridIndex = this.totalCanvas;
+		removedChildClass.drawGrid();
+		this.canvases.push(removedChildClass);
+
+		this.totalCanvas++;
+	}
+
+	addCanvasToLeft() {
+		// Check if already at the beggining
+		if (this.totalCanvas == 12) return;
+
+		// child element div
+		const removedChildElement = this.mainCanvas.removeChild(
+			this.mainCanvas.lastElementChild
+		);
+		// Update id for new column div
+		removedChildElement.id = `grid_${this.totalCanvas - 5}`;
+		// Insert removed child to the front
+		this.mainCanvas.insertBefore(
+			removedChildElement,
+			this.mainCanvas.firstChild
+		);
+
+		// pop and get child element class at first index, update its grid index, redraw and append it to the arraw.
+		const removedChildClass = this.canvases.pop();
+		removedChildClass.gridIndex = this.totalCanvas - 5;
+		removedChildClass.drawGrid();
+		this.canvases.unshift(removedChildClass);
+
+		// Add empty space:
+
+		this.totalCanvas--;
+	}
+
+	/**
+	 * Handle scrolling and update column headers based on column index in view.
+	 *
+	 * @param {boolean} scrollRight - Set to true if scrolling towards right.
+	 */
+	scrollCanvasHorizontal(scrollRight) {
+		// For scrolling Right.
+		// Remove element from beggining from dom tree.
+		// Remove element from beggining of the canvases array
+		// Add array push of the length of the column
+		// Append element to the end of the mainCanvas.
+		// Append columnClass to the end of the canvases array
+		// Exact reverse for scrolling left.
+
+		if (scrollRight) {
+			for (let i = 0; i < 3; i++) {
+				this.addCanvasToRight();
+			}
+			this.updatePushedOverlayWidth(this.canvases[0].canvas.width);
+		} else {
+			for (let i = 0; i < 3; i++) {
+				this.addCanvasToLeft();
+			}
+			this.updatePushedOverlayWidth(-this.canvases[0].canvas.width);
+		}
+	}
+
+	zoomAll() {
+		this.canvases.forEach((canvas) =>
+			canvas.setZoom(this.zoomManager.zoom)
+		);
+
+		if (this.totalCanvas > 12) {
+			this.excelLeftSpace.style.width =
+				this.canvases[0].canvas.width + "px";
+			this.excelTopSpace.style.height =
+				this.canvases[0].canvas.height + "px";
+		}
+	}
+}

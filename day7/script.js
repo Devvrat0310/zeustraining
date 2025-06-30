@@ -40,16 +40,6 @@ class ChildBox {
 			let divLeft = draggableDivCurr.offsetLeft;
 			let divTop = draggableDivCurr.offsetTop;
 
-			// divTop = Math.max(
-			// 	0,
-			// 	Math.min(divTop, boundBottom - draggableDivCurr.clientHeight)
-			// );
-
-			// divLeft = Math.max(
-			// 	0,
-			// 	Math.min(divLeft, containerRect.width - draggableDivCurr.clientWidth)
-			// );
-
 			let needsCorrection = false;
 			if (divLeft + draggableDivCurr.offsetWidth > containerRect.width) {
 				divLeft = containerRect.width - draggableDivCurr.offsetWidth;

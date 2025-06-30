@@ -6,7 +6,7 @@ import { Grid } from "./CreateGrid.js";
  */
 export class RowsCanvas extends Grid {
 	constructor(parent, gridIndex, height, width, zoom = 1) {
-		super(parent, gridIndex, height, width, zoom, "row");
+		super(parent, gridIndex, height, width, zoom, "row_");
 		this.drawRows();
 	}
 
@@ -87,6 +87,7 @@ export class RowManager {
 		this.lastRowEnd = 0;
 		this.rows = [];
 		this.pushedOverlayRows = pushedOverlayRows;
+		this.rowHeights = [];
 	}
 
 	createRow() {
@@ -123,7 +124,7 @@ export class RowManager {
 			this.rowsDiv.firstElementChild
 		);
 		// Update id for new column div
-		removedChildElement.id = `canvas_${this.totalRowSheet}`;
+		removedChildElement.id = `row_${this.totalRowSheet}`;
 		// Add removed child to the end
 		this.rowsDiv.appendChild(removedChildElement);
 
@@ -142,7 +143,7 @@ export class RowManager {
 		if (this.totalRowSheet == 4) return;
 
 		console.log("window.scrollY", window.scrollY);
-		const height = 1000 - (1000 % (20 * this.zoomManager.zoom));
+		const height = 1000 - (1000 % (15 * this.zoomManager.zoom));
 
 		const sheetIndex = Math.floor(window.scrollY / height);
 		console.log("sheetIndex", sheetIndex);
@@ -154,7 +155,7 @@ export class RowManager {
 			this.rowsDiv.lastElementChild
 		);
 		// Update id for new column div
-		removedChildElement.id = `canvas_${this.totalRowSheet - 5}`;
+		removedChildElement.id = `row_${this.totalRowSheet - 5}`;
 		// Insert removed child to the front
 		this.rowsDiv.insertBefore(removedChildElement, this.rowsDiv.firstChild);
 
@@ -194,5 +195,9 @@ export class RowManager {
 		this.rows.forEach((row) => {
 			row.setZoom(this.zoomManager.zoom);
 		});
+		if (this.totalRowSheet > 4) {
+			this.pushedOverlayRows.style.height =
+				this.rows[0].canvas.height + "px";
+		}
 	}
 }

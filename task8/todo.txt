@@ -2,15 +2,16 @@
 2. Create column numbering header. - Done
 3. Create row numbering sidebar. - Done
 4. Implement zooming in out feature. - Done
-5. Implement infinite scrolling. - In progress
-6. Implement virtual scrolling.
-7. Implement cell selection.
-8. Implement column and row resizing.
-9. Implement multiselect.
-10. Implement row selection and column selection.
-11. Implement optimal data storage for in memory as well as db.
-12. Implement cell editing.
-13. Implement computing functions (count, min, max, sum, average)
-14. Implement command pattern (undo, redo).
-15. Implement row numbering sidebar width resizing as per the width of number in it.
-16. Implement marching ants feature when selected.
+5. Implement infinite scrolling. - Done
+6. Implement virtual scrolling. - Done
+7. Implement cell selection. - In progress
+8. Implement multiselect.
+9. Implement custom scroll bar for horizontal and vertical scrolling.
+. Implement column and row resizing.
+11. Implement row selection and column selection.
+12. Implement optimal data storage for in memory as well as db.
+13. Implement cell editing.
+14. Implement computing functions (count, min, max, sum, average)
+15. Implement command pattern (undo, redo).
+16. Implement row numbering sidebar width resizing as per the width of number in it.
+17. Implement marching ants feature when selected.

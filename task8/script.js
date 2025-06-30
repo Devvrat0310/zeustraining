@@ -1,7 +1,8 @@
 import { ColumnsCanvas, ColumnManager } from "./components/columnHeader.js";
 import { createLine, handleDynamicDPI } from "./components/canvasComponents.js";
 import { RowsCanvas, RowManager } from "./components/RowSidebar.js";
-import { ExcelGrid, allCanvases } from "./components/ExcelGrid.js";
+import { ExcelGrid, CanvasManager } from "./components/ExcelGrid.js";
+import { SelectCell } from "./components/SelectCell.js";
 
 const EXCELWIDTH = 1000;
 const EXCELHEIGHT = 1000;
@@ -37,51 +38,6 @@ class ZoomManager {
 }
 
 /**
- * Manages multiple ExcelGrid canvas instances within a main canvas element,
- * providing creation and zoom synchronization functionality.
- *
- * @class CanvasManager
- * @param {HTMLCanvasElement} mainCanvas - The main canvas DOM element to render on.
- * @param {Object} zoomManager - An object managing the current zoom level.
- * @param {number} zoomManager.zoom - The current zoom factor.
- *
- * @property {HTMLCanvasElement} mainCanvas - The main canvas DOM element.
- * @property {Object} zoomManager - The zoom manager object.
- * @property {number} totalCanvas - The total number of canvases created.
- * @property {Array<ExcelGrid>} canvases - Array of managed ExcelGrid instances.
- *
- * @method createCanvas - Creates a new ExcelGrid canvas, adds it to the manager, and increments the count.
- * @method zoomAll - Applies the current zoom level to all managed canvases.
- */
-class CanvasManager {
-	constructor(mainCanvas, zoomManager) {
-		this.mainCanvas = mainCanvas;
-		this.zoomManager = zoomManager;
-		this.totalCanvas = 0;
-		this.canvases = [];
-	}
-
-	createCanvas() {
-		const canvas = new ExcelGrid(
-			this.mainCanvas,
-			this.totalCanvas,
-			1000,
-			1000,
-			this.zoomManager.zoom
-		);
-		this.canvases.push(canvas);
-		allCanvases.push(canvas);
-		this.totalCanvas++;
-	}
-
-	zoomAll() {
-		this.canvases.forEach((canvas) =>
-			canvas.setZoom(this.zoomManager.zoom)
-		);
-	}
-}
-
-/**
  * Represents a spreadsheet application with zoom, scroll, and dynamic row/column management.
  * Handles user interactions for scrolling and zooming, and manages the main canvas, columns, and rows.
  *
@@ -101,7 +57,7 @@ class CanvasManager {
  * @property {number} totalDeltaVertical - Accumulated vertical scroll delta.
  * @property {number} scrolledFirstTime - Tracks the number of initial horizontal scrolls.
  *
- * @method updateCanvasWidth - Updates the canvas width based on the current zoom level.
+ * @method updateCanvasDimensions - Updates the canvas width based on the current zoom level.
  * @method init - Initializes the spreadsheet by creating canvases, columns, and rows.
  * @method handleScroll - Handles scroll events for both horizontal and vertical directions.
  * @method zoomEachCanvas - Applies zoom to all canvases, columns, and rows.
@@ -109,24 +65,40 @@ class CanvasManager {
  * @method addEventListeners - Adds event listeners for wheel events to handle scrolling and zooming.
  */
 class Spreadsheet {
-	constructor() {
+	constructor(index) {
+		this.spreadsheetIndex = index;
 		this.zoomManager = new ZoomManager();
 		this.mainCanvas = document.querySelector(".main-canvas");
 		this.columnsDiv = document.getElementsByClassName("columns")[0];
-		this.pushedOverlayColumns = document.querySelector(
+		this.pushedOverlayColumns = document.querySelectorAll(
 			".pushed-overlay-column"
-		);
-		this.pushedOverlayRows = document.querySelector(".pushed-overlay-row");
+		)[index];
+		this.pushedOverlayRows = document.querySelectorAll(
+			".pushed-overlay-row"
+		)[index];
+
+		this.SelectCell = new SelectCell(index, this.zoomManager.zoom);
+
+		this.excelLeftSpace =
+			document.querySelectorAll(".excel-left-space")[index];
+		this.excelTopSpace =
+			document.querySelectorAll(".excel-top-space")[index];
+
+		console.log("this.excelLeftSpace", this.excelLeftSpace);
+
 		this.rowsDiv = document.querySelector(".rows");
 
 		this.corner = document.querySelector(".corner");
 
 		this.canvasWidth = 1000 - (1000 % (50 * this.zoomManager.zoom));
+		this.canvasHeight = 1000 - (1000 % (15 * this.zoomManager.zoom));
 		this.updateCornerBoxSize();
 
 		this.canvasManager = new CanvasManager(
 			this.mainCanvas,
-			this.zoomManager
+			this.zoomManager,
+			this.excelLeftSpace,
+			this.excelTopSpace
 		);
 		this.columnManager = new ColumnManager(
 			this.columnsDiv,
@@ -139,6 +111,9 @@ class Spreadsheet {
 			this.zoomManager
 		);
 
+		this.colWidths = [];
+		this.rowHeights = [];
+
 		this.totalDeltaHorizontal = 0;
 		this.totalDeltaVertical = 0;
 
@@ -148,17 +123,41 @@ class Spreadsheet {
 		this.addEventListeners();
 	}
 
+	createHTML() {
+		const templateString = `
+			<canvas class="corner"></canvas>
+			<div class="column-wrapper">
+				<div class="pushed-overlay-column" style="width: 0px"></div>
+				<div class="columns"></div>
+			</div>
+			<div class="rows--canvas">
+				<div class="row-wrapper">
+					<div class="pushed-overlay-row" style="height: 0px"></div>
+					<div class="rows"></div>
+				</div>
+				<div class="main-canvas-wrapper">
+					<div class="excel-left-space excel-top-space"></div>
+					<div class="main-canvas"></div>
+				</div>
+			</div>
+		`;
+
+		const body = document.querySelector("body");
+
+		body.innerHTML += templateString;
+	}
+
 	updateCornerBoxSize() {
 		const currZoom = this.zoomManager.zoom;
 		this.corner.style.width = `${50 * currZoom}px`;
-		this.corner.style.height = `${20 * currZoom}px`;
+		this.corner.style.height = `${15 * currZoom}px`;
 
 		// Set the actual canvas pixel size to match the zoomed size
 		this.corner.width = 50 * currZoom;
-		this.corner.height = 20 * currZoom;
+		this.corner.height = 15 * currZoom;
 
 		console.log("50 * currZoom", 50 * currZoom);
-		console.log("20 * currZoom", 20 * currZoom);
+		console.log("15 * currZoom", 15 * currZoom);
 
 		const ctx = this.corner.getContext("2d");
 		createLine(
@@ -166,27 +165,28 @@ class Spreadsheet {
 			50 * currZoom - 0.5,
 			0 - 0.5,
 			50 * currZoom - 0.5,
-			20 * currZoom - 0.5,
+			15 * currZoom - 0.5,
 			1,
 			"#bdbdbd"
 		);
 		createLine(
 			ctx,
 			0 - 0.5,
-			20 * currZoom - 0.5,
+			15 * currZoom - 0.5,
 			50 * currZoom - 0.5,
-			20 * currZoom - 0.5,
+			15 * currZoom - 0.5,
 			1,
 			"#bdbdbd"
 		);
 	}
 
-	updateCanvasWidth() {
+	updateCanvasDimensions() {
 		this.canvasWidth = 1000 - (1000 % (50 * this.zoomManager.zoom));
+		this.canvasHeight = 1000 - (1000 % (15 * this.zoomManager.zoom));
 	}
 
 	init() {
-		for (let i = 0; i < 5; i++) this.canvasManager.createCanvas();
+		for (let i = 0; i < 12; i++) this.canvasManager.createCanvas();
 		for (let i = 0; i < 4; i++) this.columnManager.createColumn();
 		for (let i = 0; i < 4; i++) this.rowManager.createRow();
 	}
@@ -209,19 +209,23 @@ class Spreadsheet {
 				this.scrolledFirstTime += 1;
 				if (this.scrolledFirstTime > 1) {
 					this.columnManager.scrollColumn(true);
+					this.canvasManager.scrollCanvasHorizontal(true);
 				}
 				this.totalDeltaHorizontal = 0;
 			} else if (this.totalDeltaHorizontal <= -this.canvasWidth) {
 				this.columnManager.scrollColumn(false);
+				this.canvasManager.scrollCanvasHorizontal(false);
 				this.totalDeltaHorizontal = 0;
 			}
 		} else {
 			this.totalDeltaVertical += deltaY;
-			if (this.totalDeltaVertical >= this.canvasWidth) {
+			if (this.totalDeltaVertical >= this.canvasHeight) {
 				this.rowManager.scrollRow(true);
+				this.canvasManager.scrollCanvasVertical(true);
 				this.totalDeltaVertical = 0;
-			} else if (this.totalDeltaVertical <= -this.canvasWidth) {
+			} else if (this.totalDeltaVertical <= -this.canvasHeight) {
 				this.rowManager.scrollRow(false);
+				this.canvasManager.scrollCanvasVertical(false);
 				this.totalDeltaVertical = 0;
 			}
 		}
@@ -239,12 +243,12 @@ class Spreadsheet {
 		this.columnManager.zoomAll();
 		this.rowManager.zoomAll();
 		this.updateCornerBoxSize();
+		this.SelectCell.setZoom(this.zoomManager.zoom);
 	}
 
 	handleZoom(e) {
 		e.preventDefault();
-		this.updateCanvasWidth();
-
+		this.updateCanvasDimensions();
 		this.zoomEachCanvas(e.deltaY < 0 ? 0.2 : -0.2);
 	}
 
@@ -267,4 +271,4 @@ class Spreadsheet {
 	}
 }
 
-new Spreadsheet();
+new Spreadsheet(0);

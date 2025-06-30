@@ -7,17 +7,27 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<canvas class="corner"></canvas>
-		<div class="column-wrapper">
-			<div class="pushed-overlay-column" style="width: 0px"></div>
-			<div class="columns"></div>
-		</div>
-		<div class="rows--canvas">
-			<div class="row-wrapper">
-				<div class="pushed-overlay-row" style="height: 0px"></div>
-				<div class="rows"></div>
+		<div class="spreadsheet">
+			<canvas class="corner"></canvas>
+			<div class="column-wrapper">
+				<div class="pushed-overlay-column" style="width: 0px"></div>
+				<div class="columns"></div>
 			</div>
-			<div class="main-canvas"></div>
+			<div class="rows--canvas">
+				<div class="row-wrapper">
+					<div class="pushed-overlay-row" style="height: 0px"></div>
+					<div class="rows"></div>
+				</div>
+				<div class="main-canvas-wrapper">
+					<div class="excel-top-space" style="height: 0"></div>
+					<div class="left-space-wrapper">
+						<div class="excel-left-space" style="width: 0"></div>
+						<div class="main-canvas"></div>
+					</div>
+				</div>
+			</div>
+			<canvas class="select-cell-canvas"></canvas>
+			<!-- <div></div> -->
 		</div>
 		<script type="module" src="script.js"></script>
 	</body>

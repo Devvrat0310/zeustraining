@@ -221,6 +221,6 @@ document.addEventListener("wheel", (e) => {
 // 		test6.releasePointerCapture(e.pointerId);
 // 	});
 
-// 	// ctx.fillRect(10, 10, 20, 40);
+// 	// ctx.fillRect(10, 10, 15, 40);
 // }
 // dynamicSize();

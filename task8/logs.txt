@@ -1,0 +1,3 @@
+wednesday: 1. Implemented virtual scrolling on column header and row sidebar.
+2. Implemented cell selection.
+3. Implemented multiselect.

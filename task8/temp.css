@@ -38,6 +38,7 @@ html {
 
 .row-wrapper {
 	width: -moz-fit-content;
+
 	background-color: white;
 	position: sticky;
 	left: 0;
@@ -61,38 +62,8 @@ html {
 
 .main-canvas {
 	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 0;
-	height: fit-content;
-	// width: -moz-fit-content;
-	// width: fit-content;
-	// overflow: auto;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	width: -moz-fit-content;
+	width: fit-content;
+	overflow: auto;
 } /*# sourceMappingURL=style.css.map */
-
-.main-canvas-wrapper {
-	display: flex;
-	flex-direction: column;
-	position: relative;
-}
-
-.left-space-wrapper {
-	display: flex;
-
-	position: relative;
-}
-
-.excel-left-space {
-	width: 1000px;
-	// height: 10px;
-}
-
-.select-cell-canvas {
-	position: absolute;
-	top: 0;
-	left: 0;
-	z-index: 100;
-}
-
-.select-cell-canvas:hover {
-	cursor: cell;
-}
