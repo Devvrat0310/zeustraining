@@ -59,37 +59,34 @@ export class Grid {
 		this.canvasOffsetY = rect.top;
 	}
 
+	updatePushedOverlayWidth(width, left, currCanvas) {
+		// Add empty space:
+		if (width === null) {
+			let space = parseInt(currCanvas.style.left, 10);
+			space += left;
+			currCanvas.style.left = `${space}px`;
+		} else {
+			let space = parseInt(currCanvas.style.width, 10);
+			space += width;
+			currCanvas.style.width = `${space}px`;
+		}
+	}
+
+	updatePushedOverlayHeight(height, top, currCanvas) {
+		if (height === null) {
+			let space = parseInt(currCanvas.style.top, 10);
+			space += top;
+			currCanvas.style.left = `${space}px`;
+		} else {
+			let space = parseInt(currCanvas.style.height, 10);
+			space += height;
+			currCanvas.style.height = `${space}px`;
+		}
+	}
+
 	setZoom(zoom) {
 		this.zoom = zoom;
 		this._initDimensions();
 		this.drawGrid();
 	}
-
-	// drawGrid() {
-	//     this.updateCanvasOffsets();
-	//     const { ctx, canvas, rowHeight, colWidth, dpr } = this;
-	//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-	//     const rows = Math.ceil(canvas.height / rowHeight);
-	//     const cols = Math.ceil(canvas.width / colWidth);
-
-	//     ctx.lineWidth = 1;
-	//     ctx.strokeStyle = "#d0d0d0";
-
-	//     for (let i = 0; i <= cols; i++) {
-	//         const x = Math.round(i * colWidth) + 0.5;
-	//         ctx.beginPath();
-	//         ctx.moveTo(x, 0);
-	//         ctx.lineTo(x, canvas.height);
-	//         ctx.stroke();
-	//     }
-
-	//     for (let j = 0; j <= rows; j++) {
-	//         const y = Math.round(j * rowHeight) + 0.5;
-	//         ctx.beginPath();
-	//         ctx.moveTo(0, y);
-	//         ctx.lineTo(canvas.width, y);
-	//         ctx.stroke();
-	//     }
-	// }
 }

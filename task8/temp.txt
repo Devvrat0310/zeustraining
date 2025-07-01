@@ -1,67 +1,87 @@
-    /**
-     * Create a SelectCell instance.
-     * @param {number} sheetIndex - Index of the spreadsheet to attach to.
-     * @param {number} [zoom=1] - Initial zoom level for cell selection.
-     */
+ 
 
-    /**
-     * Bind mouse events for cell selection to the spreadsheet element.
-     * @private
-     */
 
-    /**
-     * Handle mouse down event to start cell selection.
-     * Snaps the selection start to the cell grid.
-     * @param {MouseEvent} e - The mouse down event.
-     * @private
-     */
+colCoordinate(idx) {}
 
-    /**
-     * Handle mouse move event to update the selection rectangle.
-     * Updates the current selection endpoint and redraws the selection.
-     * @param {MouseEvent} e - The mouse move event.
-     * @private
-     */
+/**
+ * Adjusts the left margin of the parent element based on column width.
+ */
+handleColumnOffset() {}
 
-    /**
-     * Handle mouse up event to finish the selection.
-     * Finalizes the selection rectangle.
-     * @private
-     */
+/**
+ * Sets the zoom level and updates dimensions and rendering accordingly.
+ * @param {number} zoom The new zoom level.
+ */
+setZoom(zoom) {}
 
-    /**
-     * Draw the selection rectangle on the canvas based on current selection state.
-     * Clears previous selection and draws a new rectangle if selecting.
-     * @private
-     */
+/**
+ * Draws the column headers on the canvas.
+ * @returns {number} The index of the last column drawn.
+ */
+drawCols() {}
 
-    /**
-     * Set the zoom level for cell selection and redraw the selection.
-     * @param {number} zoom - The new zoom level.
-     */
+/**
+ * Initializes mouse event handlers for resizing columns and rows.
+ */
+initResizeHandlers() {}
 
-    /**
-     * Update the canvas size and redraw the selection.
-     * @param {number} height - The new canvas height.
-     * @param {number} width - The new canvas width.
-     */
+/**
+ * Handles mouse movement over the canvas to detect hover over column or row lines.
+ * @param {MouseEvent} e The mouse event.
+ */
+handleMouseMove(e) {}
 
-    /**
-     * Update the canvas position in the DOM.
-     * @param {number} x - The new left position in pixels.
-     * @param {number} y - The new top position in pixels.
-     */
+/**
+ * Handles mouse down events to initiate column or row resizing.
+ */
+handleMouseDown() {}
 
-    /**
-     * Clear the selection rectangle from the canvas and reset selection state.
-     */
+/**
+ * Handles mouse movement during a drag operation to resize columns or rows.
+ * @param {MouseEvent} e The mouse event.
+ */
+handleDragMove(e) {}
 
-    /**
-     * Get the current selection coordinates if a selection is in progress.
-     * @returns {Object|null} The selection coordinates {startX, startY, endX, endY} or null if not selecting.
-     */
+/**
+ * Handles mouse up events to end column or row resizing.
+ */
+handleMouseUp() {}
 
+/**
+ * Draws a line on the canvas.
+ * @param {number} x1 The starting x-coordinate.
+ * @param {number} y1 The starting y-coordinate.
+ * @param {number} x2 The ending x-coordinate.
+ * @param {number} y2 The ending y-coordinate.
+ * @param {string} color The color of the line.
+ */
+drawLine(x1, y1, x2, y2, color) {}
+
+/**
+ * Erases a line from the canvas.
+ * @param {number} x1 The starting x-coordinate.
+ * @param {number} y1 The starting y-coordinate.
+ * @param {number} x2 The ending x-coordinate.
+ * @param {number} y2 The ending y-coordinate.
+ */
+eraseLine(x1, y1, x2, y2) {}
+
+
+     
+     add jsdoc comment: eg : 
     /**
-     * Remove event listeners and the canvas from the DOM.
-     * Cleans up resources used by this instance.
-     */
+    * Intializes the Person object
+    *@param {String} firstName FirstName of the person
+    *@param {String} lastName Last Name of the person
+    *@param {number} age The age of the person
+    **/
+
+
+
+ * @property {HTMLCanvasElement} mainCanvas - The main canvas DOM element.
+ * @property {Object} zoomManager - The zoom manager object.
+ * @property {number} totalCanvas - The total number of canvases created.
+ * @property {Array<ExcelGrid>} canvases - Array of managed ExcelGrid instances.
+ *
+ * @method createCanvas - Creates a new ExcelGrid canvas, adds it to the manager, and increments the count.
+ * @method zoomAll - Applies the current zoom level to all managed canvases.

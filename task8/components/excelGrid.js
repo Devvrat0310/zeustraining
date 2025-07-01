@@ -79,13 +79,6 @@ export class ExcelGrid extends Grid {
  * @param {Object} zoomManager - An object managing the current zoom level.
  * @param {number} zoomManager.zoom - The current zoom factor.
  *
- * @property {HTMLCanvasElement} mainCanvas - The main canvas DOM element.
- * @property {Object} zoomManager - The zoom manager object.
- * @property {number} totalCanvas - The total number of canvases created.
- * @property {Array<ExcelGrid>} canvases - Array of managed ExcelGrid instances.
- *
- * @method createCanvas - Creates a new ExcelGrid canvas, adds it to the manager, and increments the count.
- * @method zoomAll - Applies the current zoom level to all managed canvases.
  */
 export class CanvasManager {
 	constructor(mainCanvas, zoomManager, excelLeftSpace, excelTopSpace) {

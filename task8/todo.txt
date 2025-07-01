@@ -7,7 +7,7 @@
 7. Implement cell selection. - In progress
 8. Implement multiselect.
 9. Implement custom scroll bar for horizontal and vertical scrolling.
-. Implement column and row resizing.
+10. Implement column and row resizing.
 11. Implement row selection and column selection.
 12. Implement optimal data storage for in memory as well as db.
 13. Implement cell editing.
