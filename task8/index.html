@@ -7,26 +7,40 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 	<body>
-		<div class="spreadsheet">
-			<canvas class="corner"></canvas>
-			<div class="column-wrapper">
-				<div class="pushed-overlay-column" style="width: 0px"></div>
-				<div class="columns"></div>
-			</div>
-			<div class="rows--canvas">
-				<div class="row-wrapper">
-					<div class="pushed-overlay-row" style="height: 0px"></div>
-					<div class="rows"></div>
+		<div id="spreadsheet-container">
+			<div class="spreadsheet">
+				<div class="content-bar">
+					<div class="selected-cell"></div>
+					<div class="formulas"></div>
+					<input type="text" class="bar-input" />
 				</div>
-				<div class="main-canvas-wrapper">
-					<div class="excel-top-space" style="height: 0"></div>
-					<div class="left-space-wrapper">
-						<div class="excel-left-space" style="width: 0"></div>
-						<div class="main-canvas"></div>
+				<div class="canvases">
+					<canvas class="corner"></canvas>
+					<div class="column-header-container">
+						<canvas class="columns-canvas"></canvas>
+					</div>
+
+					<div class="row-header-container">
+						<canvas class="rows-canvas"></canvas>
+					</div>
+
+					<div class="main-grid-container">
+						<canvas class="main-canvas"></canvas>
+					</div>
+					<canvas class="selection-canvas"></canvas>
+					<div class="scrollbar-track scrollbar-track-vertical">
+						<div
+							class="scrollbar-thumb scrollbar-thumb-vertical"
+						></div>
 					</div>
 				</div>
+				<div class="scrollbar-track scrollbar-track-horizontal">
+					<div
+						class="scrollbar-thumb scrollbar-thumb-horizontal"
+					></div>
+				</div>
 			</div>
-			<canvas class="select-cell-canvas" style="left: 0; top: 0"></canvas>
+			<textarea id="cell-editor" class="cell-editor"></textarea>
 		</div>
 		<script type="module" src="script.js"></script>
 	</body>
