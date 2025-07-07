@@ -1,98 +1,100 @@
 body,
 html {
-	margin: 0;
-	padding: 0;
-	overflow: hidden;
-	height: 100%;
-	font-family: Arial, sans-serif;
-	background-color: #f5f5f5;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  height: 100%;
+  font-family: Arial, sans-serif;
+  background-color: #f5f5f5;
 }
 
 #spreadsheet-container {
-	position: relative;
-	width: 100vw;
-	height: 100vh;
-	overflow: hidden;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .spreadsheet {
-	width: 100%;
-	height: 100%;
+  width: 100%;
+  height: 100%;
 }
 
 .canvases {
-	position: relative;
-	width: 100%;
-	height: 100%;
-	display: grid;
-	grid-template-areas: "corner columns" "rows   main";
-	grid-template-columns: 50px 1fr;
-	grid-template-rows: 20px 1fr;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-areas: "corner columns" "rows   main";
+  grid-template-columns: 50px 1fr;
+  grid-template-rows: 20px 1fr;
 }
 
 .content-bar {
-	display: flex;
-	gap: 20px;
-	padding: 10px;
-	height: -moz-fit-content;
-	height: fit-content;
+  display: flex;
+  gap: 20px;
+  padding: 10px;
+  height: -moz-fit-content;
+  height: fit-content;
 }
 
 .selected-cell {
-	background-color: white;
-	width: 100px;
-	border: 1px solid #d1d1d1;
-	border-radius: 4px;
+  background-color: white;
+  width: 100px;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  padding: 5px 8px;
 }
 
 .bar-input {
-	border: 1px solid #d1d1d1;
-	border-radius: 4px;
-	width: 100%;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  width: 100%;
+  padding: 5px 8px;
 }
 
 .formulas {
-	background-color: white;
-	width: 100px;
-	border: 1px solid #d1d1d1;
-	border-radius: 4px;
+  background-color: white;
+  width: 100px;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
 }
 
 .corner {
-	width: 20px;
-	border: 2px solid #bdbdbd;
-	border-top: 0;
-	border-left: 0;
-	background-color: #f5f5f5;
-	z-index: 60;
+  width: 20px;
+  border: 2px solid #bdbdbd;
+  border-top: 0;
+  border-left: 0;
+  background-color: #f5f5f5;
+  z-index: 60;
 }
 
 .column-header-container,
 .row-header-container,
 .main-grid-container {
-	position: relative;
-	overflow: hidden;
-	z-index: 10;
+  position: relative;
+  overflow: hidden;
+  z-index: 10;
 }
 
 .column-header-container {
-	grid-area: columns;
-	/* background-color: #f0f0f0;
+  grid-area: columns;
+  /* background-color: #f0f0f0;
   border-bottom: 1px solid #ccc; */
-	z-index: 40;
+  z-index: 40;
 }
 
 .row-header-container {
-	grid-area: rows;
-	background-color: #f0f0f0;
-	z-index: 40;
+  grid-area: rows;
+  background-color: #f0f0f0;
+  z-index: 40;
 }
 
 .main-grid-container {
-	grid-area: main;
+  grid-area: main;
 }
 .main-grid-container:hover {
-	cursor: cell;
+  cursor: cell;
 }
 
 /* All canvases fill their parent container */
@@ -100,86 +102,87 @@ html {
 .columns-canvas,
 .rows-canvas,
 .selection-canvas {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
 /* .rows-canvas {
 	border-right: 2px solid black;
 } */
 .selection-canvas {
-	z-index: 25;
-	pointer-events: none;
+  z-index: 25;
+  pointer-events: none;
 }
 
 /* Cursor for resizing */
 .col-resize-cursor {
-	cursor: col-resize;
+  cursor: col-resize;
 }
 
 .row-resize-cursor {
-	cursor: row-resize;
+  cursor: row-resize;
 }
 
 .row-resize-cursor-hover:hover {
-	cursor: row-resize;
+  cursor: row-resize;
 }
 
 /*  Scrollbar Styles  */
 .scrollbar-track {
-	position: absolute;
-	background-color: #e7e7e7;
-	z-index: 40;
-	cursor: default;
+  position: absolute;
+  background-color: #e7e7e7;
+  z-index: 40;
+  cursor: default;
 }
 
 .scrollbar-thumb {
-	position: absolute;
-	background-color: #8a8a8a;
-	border-radius: 6px;
+  position: absolute;
+  background-color: #8a8a8a;
+  border-radius: 6px;
 }
 
 .scrollbar-thumb:hover {
-	background-color: #a8a8a8;
+  background-color: #a8a8a8;
 }
 
 .scrollbar-track-horizontal {
-	bottom: 0;
-	left: 0;
-	right: 0;
-	height: 12px;
+  bottom: 0;
+  left: 0;
+  right: 12px;
+  height: 12px;
+  z-index: 100;
 }
 
 .scrollbar-track-vertical {
-	top: 0;
-	right: 0;
-	bottom: 0;
-	width: 12px;
+  top: 0;
+  right: 0;
+  bottom: 12px;
+  width: 12px;
 }
 
 .scrollbar-thumb-horizontal {
-	height: 100%;
+  height: 100%;
 }
 
 .scrollbar-thumb-vertical {
-	width: 100%;
+  width: 100%;
 }
 
 /*  Cell Editor Styles  */
 .cell-editor {
-	position: absolute;
-	display: none;
-	z-index: 50;
-	border: 2px solid #137e43;
-	outline: none;
-	padding: 2px 2px 2px 0;
-	box-sizing: border-box;
-	font-family: Arial, sans-serif;
-	font-size: 12px;
-	background-color: white;
-	resize: none;
-	overflow: hidden;
-} /*# sourceMappingURL=style.css.map */
+  position: absolute;
+  display: none;
+  z-index: 50;
+  border: 2px solid #137e43;
+  outline: none;
+  padding: 3px 4px;
+  box-sizing: border-box;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  background-color: white;
+  resize: none;
+  overflow: hidden;
+}/*# sourceMappingURL=style.css.map */

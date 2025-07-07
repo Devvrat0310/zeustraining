@@ -36,26 +36,39 @@ export class SheetModel {
 		 * Stores the current selection range.
 		 * @type {{ start: {row: number, col: number}, end: {row: number, col: number} } | null}
 		 */
-		this.selection = null;
+		// this.selection = null;
+		this.selection = { start: { row: 0, col: 0 }, end: { row: 0, col: 0 } };
 
 		/**
-		 * Stores boolean for checking if we are selecting entire row.
+		 * Stores boolean for checking if we are selecting an entire row.
 		 * @type {boolean}
 		 */
-		this.rowSidebarSelection = false;
+		this.rowSidebarSelecting = false;
 
 		/**
-		 * Stores boolean for checking if we are selecting entire column.
+		 * Stores boolean for checking if we have selected an entire row.
 		 * @type {boolean}
 		 */
-		this.columnHeaderSelection = false;
+		this.rowSidebarSelected = false;
+
+		/**
+		 * Stores boolean for checking if we are selecting an entire column.
+		 * @type {boolean}
+		 */
+		this.columnHeaderSelecting = false;
+
+		/**
+		 * Stores boolean for checking if we have selected an entire column.
+		 * @type {boolean}
+		 */
+		this.columnHeaderSelected = false;
 
 		/**
 		 * Stores the single active cell coordinates, which is the cell that
 		 * would be edited.
-		 * @type {{row: number, col: number} | null}
+		 * @type {{row: number, col: number} }
 		 */
-		this.activeCell = null;
+		this.activeCell = { row: 0, col: 0 };
 
 		/** @type {number[]} Init cumulative sums of column widths for faster lookups. */
 		this.cumulativeColWidths = [];
@@ -67,6 +80,18 @@ export class SheetModel {
 		 * @type {number} A variable to track zoom amount.
 		 */
 		this.zoom = 1.5;
+
+		/**
+		 * Stores all the calculated value of the mathematical functions.
+		 * @type {{count: number, min: number, max: number, sum: number, average: number}}
+		 */
+		this.selectedResult = {
+			count: 0,
+			min: Number.MAX_VALUE,
+			max: -Number.MAX_VALUE,
+			sum: 0,
+			avg: 0,
+		};
 	}
 
 	/**
@@ -198,5 +223,49 @@ export class SheetModel {
 		const width = this.columnWidths[col];
 		const height = this.rowHeights[row];
 		return { x, y, width, height };
+	}
+
+	/**
+	 *
+	 * @param {string} mathFunc - count, min, max, sum and average
+	 * @returns {{count: number, min: number, max: number, sum: number, average: number}}
+	 */
+	getSelectedResult(mathFunc) {
+		if (!this.selection) return null;
+
+		const { start, end } = this.selection;
+
+		const startRow = Math.min(start.row, end.row);
+		const endRow = Math.max(start.row, end.row);
+		const startCol = Math.min(start.col, end.col);
+		const endCol = Math.max(start.col, end.col);
+
+		let res = {
+			count: 0,
+			min: Number.MAX_VALUE,
+			max: -Number.MAX_VALUE,
+			sum: 0,
+			avg: 0,
+		};
+
+		// if (mathFunc.toLocaleLowerCase() === "sum") {
+		for (let r = startRow; r <= endRow; r++) {
+			for (let c = startCol; c <= endCol; c++) {
+				const curr = parseFloat(this.getCellValue(r, c));
+				if (curr !== undefined || !isNaN(curr)) continue;
+
+				// console.log("adding to res");
+				res.sum += curr;
+				res.max = Math.max(res.max, curr);
+				res.min = Math.min(res.min, curr);
+				res.count += 1;
+				res.avg = res.sum / res.count;
+			}
+		}
+		// }
+
+		// console.log("res: ", res);
+		// if (mathFunc. === "sum") return res.sum;
+		return res;
 	}
 }

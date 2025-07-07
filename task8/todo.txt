@@ -12,14 +12,15 @@
 11. Implement row selection and column selection. - Done
 12. Implement optimal data storage for in memory as well as db.
 13. Implement cell editing. - Done
-14. Implement computing functions (count, min, max, sum, average)
-15. Implement command pattern (undo, redo).
+14. Implement computing functions (count, min, max, sum, average). - In progress
+15. Implement command pattern (undo, redo). - Done
 16. Implement row numbering sidebar width resizing as per the width of number in it. - Done
 17. Implement marching ants feature when selected.
-
+18. Implement insert row column feature.
 
 Today's work: 
 1. Implemented keyboard navigation for selected cell.
 2. Also added multicell selection using keyboard.
 3. Completed scroll as we select cells further in screen.
 4. Completed scrolling as we selected cells and drag mouse.
+

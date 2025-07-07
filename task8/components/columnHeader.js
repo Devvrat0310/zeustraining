@@ -42,7 +42,11 @@ export class ColumnHeader extends Renderer {
 			0
 		);
 
+		// if (model.columnHeaderSelected) {
+		// 	this.fillText(startCol, endCol, model, viewport, "#ccc", "#616161");
+		// } else {
 		this.fillText(startCol, endCol, model, viewport, "#ccc", "#616161");
+		// }
 	}
 
 	fillText(startCol, endCol, model, viewport, strokeStyle, fillStyle) {
@@ -79,7 +83,7 @@ export class ColumnHeader extends Renderer {
 			);
 		}
 
-		if (model.columnHeaderSelection) {
+		if (model.columnHeaderSelected) {
 			// Create border when
 			const extremeLines = [startCol - 1, endCol];
 
@@ -110,7 +114,7 @@ export class ColumnHeader extends Renderer {
 		this.ctx.fillStyle = "#caead8";
 		this.ctx.strokeStyle = "#107c41";
 
-		if (model.columnHeaderSelection) {
+		if (model.columnHeaderSelected) {
 			this.ctx.fillStyle = "#107c41";
 			this.ctx.strokeStyle = "white";
 		}
@@ -129,7 +133,7 @@ export class ColumnHeader extends Renderer {
 			model,
 			viewport,
 			"#b5e1c8",
-			model.columnHeaderSelection ? "white" : "#0f703b"
+			model.columnHeaderSelected ? "white" : "#0f703b"
 		);
 
 		this.ctx.lineWidth = 2;
