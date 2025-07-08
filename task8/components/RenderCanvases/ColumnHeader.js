@@ -1,4 +1,4 @@
-import { Renderer } from "./Renderer.js";
+import { Renderer } from "../Renderer.js";
 
 /**
  * Renders the column headers (A, B, C...).

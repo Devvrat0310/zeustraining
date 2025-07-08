@@ -246,7 +246,7 @@ export class Scrollbar {
 		const mainGridContainer = this.container.querySelector(
 			".main-grid-container"
 		);
-		const pageAmountX = mainGridContainer.clientWidth * 0.1; // Scroll 10% of a page per step
+		const pageAmountX = mainGridContainer.clientWidth * 0.1;
 		const pageAmountY = mainGridContainer.clientHeight * 0.1;
 
 		let dx = 0;

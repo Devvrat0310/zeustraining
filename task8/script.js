@@ -1,10 +1,10 @@
 import { SheetModel } from "./components/SheetModel.js";
 import { Viewport } from "./components/Viewport.js";
 
-import { ExcelGrid } from "./components/ExcelGrid.js";
+import { ExcelGrid } from "./components/RenderCanvases/ExcelGrid.js";
 import { SelectCell } from "./components/SelectCell.js";
-import { ColumnHeader } from "./components/ColumnHeader.js";
-import { RowSidebar } from "./components/RowSidebar.js";
+import { ColumnHeader } from "./components/RenderCanvases/ColumnHeader.js";
+import { RowSidebar } from "./components/RenderCanvases/RowSidebar.js";
 
 import { Scrollbar } from "./components/Scrollbar.js";
 
@@ -14,6 +14,11 @@ import { CommandManager } from "./components/CommandManager.js";
 import { ResizeColumnCommand } from "./components/commands/ResizeColumnCommand.js";
 import { ResizeRowCommand } from "./components/commands/ResizeRowCommand.js";
 import { SetCellValueCommand } from "./components/commands/SetCellValueCommand.js";
+
+import { ColumnResizeHandler } from "./components/eventHandlers/ColumnResizeHandler.js";
+import { RowResizeHandler } from "./components/eventHandlers/RowResizeHandler.js";
+import { ColumnSelectionHandler } from "./components/eventHandlers/ColumnSelectionHandler.js";
+import { RowSelectionHandler } from "./components/eventHandlers/RowSelectionHandler.js";
 
 /**
  * The main application class, acting as the Controller.
@@ -32,7 +37,7 @@ class Spreadsheet {
 
 		this.zoomManager = new ZoomManager();
 
-		this.model = new SheetModel(500, 1000);
+		this.model = new SheetModel(500, 500);
 
 		this.viewport = new Viewport(this.container);
 
@@ -55,6 +60,19 @@ class Spreadsheet {
 
 		this.scrollbarController = new Scrollbar(this);
 		this.selectionScrollAnimationFrameId = null; // To manage selection auto-scroll
+
+		/**
+		 * @type {Array[Object]} - An array that contains all the mouse event handlers
+		 */
+		this.mouseEventHandlers = [
+			new ColumnResizeHandler(),
+			new RowResizeHandler(),
+			new ColumnSelectionHandler(),
+			new RowSelectionHandler(),
+		];
+
+		this.activeEvent = null;
+
 		this.init();
 	}
 
@@ -127,7 +145,6 @@ class Spreadsheet {
 		// Set zoom in Sheetmodel to current zoom;
 		this.model.zoom = this.zoomManager.zoom;
 
-		// First, render the row header to calculate its required width
 		this.rowSidebar.render(this.model, this.viewport);
 
 		if (this.model.activeCell && document.activeElement !== this.barInput) {
@@ -139,7 +156,6 @@ class Spreadsheet {
 		// Update the main grid layout if the row header width changed
 		const layoutChanged = this.updateLayout();
 
-		// Render the rest of the views
 		this.mainGrid.render(this.model, this.viewport);
 		this.columnHeader.render(this.model, this.viewport);
 		this.selectCell.render(this.model, this.viewport, this);
@@ -295,14 +311,11 @@ class Spreadsheet {
 				this.barInput.value = "";
 				return;
 			}
-			// return;
-
 			if (e.key.length > 1) {
 				return;
 			}
 
 			const { row, col } = this.model.activeCell;
-			console.log("row, col", row, col);
 			this.model.setCellValue(row, col, this.barInput.value + e.key);
 			// console.log("this.barInput", this.barInput);
 			// console.log("this.barInput.value", this.barInput.value);
@@ -310,14 +323,17 @@ class Spreadsheet {
 			return;
 		}
 
+		// console.log("this.isEditing", this.isEditing);
 		// console.log("key resed");
 		// The editor's own keydown handler will be called.
 		if (this.isEditing) {
 			return;
 		}
 
+		// console.log("reached undo redo");
 		// Undo/Redo
 		if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "z") {
+			console.log("shift z");
 			e.preventDefault();
 			this.commandManager.redo();
 			this.render();
@@ -434,7 +450,7 @@ class Spreadsheet {
 			spreadsheetRect.left;
 
 		const rect = this.spreadsheetElement.getBoundingClientRect();
-		console.log("this.spreadsheetElement", rect.top);
+		// console.log("this.spreadsheetElement", rect.top);
 		this.cellEditor.style.display = "block";
 		this.cellEditor.style.top = `${editorTop + rect.top - 2}px`;
 		this.cellEditor.style.left = `${editorLeft + rect.left - 2}px`;
@@ -515,10 +531,12 @@ class Spreadsheet {
 	}
 
 	scrollBy(dx, dy) {
+		// for (let i = 0; i < 10; i++) {
 		if (dx) this.viewport.scrollLeft += dx;
 		if (dy) this.viewport.scrollTop += dy;
 		this.checkForInfiniteScroll();
 		this.render();
+		// }
 	}
 
 	handleWheel(e) {
@@ -566,8 +584,8 @@ class Spreadsheet {
 			// Math.min(this.viewport.scrollTop, maxScrollTop)
 		);
 	}
+
 	handleRowColumnSelection(e, mainController) {
-		console.log("handelling row column");
 		const rect = this.spreadsheetElement.getBoundingClientRect();
 		if (e.clientX <= this.rowSidebar.requiredWidth) {
 			e.target.setPointerCapture(e.pointerId);
@@ -580,6 +598,13 @@ class Spreadsheet {
 				endColPixel,
 				e.clientY + this.viewport.scrollTop - rect.top
 			);
+
+			// console.log(
+			// 	"e.clientY + this.viewport.scrollTop - rect.top",
+			// 	e.clientY + this.viewport.scrollTop - rect.top
+			// );
+
+			// console.log("this.viewport", this.viewport);
 
 			const coord = this.model.getCellCoordsFromPosition(
 				e.clientX,
@@ -641,50 +666,16 @@ class Spreadsheet {
 			this.hideCellEditor(true);
 		}
 
-		const headerContainer = this.container.querySelector(
-			".column-header-container"
-		);
-
-		const rowContainer = this.container.querySelector(
-			".row-header-container"
-		); // Get the row header container
-
-		if (headerContainer.contains(e.target)) {
-			const x = e.offsetX + this.viewport.scrollLeft;
-			for (let i = 0; i < this.model.columnWidths.length; i++) {
-				const colEdgeX = this.model.cumulativeColWidths[i];
-				if (Math.abs(x - colEdgeX) < 5) {
-					this.isResizingColumn = {
-						colIndex: i,
-						startX: e.clientX,
-						startWidth: this.model.columnWidths[i],
-					};
-					this.container.classList.add("col-resize-cursor");
-					return;
-				}
+		for (const currEvent of this.mouseEventHandlers) {
+			if (currEvent.hitTest(e, this)) {
+				// console.log("yes column/row event called");
+				this.activeEvent = currEvent;
+				this.activeEvent.onPointerDown(e, this);
+				return;
 			}
 		}
 
-		// Check for Row Resize
-		if (rowContainer.contains(e.target)) {
-			const y = e.offsetY + this.viewport.scrollTop;
-			// Check if pointer is near a row edge
-			for (let i = 0; i < this.model.rowHeights.length; i++) {
-				const rowEdgeY = this.model.cumulativeRowHeights[i];
-				if (Math.abs(y - rowEdgeY) < 5) {
-					// 5px grab area
-					this.isResizingRow = {
-						rowIndex: i,
-						startY: e.clientY,
-						startHeight: this.model.rowHeights[i],
-					};
-					this.container.classList.add("row-resize-cursor");
-					return;
-				}
-			}
-		}
-
-		this.handleRowColumnSelection(e);
+		// this.handleRowColumnSelection(e);
 
 		// Start Cell SelectCell
 		const mainGridContainer = this.container.querySelector(
@@ -707,11 +698,11 @@ class Spreadsheet {
 
 			// console.log("this.selectedCell", this.selectedCell);
 			// console.log("this.selectedCell.value", this.selectedCell.value);
-			// console.log("coords", coords);
+			console.log("coords when selected", coords);
 
 			const colCoord = this.columnHeader.colCoordinate(coords.col);
 			// console.log("colCoord", colCoord);
-			this.selectedCell.value = `${colCoord}${coords.row + 1}`;
+			this.selectedCell.value = `${colCoord}${coords.row}`;
 
 			this.render();
 		}
@@ -777,23 +768,9 @@ class Spreadsheet {
 			this.selectionScrollAnimationFrameId = null;
 		}
 
-		if (this.isResizingColumn) {
-			const diffX = e.clientX - this.isResizingColumn.startX;
-			const newWidth = this.isResizingColumn.startWidth + diffX;
-			this.model.setColumnWidth(this.isResizingColumn.colIndex, newWidth);
-			this.render();
-			return;
-		}
-
-		if (this.isResizingRow) {
-			const diffY = e.clientY - this.isResizingRow.startY;
-			const newHeight = this.isResizingRow.startHeight + diffY;
-			this.model.setRowHeight(this.isResizingRow.rowIndex, newHeight);
-			this.render();
-			return;
-		}
-
-		if (
+		if (this.activeEvent) {
+			this.activeEvent.onPointerMove(e, this);
+		} else if (
 			this.isSelecting ||
 			this.model.rowSidebarSelecting ||
 			this.model.columnHeaderSelecting
@@ -836,23 +813,17 @@ class Spreadsheet {
 
 			// Update the selection end-point based on the current pointer coordinates
 			const updateSelection = () => {
-				if (this.model.rowSidebarSelecting) {
-					// this.isSelecting = true;
+				if (this.model.rowSidebarSelected) {
+					const rect =
+						this.spreadsheetElement.getBoundingClientRect();
 
-					const col = this.model.colCount;
 					const coord = this.model.getCellCoordsFromPosition(
 						e.clientX,
-						e.clientY + this.viewport.scrollTop
+						e.clientY + this.viewport.scrollTop - rect.top
 					);
 
-					this.model.selection = {
-						...this.model.selection,
-						end: {
-							row: coord.row - 1,
-							col: col - 1,
-						},
-					};
-				} else if (this.model.columnHeaderSelecting) {
+					this.model.selection.end.row = coord.row - 1;
+				} else if (this.model.columnHeaderSelected) {
 					const row = this.model.rowCount;
 					const coord = this.model.getCellCoordsFromPosition(
 						e.clientX + this.viewport.scrollLeft,
@@ -898,43 +869,10 @@ class Spreadsheet {
 	handlePointerUp(e) {
 		this.scrollbarController.handlePointerUp(e);
 
-		if (this.isResizingColumn) {
-			this.container.classList.remove("col-resize-cursor");
-			const { colIndex, startWidth } = this.isResizingColumn;
-			const newWidth = this.model.columnWidths[colIndex];
-			this.model.setColumnWidth(colIndex, startWidth);
-
-			const command = new ResizeColumnCommand(
-				this.model,
-				colIndex,
-				newWidth
-			);
-			this.commandManager.execute(command);
-
-			this.isResizingColumn = null;
-			this.render();
-		}
-
-		// Finalize Row Resize
-		if (this.isResizingRow) {
-			this.container.classList.remove("row-resize-cursor");
-			const { rowIndex, startHeight } = this.isResizingRow;
-			const newHeight = this.model.rowHeights[rowIndex];
-
-			this.model.setRowHeight(rowIndex, startHeight);
-
-			const command = new ResizeRowCommand(
-				this.model,
-				rowIndex,
-				newHeight
-			);
-			this.commandManager.execute(command);
-
-			this.isResizingRow = null;
-			this.render();
-		}
-
-		if (
+		if (this.activeEvent) {
+			this.activeEvent.onPointerUp(e, this);
+			this.activeEvent = null;
+		} else if (
 			this.isSelecting ||
 			this.model.rowSidebarSelecting ||
 			this.model.columnHeaderSelecting
@@ -948,7 +886,7 @@ class Spreadsheet {
 			this.model.rowSidebarSelecting = false;
 			this.model.columnHeaderSelecting = false;
 
-			console.log("pointer upped");
+			// console.log("pointer upped");
 
 			// is
 		}

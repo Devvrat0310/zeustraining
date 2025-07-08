@@ -27,8 +27,7 @@ export class SheetModel {
 
 		/**
 		 * Stores cell data in an object.
-		 * Eg : row 1, col1 => key = '1_1'
-		 * @type {Object.<string, { value: any }>}
+		 * @type {Object.<string, { value: any, function: string }>}
 		 */
 		this.cellData = {};
 
@@ -92,6 +91,12 @@ export class SheetModel {
 			sum: 0,
 			avg: 0,
 		};
+
+		/**
+		 * Stores the if the current cell is a function and deriving value from other cells.
+		 * @type {{function: string}}
+		 */
+		this.isCellFunction = {};
 	}
 
 	/**

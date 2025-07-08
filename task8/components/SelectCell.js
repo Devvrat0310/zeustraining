@@ -1,6 +1,13 @@
 import { Renderer } from "./Renderer.js";
 
 export class SelectCell extends Renderer {
+	/**
+	 *
+	 *
+	 * @param {SheetModel} model
+	 * @param {Viewport} viewport
+	 * @param {Spreadsheet} spreadsheet
+	 */
 	render(model, viewport, spreadsheet) {
 		this.configure();
 		this.clear();
@@ -115,6 +122,8 @@ export class SelectCell extends Renderer {
 			);
 		}
 
+		console.log("spreadsheet.isEditing", spreadsheet.isEditing);
+
 		if (model.selection && !spreadsheet.isEditing) {
 			// Lower right cornered square  of a selected area
 			this.ctx.fillStyle = "#137e43";
@@ -134,9 +143,27 @@ export class SelectCell extends Renderer {
 				6,
 				6
 			);
+		} else if (spreadsheet.isEditing) {
+			// this.ctx.clearRect(
+			// 	viewX + width + gridContainerOffsetLeft - 2,
+			// 	viewY + height + gridContainerOffsetTop - 2,
+			// 	5,
+			// 	5
+			// );
+			this.ctx.fillStyle = "black";
+			this.ctx.fillRect(
+				viewX + width + gridContainerOffsetLeft - 2,
+				viewY + height + gridContainerOffsetTop - 2,
+				5,
+				5
+			);
 		}
 	}
 
+	/**
+	 * Keep adding column in model selection as we scroll to the left.
+	 * @param {Spreadsheet} mainController
+	 */
 	updateSelectedColumn(mainController) {
 		if (!mainController.model.columnHeaderSelected) return;
 
@@ -162,6 +189,10 @@ export class SelectCell extends Renderer {
 		); // Add 100 row for buffer
 	}
 
+	/**
+	 * Keep adding column in model selection as we scroll to the bottom.
+	 * @param {Spreadsheet} mainController
+	 */
 	updateSelectedRow(mainController) {
 		if (!mainController.model.rowSidebarSelected) return;
 
@@ -182,35 +213,9 @@ export class SelectCell extends Renderer {
 			startRowCoord.y + rect.top
 		);
 
-		console.log("endColId", endColId.col);
-
 		mainController.model.selection.end.col = Math.min(
 			maxCol - 1,
 			endColId.col + 100
 		);
-
-		console.log("maxCol", maxCol);
-		console.log(
-			"mainController.model.selection.end",
-			mainController.model.selection.end
-		);
-
-		// const coord = this.model.getCellCoordsFromPosition(
-		// 	e.clientX,
-		// 	e.clientY + this.viewport.scrollTop - rect.top
-		// );
-
-		// this.model.selection = {
-		// 	start: { row: coord.row - 1, col: 0 },
-		// 	end: {
-		// 		row: coord.row - 1,
-		// 		col: col - 1,
-		// 	},
-		// };
-
-		// this.model.activeCell = {
-		// 	row: this.model.selection.start.row,
-		// 	col: 0,
-		// };
 	}
 }

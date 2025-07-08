@@ -1,4 +1,4 @@
-import { Renderer } from "./Renderer.js";
+import { Renderer } from "../Renderer.js";
 
 /**
  * Renders the row headers (1, 2, 3...).
@@ -47,7 +47,7 @@ export class RowSidebar extends Renderer {
 		const textMetrics = this.ctx.measureText(
 			lastVisibleRowNumber.toString()
 		);
-		const newRequiredWidth = Math.ceil(textMetrics.width) + 30; // Text width + padding (10px on each side)
+		const newRequiredWidth = Math.ceil(textMetrics.width) + 30; // Text width
 
 		// Update the required width if it has changed
 		if (
@@ -114,7 +114,7 @@ export class RowSidebar extends Renderer {
 			this.ctx.fillText(
 				(r + 1).toString(),
 				viewWidth - 5,
-				drawY + height / 2 + 1
+				drawY + height / 2 + 2
 			);
 		}
 

@@ -24,3 +24,9 @@ Today's work:
 3. Completed scroll as we select cells further in screen.
 4. Completed scrolling as we selected cells and drag mouse.
 
+Classes 
+- row resizer
+- column resizer
+- row selector
+- column selector
+- cell selecter
