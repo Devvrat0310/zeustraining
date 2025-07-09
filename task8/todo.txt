@@ -30,3 +30,5 @@ Classes
 - row selector
 - column selector
 - cell selecter
+
+Update script.js as well 

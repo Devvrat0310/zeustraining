@@ -1,4 +1,4 @@
-import { Renderer } from "../Renderer.js";
+import { Renderer } from "./Renderer.js";
 
 /**
  * Renders the row headers (1, 2, 3...).

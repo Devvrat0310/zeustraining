@@ -19,6 +19,7 @@ import { ColumnResizeHandler } from "./components/eventHandlers/ColumnResizeHand
 import { RowResizeHandler } from "./components/eventHandlers/RowResizeHandler.js";
 import { ColumnSelectionHandler } from "./components/eventHandlers/ColumnSelectionHandler.js";
 import { RowSelectionHandler } from "./components/eventHandlers/RowSelectionHandler.js";
+import { CellSelectionHandler } from "./components/eventHandlers/CellSelectionHandler.js";
 
 /**
  * The main application class, acting as the Controller.
@@ -61,14 +62,21 @@ class Spreadsheet {
 		this.scrollbarController = new Scrollbar(this);
 		this.selectionScrollAnimationFrameId = null; // To manage selection auto-scroll
 
+		this.columnResizeHandler = new ColumnResizeHandler();
+		this.rowResizeHandler = new RowResizeHandler();
+		this.columnSelectionHandler = new ColumnSelectionHandler();
+		this.rowSelectionHandler = new RowSelectionHandler();
+		this.cellSelectionHandler = new CellSelectionHandler();
+
 		/**
 		 * @type {Array[Object]} - An array that contains all the mouse event handlers
 		 */
 		this.mouseEventHandlers = [
-			new ColumnResizeHandler(),
-			new RowResizeHandler(),
-			new ColumnSelectionHandler(),
-			new RowSelectionHandler(),
+			this.columnResizeHandler,
+			this.rowResizeHandler,
+			this.columnSelectionHandler,
+			this.rowSelectionHandler,
+			this.cellSelectionHandler,
 		];
 
 		this.activeEvent = null;
@@ -156,7 +164,7 @@ class Spreadsheet {
 		// Update the main grid layout if the row header width changed
 		const layoutChanged = this.updateLayout();
 
-		this.mainGrid.render(this.model, this.viewport);
+		this.mainGrid.render(this.model, this.viewport, this.container);
 		this.columnHeader.render(this.model, this.viewport);
 		this.selectCell.render(this.model, this.viewport, this);
 
@@ -170,7 +178,7 @@ class Spreadsheet {
 
 		if (layoutChanged) {
 			this.rowSidebar.render(this.model, this.viewport);
-			this.mainGrid.render(this.model, this.viewport);
+			this.mainGrid.render(this.model, this.viewport, this.container);
 			this.columnHeader.render(this.model, this.viewport);
 			this.selectCell.render(this.model, this.viewport, this);
 		}
@@ -190,16 +198,9 @@ class Spreadsheet {
 		);
 		document.addEventListener("pointerup", this.handlePointerUp.bind(this));
 
-		// this.container.addEventListener(
-		// 	"keydown",
-		// 	this.handleStartCellEditingKeyDown.bind(this)
-		// );
-
-		window.addEventListener("keydown", this.handleGlobalKeyDown.bind(this));
+		window.addEventListener("keydown", this.handleKeyDown.bind(this));
 
 		window.addEventListener("resize", this.handleWindowResizing.bind(this));
-
-		// window.addEventListener("resize", this.handleWindowZooming.bind(this));
 
 		// Listener to enable cell editing
 		this.container.addEventListener(
@@ -218,91 +219,8 @@ class Spreadsheet {
 		);
 	}
 
-	handleKeyboardNavigation(e, isShift) {
-		let rowBefore = this.model.selection.end.row;
-		let colBefore = this.model.selection.end.col;
-
-		switch (e.key) {
-			case "ArrowDown":
-				rowBefore += 1;
-				break;
-			case "ArrowUp":
-				rowBefore -= 1;
-				break;
-			case "ArrowRight":
-				colBefore += 1;
-				break;
-			case "ArrowLeft":
-				colBefore -= 1;
-				break;
-			default:
-				return; // Not a navigation key
-		}
-
-		rowBefore = Math.max(0, rowBefore);
-		colBefore = Math.max(0, colBefore);
-
-		if (isShift) {
-			this.model.selection = {
-				...this.model.selection,
-				end: { row: rowBefore, col: colBefore },
-			};
-		} else {
-			this.model.activeCell = { row: rowBefore, col: colBefore };
-			this.model.selection = {
-				start: { ...this.model.activeCell },
-				end: { ...this.model.activeCell },
-			};
-		}
-
-		const { row: endRow, col: endCol } = this.model.selection.end;
-		const {
-			x: cellX,
-			y: cellY,
-			width: cellWidth,
-			height: cellHeight,
-		} = this.model.getCellDimensions(endRow, endCol);
-
-		const mainGridContainer = this.container.querySelector(
-			".main-grid-container"
-		);
-		const viewWidth = mainGridContainer.clientWidth;
-		const viewHeight = mainGridContainer.clientHeight;
-
-		let scrollX = 0;
-		let scrollY = 0;
-
-		// Check if cell is off-screen to the left
-		if (cellX < this.viewport.scrollLeft) {
-			scrollX = cellX - this.viewport.scrollLeft;
-		}
-		// Check if cell is off-screen to the right
-		else if (cellX + cellWidth > this.viewport.scrollLeft + viewWidth) {
-			scrollX =
-				cellX + cellWidth - (this.viewport.scrollLeft + viewWidth);
-		}
-
-		// Check if cell is off-screen to the top
-		if (cellY < this.viewport.scrollTop) {
-			scrollY = cellY - this.viewport.scrollTop;
-		}
-		// Check if cell is off-screen to the bottom
-		else if (cellY + cellHeight > this.viewport.scrollTop + viewHeight) {
-			scrollY =
-				cellY + cellHeight - (this.viewport.scrollTop + viewHeight);
-		}
-
-		if (scrollX !== 0 || scrollY !== 0) {
-			setTimeout(() => {
-				this.scrollBy(scrollX, scrollY);
-			}, 0);
-		}
-
-		this.render();
-	}
-
 	// Centralized keydown handler
-	handleGlobalKeyDown(e) {
+	handleKeyDown(e) {
 		// console.log("this.barInput.focus()", this.barInput);
 		if (document.activeElement === this.barInput) {
 			if (e.key === "Enter") {
@@ -322,11 +240,30 @@ class Spreadsheet {
 			this.render();
 			return;
 		}
+		// Handles cell selection using keyboard
+		else if (this.model.activeCell && e.key.length !== 1) {
+			if (e.shiftKey) {
+				// Handle multiple cell selection
+				this.hideCellEditor(true);
+				this.cellSelectionHandler.onKeyDown(e, this, true);
+			} else {
+				this.hideCellEditor(true);
+				this.cellSelectionHandler.onKeyDown(e, this, false);
+			}
+		}
 
 		// console.log("this.isEditing", this.isEditing);
 		// console.log("key resed");
 		// The editor's own keydown handler will be called.
 		if (this.isEditing) {
+			const { newWidth, newHeight } =
+				this.selectCell.updateEditorCellWidth(this.cellEditor, this);
+
+			console.log("newWidth", newWidth);
+
+			this.cellEditor.style.width = `${newWidth}px`;
+			this.cellEditor.style.height = `${newHeight}px`;
+			// console.log("inside key down isEditing", this.isEditing);
 			return;
 		}
 
@@ -385,13 +322,6 @@ class Spreadsheet {
 		else if (e.key === "F2" && this.model.activeCell) {
 			e.preventDefault();
 			this.showCellEditor();
-		} else if (this.model.activeCell) {
-			if (e.shiftKey) {
-				// Handle multiple cell selection
-				this.handleKeyboardNavigation(e, true);
-			} else {
-				this.handleKeyboardNavigation(e, false);
-			}
 		} else if (e.ctrlKey && e.key === "+") {
 			console.log("Plus key is pressed");
 			this.handleZoom(e);
@@ -426,7 +356,9 @@ class Spreadsheet {
 	 */
 	showCellEditor(initialValue = null) {
 		if (!this.model.activeCell) return;
+
 		this.isEditing = true;
+		// this.selectCell.eraseLowerRightCorner(this);
 
 		const { row, col } = this.model.activeCell;
 		const { x, y, width, height } = this.model.getCellDimensions(row, col);
@@ -460,6 +392,8 @@ class Spreadsheet {
 		// Set initial value and focus
 		const currentValue = this.model.getCellValue(row, col) || "";
 		this.cellEditor.value = initialValue !== null ? "" : currentValue;
+
+		// this.cellEditor.style.width = "200px";
 		this.cellEditor.focus();
 		this.cellEditor.select();
 
@@ -475,6 +409,7 @@ class Spreadsheet {
 
 		// console.log("currentValue", currentValue);
 		this.model.setCellValue(row, col, currentValue);
+		this.render();
 	}
 
 	/**
@@ -585,82 +520,6 @@ class Spreadsheet {
 		);
 	}
 
-	handleRowColumnSelection(e, mainController) {
-		const rect = this.spreadsheetElement.getBoundingClientRect();
-		if (e.clientX <= this.rowSidebar.requiredWidth) {
-			e.target.setPointerCapture(e.pointerId);
-			this.model.rowSidebarSelecting = true;
-			this.model.rowSidebarSelected = true;
-
-			const endColPixel = this.viewport.scrollLeft + this.viewport.width;
-
-			const endColCoord = this.model.getCellCoordsFromPosition(
-				endColPixel,
-				e.clientY + this.viewport.scrollTop - rect.top
-			);
-
-			// console.log(
-			// 	"e.clientY + this.viewport.scrollTop - rect.top",
-			// 	e.clientY + this.viewport.scrollTop - rect.top
-			// );
-
-			// console.log("this.viewport", this.viewport);
-
-			const coord = this.model.getCellCoordsFromPosition(
-				e.clientX,
-				e.clientY + this.viewport.scrollTop - rect.top
-			);
-
-			this.model.selection = {
-				start: { row: coord.row - 1, col: 0 },
-				end: {
-					row: coord.row - 1,
-					col: endColCoord.col - 1,
-				},
-			};
-
-			this.model.activeCell = {
-				row: this.model.selection.start.row,
-				col: 0,
-			};
-			this.render();
-		} else if (
-			e.clientY > rect.top &&
-			e.clientY <= this.columnHeader.viewHeight + rect.top
-		) {
-			e.target.setPointerCapture(e.pointerId);
-			this.model.columnHeaderSelecting = true;
-			this.model.columnHeaderSelected = true;
-
-			const endRowPixel = this.viewport.scrollTop + this.viewport.height;
-
-			const endRowCoord = this.model.getCellCoordsFromPosition(
-				e.clientX + this.viewport.scrollLeft,
-				endRowPixel
-			);
-
-			const coord = this.model.getCellCoordsFromPosition(
-				e.clientX + this.viewport.scrollLeft,
-				e.clientY
-			);
-
-			this.model.selection = {
-				start: { col: coord.col - 1, row: 0 },
-				end: {
-					col: coord.col - 1,
-					row: endRowCoord.row - 1,
-				},
-			};
-
-			this.model.activeCell = {
-				col: this.model.selection.start.col,
-				row: 0,
-			};
-
-			this.render();
-		}
-	}
-
 	handlePointerDown(e) {
 		if (this.isEditing) {
 			this.hideCellEditor(true);
@@ -674,42 +533,9 @@ class Spreadsheet {
 				return;
 			}
 		}
-
-		// this.handleRowColumnSelection(e);
-
-		// Start Cell SelectCell
-		const mainGridContainer = this.container.querySelector(
-			".main-grid-container"
-		);
-		if (mainGridContainer.contains(e.target)) {
-			e.target.setPointerCapture(e.pointerId);
-			this.model.rowSidebarSelected = false;
-			this.model.columnHeaderSelected = false;
-
-			this.isSelecting = true;
-			const gridX = e.offsetX + this.viewport.scrollLeft;
-			const gridY = e.offsetY + this.viewport.scrollTop;
-			const coords = this.model.getCellCoordsFromPosition(gridX, gridY);
-			this.model.selection = { start: coords, end: coords };
-			this.model.activeCell = coords;
-
-			this.model.columnHeaderSelecting = false;
-			this.model.rowSidebarSelecting = false;
-
-			// console.log("this.selectedCell", this.selectedCell);
-			// console.log("this.selectedCell.value", this.selectedCell.value);
-			console.log("coords when selected", coords);
-
-			const colCoord = this.columnHeader.colCoordinate(coords.col);
-			// console.log("colCoord", colCoord);
-			this.selectedCell.value = `${colCoord}${coords.row}`;
-
-			this.render();
-		}
 	}
 
 	isPointerInHeader(e) {
-		if (this.isSelecting) return;
 		const mainGridContainer = this.container.querySelector(
 			".main-grid-container"
 		);
@@ -763,106 +589,8 @@ class Spreadsheet {
 	handlePointerMove(e) {
 		this.isPointerInHeader(e);
 
-		if (this.selectionScrollAnimationFrameId) {
-			cancelAnimationFrame(this.selectionScrollAnimationFrameId);
-			this.selectionScrollAnimationFrameId = null;
-		}
-
 		if (this.activeEvent) {
 			this.activeEvent.onPointerMove(e, this);
-		} else if (
-			this.isSelecting ||
-			this.model.rowSidebarSelecting ||
-			this.model.columnHeaderSelecting
-		) {
-			const mainGridContainer = this.container.querySelector(
-				".main-grid-container"
-			);
-			const rect = mainGridContainer.getBoundingClientRect();
-
-			let scrollDx = 0;
-			let scrollDy = 0;
-			const scrollMargin = 30; // Start scrolling when mouse is within 30px of the edge
-			const maxScrollSpeed = 20; // Max pixels to scroll per frame
-
-			// Calculate horizontal scroll speed based on proximity to edge
-			if (e.clientX < rect.left + scrollMargin) {
-				scrollDx = -Math.min(
-					maxScrollSpeed,
-					(rect.left + scrollMargin - e.clientX) / 2
-				);
-			} else if (e.clientX > rect.right - scrollMargin) {
-				scrollDx = Math.min(
-					maxScrollSpeed,
-					(e.clientX - (rect.right - scrollMargin)) / 2
-				);
-			}
-
-			// Calculate vertical scroll speed
-			if (e.clientY < rect.top + scrollMargin) {
-				scrollDy = -Math.min(
-					maxScrollSpeed,
-					(rect.top + scrollMargin - e.clientY) / 2
-				);
-			} else if (e.clientY > rect.bottom - scrollMargin) {
-				scrollDy = Math.min(
-					maxScrollSpeed,
-					(e.clientY - (rect.bottom - scrollMargin)) / 2
-				);
-			}
-
-			// Update the selection end-point based on the current pointer coordinates
-			const updateSelection = () => {
-				if (this.model.rowSidebarSelected) {
-					const rect =
-						this.spreadsheetElement.getBoundingClientRect();
-
-					const coord = this.model.getCellCoordsFromPosition(
-						e.clientX,
-						e.clientY + this.viewport.scrollTop - rect.top
-					);
-
-					this.model.selection.end.row = coord.row - 1;
-				} else if (this.model.columnHeaderSelected) {
-					const row = this.model.rowCount;
-					const coord = this.model.getCellCoordsFromPosition(
-						e.clientX + this.viewport.scrollLeft,
-						e.clientY
-					);
-
-					this.model.selection = {
-						...this.model.selection,
-						end: {
-							col: coord.col - 1,
-							row: row - 1,
-						},
-					};
-				} else {
-					const gridX =
-						e.clientX - rect.left + this.viewport.scrollLeft;
-					const gridY =
-						e.clientY - rect.top + this.viewport.scrollTop;
-					this.model.selection.end =
-						this.model.getCellCoordsFromPosition(gridX, gridY);
-				}
-			};
-
-			if (scrollDx !== 0 || scrollDy !== 0) {
-				// If the pointer is outside the grid, start an auto-scroll loop
-				const autoScrollLoop = () => {
-					this.scrollBy(scrollDx, scrollDy);
-					updateSelection();
-					this.selectionScrollAnimationFrameId =
-						requestAnimationFrame(autoScrollLoop);
-				};
-				autoScrollLoop();
-			} else {
-				// If pointer is inside the grid, just update selection and render once.
-				updateSelection();
-				this.render();
-			}
-
-			// console.log("moving, this.model.selection", this.model.selection);
 		}
 	}
 
@@ -872,33 +600,14 @@ class Spreadsheet {
 		if (this.activeEvent) {
 			this.activeEvent.onPointerUp(e, this);
 			this.activeEvent = null;
-		} else if (
-			this.isSelecting ||
-			this.model.rowSidebarSelecting ||
-			this.model.columnHeaderSelecting
-		) {
-			// Stop any autoscrolling loop that might be running
-			if (this.selectionScrollAnimationFrameId) {
-				cancelAnimationFrame(this.selectionScrollAnimationFrameId);
-				this.selectionScrollAnimationFrameId = null;
-			}
-			this.isSelecting = false;
-			this.model.rowSidebarSelecting = false;
-			this.model.columnHeaderSelecting = false;
-
-			// console.log("pointer upped");
-
-			// is
 		}
 	}
 
 	handleWindowResizing() {
-		console.log("This is resizing");
 		// Recalculate viewport size and re-render everything
 		this.viewport.updateDimensions(this.container);
 		this.render();
 		window.location.reload();
-		// this.init();
 	}
 
 	/**

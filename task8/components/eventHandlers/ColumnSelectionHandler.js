@@ -20,25 +20,35 @@ export class ColumnSelectionHandler {
 		spreadsheet.model.columnHeaderSelected = true;
 		spreadsheet.model.rowSidebarSelected = false;
 
+		const headerContainer = spreadsheet.container.querySelector(
+			".column-header-container"
+		);
+
+		const rect = headerContainer.getBoundingClientRect();
+
 		const endRowPixel =
 			spreadsheet.viewport.scrollTop + spreadsheet.viewport.height;
 
 		const endRowCoord = spreadsheet.model.getCellCoordsFromPosition(
-			e.clientX + spreadsheet.viewport.scrollLeft,
+			e.clientX +
+				spreadsheet.viewport.scrollLeft -
+				spreadsheet.rowSidebar.requiredWidth,
 			endRowPixel
 		);
 
 		const coord = spreadsheet.model.getCellCoordsFromPosition(
-			e.clientX + spreadsheet.viewport.scrollLeft,
-			e.clientY
+			e.clientX +
+				spreadsheet.viewport.scrollLeft -
+				spreadsheet.rowSidebar.requiredWidth,
+			e.clientY - rect.top
 		);
 
-		spreadsheet.model.selection = {
-			start: { col: coord.col - 1, row: 0 },
-			end: {
-				col: coord.col - 1,
-				row: endRowCoord.row - 1,
-			},
+		console.log("Coord", coord);
+
+		spreadsheet.model.selection.start = { col: coord.col, row: 0 };
+		spreadsheet.model.selection.end = {
+			col: coord.col,
+			row: endRowCoord.row - 1,
 		};
 
 		spreadsheet.model.activeCell = {

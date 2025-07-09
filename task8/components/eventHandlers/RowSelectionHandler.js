@@ -17,13 +17,18 @@ export class RowSelectionHandler {
 	onPointerDown(e, spreadsheet) {
 		e.target.setPointerCapture(e.pointerId);
 
-		const rect = spreadsheet.spreadsheetElement.getBoundingClientRect();
+		const rowContainer = spreadsheet.container.querySelector(
+			".row-header-container"
+		);
+		const rect = rowContainer.getBoundingClientRect();
 		spreadsheet.model.rowSidebarSelecting = true;
 		spreadsheet.model.rowSidebarSelected = true;
 		spreadsheet.model.columnHeaderSelected = false;
 
 		const endColPixel =
 			spreadsheet.viewport.scrollLeft + spreadsheet.viewport.width;
+
+		console.log("e.clientY", e.clientY);
 
 		const endColCoord = spreadsheet.model.getCellCoordsFromPosition(
 			endColPixel,
@@ -37,21 +42,21 @@ export class RowSelectionHandler {
 
 		console.log("coord", coord);
 
-		console.log("rect.top", rect.top);
+		// console.log("rect.top", rect.top);
 
-		console.log(
-			"e.clientY , spreadsheet.viewport.scrollTop , rect.top",
-			e.clientY + spreadsheet.viewport.scrollTop - rect.top
-		);
+		// console.log(
+		// 	"e.clientY , spreadsheet.viewport.scrollTop , rect.top",
+		// 	e.clientY + spreadsheet.viewport.scrollTop - rect.top
+		// );
 
-		console.log(
-			"rowHeights[coord.row]",
-			spreadsheet.model.rowHeights[coord.row]
-		);
-		console.log(
-			"cumulativeRowHeights[coord.row]",
-			spreadsheet.model.cumulativeRowHeights[coord.row]
-		);
+		// console.log(
+		// 	"rowHeights[coord.row]",
+		// 	spreadsheet.model.rowHeights[coord.row]
+		// );
+		// console.log(
+		// 	"cumulativeRowHeights[coord.row]",
+		// 	spreadsheet.model.cumulativeRowHeights[coord.row]
+		// );
 
 		spreadsheet.model.selection = {
 			start: { row: coord.row, col: 0 },
@@ -82,25 +87,35 @@ export class RowSelectionHandler {
 			spreadsheet.model.selection.end.row = coords.row;
 		};
 
-		const mainGridContainer = spreadsheet.container.querySelector(
-			".main-grid-container"
-		);
+		const mainGridContainer =
+			spreadsheet.container.querySelector(".canvases");
 		const rect = mainGridContainer.getBoundingClientRect();
+
+		// Extra offset for the content bar need to be factored in the calculation while scrolling down
+		const contentBar = spreadsheet.container.querySelector(".content-bar");
+
+		const contentBarRect = contentBar.getBoundingClientRect();
 
 		let scrollDx = 0;
 		let scrollDy = 0;
 		const scrollMargin = 30;
 		const maxScrollSpeed = 20;
 
-		if (e.clientX < rect.left + scrollMargin) {
-			scrollDx = -Math.min(
+		if (e.clientY < rect.top + scrollMargin) {
+			scrollDy = -Math.min(
 				maxScrollSpeed,
-				(rect.left + scrollMargin - e.clientX) / 2
+				(rect.top + scrollMargin - e.clientY) / 2
 			);
-		} else if (e.clientX > rect.right - scrollMargin) {
-			scrollDx = Math.min(
+		} else if (
+			e.clientY + contentBarRect.bottom >
+			rect.bottom - scrollMargin
+		) {
+			scrollDy = Math.min(
 				maxScrollSpeed,
-				(e.clientX - (rect.right - scrollMargin)) / 2
+				(e.clientY +
+					contentBarRect.bottom -
+					(rect.bottom - scrollMargin)) /
+					2
 			);
 		}
 

@@ -125,15 +125,11 @@ html {
 
 /* Cursor for resizing */
 .col-resize-cursor {
-  cursor: col-resize;
+  cursor: ew-resize;
 }
 
 .row-resize-cursor {
-  cursor: row-resize;
-}
-
-.row-resize-cursor-hover:hover {
-  cursor: row-resize;
+  cursor: ns-resize;
 }
 
 /*  Scrollbar Styles  */
@@ -187,7 +183,7 @@ html {
   padding: 3px 4px;
   box-sizing: border-box;
   font-family: Arial, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   background-color: white;
   resize: none;
   overflow: hidden;

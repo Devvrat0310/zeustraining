@@ -1,4 +1,4 @@
-import { Renderer } from "../Renderer.js";
+import { Renderer } from "./Renderer.js";
 
 /**
  * Renders the main data grid, including lines and cell values.
@@ -79,12 +79,89 @@ export class ExcelGrid extends Renderer {
 					);
 					const drawX = x - viewport.scrollLeft + 5;
 					const drawY = y - viewport.scrollTop + height / 2;
-					this.ctx.fillText(
-						value.toString(),
-						drawX,
-						drawY,
-						width - 10
+
+					// Extend text across empty cells to the right
+					let text = value.toString();
+					let spanCol = c;
+					let totalWidth = width;
+
+					// Check how many next cells are empty and extend width
+					while (
+						spanCol + 1 <= endCol &&
+						model.getCellValue(r, spanCol + 1) === undefined
+					) {
+						const nextCellDims = model.getCellDimensions(
+							r,
+							spanCol + 1
+						);
+						totalWidth += nextCellDims.width;
+						spanCol++;
+					}
+
+					// console.log("spanCol", spanCol);
+
+					// Clamp text to fit within the spanned width
+					let displayText = text;
+					let maxWidth = totalWidth;
+					while (
+						this.ctx.measureText(displayText).width > maxWidth &&
+						displayText.length > 0
+					) {
+						displayText = displayText.slice(0, -1);
+					}
+
+					// console.log("maxWidth", maxWidth);
+
+					// Add ellipsis if text was truncated
+					// if (
+					// 	displayText.length < text.length &&
+					// 	displayText.length > 0
+					// ) {
+					// 	displayText = displayText.slice(0, -1);
+					// }
+
+					// Calculate the actual width the text will take
+					const textWidth = Math.min(
+						this.ctx.measureText(displayText).width,
+						maxWidth
 					);
+
+					// Remove vertical grid lines between spanned cells, but only up to where text ends
+					if (spanCol > c) {
+						this.ctx.save();
+						this.ctx.strokeStyle = "#fff";
+						this.ctx.lineWidth = 1 / this.dpr;
+						let coveredWidth = width;
+						for (let cc = c + 1; cc <= spanCol; cc++) {
+							const nextCellDims = model.getCellDimensions(r, cc);
+							const cellX =
+								(model.cumulativeColWidths[cc - 1] || 0) -
+								viewport.scrollLeft;
+							const snappedX = this.snap(cellX);
+
+							// Only erase the border if it's within the text width
+							if (coveredWidth <= textWidth + 5) {
+								this.ctx.beginPath();
+								this.ctx.moveTo(
+									snappedX,
+									y - viewport.scrollTop
+								);
+								this.ctx.lineTo(
+									snappedX,
+									y - viewport.scrollTop + height
+								);
+								this.ctx.stroke();
+							}
+							coveredWidth += nextCellDims.width;
+						}
+						this.ctx.restore();
+					}
+
+					// Draw text after erasing borders
+					this.ctx.fillText(displayText, drawX, drawY, maxWidth);
+
+					// Skip over spanned cells in the loop
+					c = spanCol;
 				}
 			}
 		}

@@ -1,4 +1,4 @@
-import { Renderer } from "./Renderer.js";
+import { Renderer } from "./RenderCanvases/Renderer.js";
 
 export class SelectCell extends Renderer {
 	/**
@@ -26,8 +26,10 @@ export class SelectCell extends Renderer {
 		let viewY;
 		let width;
 		let height;
+
 		// 1. Draw the main selection area
 		if (model.selection) {
+			console.log("model.selection", model.selection);
 			const { start, end } = model.selection;
 			let minRow = Math.min(start.row, end.row);
 
@@ -120,11 +122,16 @@ export class SelectCell extends Renderer {
 				width - 2,
 				height - 2
 			);
+
+			// console.log("MODEL IS ACTIVE");
 		}
 
-		console.log("spreadsheet.isEditing", spreadsheet.isEditing);
+		// console.log("spreadsheet.isEditing", spreadsheet.isEditing);
 
 		if (model.selection && !spreadsheet.isEditing) {
+			// console.log("viewX, viewY", viewX, viewY);
+			// console.log("MODEL IS writting");
+
 			// Lower right cornered square  of a selected area
 			this.ctx.fillStyle = "#137e43";
 			this.ctx.fillRect(
@@ -143,22 +150,49 @@ export class SelectCell extends Renderer {
 				6,
 				6
 			);
-		} else if (spreadsheet.isEditing) {
-			// this.ctx.clearRect(
-			// 	viewX + width + gridContainerOffsetLeft - 2,
-			// 	viewY + height + gridContainerOffsetTop - 2,
-			// 	5,
-			// 	5
-			// );
-			this.ctx.fillStyle = "black";
-			this.ctx.fillRect(
-				viewX + width + gridContainerOffsetLeft - 2,
-				viewY + height + gridContainerOffsetTop - 2,
-				5,
-				5
-			);
 		}
 	}
+
+	// eraseLowerRightCorner(spreadsheet) {
+	// 	console.log(
+	// 		"spreadsheet.model.selection && spreadsheet.isEditing",
+	// 		spreadsheet.model.selection,
+	// 		spreadsheet.isEditing
+	// 	);
+
+	// 	const gridContainer = this.canvas.parentElement.querySelector(
+	// 		".main-grid-container"
+	// 	);
+	// 	const gridContainerOffsetLeft = gridContainer.offsetLeft;
+	// 	const gridContainerOffsetTop = gridContainer.offsetTop;
+
+	// 	const { row, col } = spreadsheet.model.activeCell;
+	// 	const { x, y, width, height } = spreadsheet.model.getCellDimensions(
+	// 		row,
+	// 		col
+	// 	);
+
+	// 	const viewX = x - spreadsheet.viewport.scrollLeft;
+	// 	const viewY = y - spreadsheet.viewport.scrollTop;
+	// 	console.log("viewX, viewY", viewX, viewY);
+	// 	// if (spreadsheet.model.selection && spreadsheet.isEditing) {
+	// 	// this.ctx.clearRect(
+	// 	// 	viewX + width + gridContainerOffsetLeft - 2,
+	// 	// 	viewY + height + gridContainerOffsetTop - 2,
+	// 	// 	5,
+	// 	// 	5
+	// 	// );
+	// 	this.ctx.fillStyle = "black";
+	// 	this.ctx.clearRect(
+	// 		viewX + width + gridContainerOffsetLeft - 2,
+	// 		viewY + height + gridContainerOffsetTop - 2,
+	// 		5,
+	// 		5
+	// 	);
+
+	// 	this.ctx.strokeRect;
+	// 	// }
+	// }
 
 	/**
 	 * Keep adding column in model selection as we scroll to the left.
@@ -217,5 +251,132 @@ export class SelectCell extends Renderer {
 			maxCol - 1,
 			endColId.col + 100
 		);
+	}
+
+	getNextColDimensions(row, col, editorWidth, spreadsheet) {
+		const currCol = spreadsheet.model.getCellDimensions(row, col);
+
+		const colCoord = spreadsheet.model.getCellCoordsFromPosition(
+			currCol.x + editorWidth,
+			currCol.y
+		);
+
+		const nextCol = spreadsheet.model.getCellDimensions(row, colCoord.col);
+
+		const nextColWidth = nextCol.width;
+
+		console.log("colCoord", colCoord);
+
+		const nextColEndPixel = nextCol.x + nextCol.width;
+
+		return { nextColWidth, nextColEndPixel };
+	}
+
+	getNextRowDimensions(row, col, editorHeight, spreadsheet) {
+		const currRow = spreadsheet.model.getCellDimensions(row, col);
+
+		const rowCoord = spreadsheet.model.getCellCoordsFromPosition(
+			currRow.x,
+			currRow.y + editorHeight
+		);
+
+		const nextRow = spreadsheet.model.getCellDimensions(rowCoord.row, col);
+
+		console.log("nextRow", nextRow);
+		const nextRowHeight = nextRow.height;
+
+		console.log("rowCoord", rowCoord);
+
+		const nextRowEndPixel = nextRow.y + nextRow.height;
+
+		return { rowCoord, nextRowHeight, nextRowEndPixel };
+	}
+
+	/**
+	 *
+	 * @param {*} text
+	 * @param {*} cellEditor
+	 */
+	updateEditorCellWidth(cellEditor, spreadsheet) {
+		// const ctx =
+		const text = cellEditor.value;
+
+		// Pass the font style to ctx so that it can properly calculate textwidth
+		const computedStyle = window.getComputedStyle(cellEditor);
+		this.ctx.font = `${computedStyle.fontStyle} ${computedStyle.fontWeight} ${computedStyle.fontSize} ${computedStyle.fontFamily}`;
+
+		// Current width and height of editor
+		const editorWidth = parseFloat(cellEditor.style.width);
+		const editorHeight = parseFloat(cellEditor.style.height);
+
+		const textWidth = this.ctx.measureText(text).width;
+
+		const eachLetterWidth = this.ctx.measureText("a").width;
+
+		const { row, col } = spreadsheet.model.activeCell;
+		// const
+
+		// const currColWidth = spreadsheet.model.getCellDimensions(row, col).width;
+
+		// console.log(
+		// 	"currColWidth",
+		// 	// currColWidth,
+		// 	textWidth,
+		// 	textWidth + eachLetterWidth * 2,
+		// 	textWidth + eachLetterWidth * 2 + 8
+		// );
+
+		const { nextColWidth, nextColEndPixel } = this.getNextColDimensions(
+			row,
+			col,
+			editorWidth,
+			spreadsheet
+		);
+
+		const { rowCoord, nextRowHeight, nextRowEndPixel } =
+			this.getNextRowDimensions(row, col, editorHeight, spreadsheet);
+
+		// 8 for padding, *2 for two letter in buffer
+		const targetWidth = textWidth + eachLetterWidth * 2 + 8;
+
+		// Main grid container element to get distance from top to first row
+		const mainGridContainer = spreadsheet.container.querySelector(
+			".main-grid-container"
+		);
+
+		const rect = mainGridContainer.getBoundingClientRect();
+
+		// Check if new editor width will take cell outside the view from left
+		if (
+			editorWidth <= targetWidth &&
+			nextColEndPixel - spreadsheet.viewport.scrollLeft <
+				spreadsheet.viewport.width -
+					spreadsheet.rowSidebar.requiredWidth
+		) {
+			// do something
+			return {
+				newWidth: editorWidth + nextColWidth,
+				newHeight: editorHeight,
+			};
+		}
+		// Check if new editor width will take cell outside the view from left
+		else if (
+			nextRowEndPixel - spreadsheet.viewport.scrollTop <
+			spreadsheet.viewport.height - rect.top
+		) {
+			const requiredRows = textWidth / editorWidth + 1;
+
+			const totalRows = rowCoord.row - row;
+
+			// Check if total rows editor takes up
+			if (requiredRows > totalRows) {
+				return {
+					newWidth: editorWidth,
+					newHeight: editorHeight + nextRowHeight,
+				};
+			}
+		}
+
+		return { newWidth: editorWidth, newHeight: editorHeight };
 	}
 }
