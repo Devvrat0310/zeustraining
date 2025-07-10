@@ -14,7 +14,15 @@ export class RowSelectionHandler {
 		return rowContainer.contains(e.target);
 	}
 
+	/**
+	 * Handles pointer down function, calculates selected row coordinates, sets selected row in cell selection and updates variable that reflects row is being selected.
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerDown(e, spreadsheet) {
+		console.log("selecting row");
 		e.target.setPointerCapture(e.pointerId);
 
 		const rowContainer = spreadsheet.container.querySelector(
@@ -73,6 +81,13 @@ export class RowSelectionHandler {
 		spreadsheet.render();
 	}
 
+	/**
+	 * Handles row selection and screen scrolling as we click and drag.
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerMove(e, spreadsheet) {
 		if (this.selectionScrollAnimationFrameId) {
 			cancelAnimationFrame(this.selectionScrollAnimationFrameId);
@@ -133,6 +148,13 @@ export class RowSelectionHandler {
 		}
 	}
 
+	/**
+	 * Handles freeing of animationFrame variable and releasing pointer capture
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerUp(e, spreadsheet) {
 		e.target.releasePointerCapture(e.pointerId);
 		spreadsheet.model.rowSidebarSelecting = false;

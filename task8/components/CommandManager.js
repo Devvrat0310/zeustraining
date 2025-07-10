@@ -26,6 +26,8 @@ export class CommandManager {
 			command.undo();
 			this.redoStack.push(command);
 		}
+		console.log("this.undoStack undo", this.undoStack);
+		console.log("this.redoStack", this.redoStack);
 	}
 
 	/**
@@ -37,5 +39,8 @@ export class CommandManager {
 			command.execute();
 			this.undoStack.push(command);
 		}
+
+		console.log("this.undoStack redo", this.undoStack);
+		console.log("this.redoStack", this.redoStack);
 	}
 }

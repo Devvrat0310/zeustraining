@@ -34,8 +34,6 @@ class Spreadsheet {
 
 		this.corner = this.container.querySelector(".corner");
 
-		// console.log("this.corner.width", this.corner.width);
-
 		this.zoomManager = new ZoomManager();
 
 		this.model = new SheetModel(500, 500);
@@ -79,7 +77,12 @@ class Spreadsheet {
 			this.cellSelectionHandler,
 		];
 
-		this.activeEvent = null;
+		this.resizeEventHandler = [
+			this.columnResizeHandler,
+			this.rowResizeHandler,
+		];
+
+		this.activeHandler = null;
 
 		this.init();
 	}
@@ -192,13 +195,19 @@ class Spreadsheet {
 			"pointerdown",
 			this.handlePointerDown.bind(this)
 		);
-		document.addEventListener(
+		this.container.addEventListener(
 			"pointermove",
 			this.handlePointerMove.bind(this)
 		);
-		document.addEventListener("pointerup", this.handlePointerUp.bind(this));
+		this.container.addEventListener(
+			"pointerup",
+			this.handlePointerUp.bind(this)
+		);
 
-		window.addEventListener("keydown", this.handleKeyDown.bind(this));
+		this.container.addEventListener(
+			"keydown",
+			this.handleKeyDown.bind(this)
+		);
 
 		window.addEventListener("resize", this.handleWindowResizing.bind(this));
 
@@ -240,6 +249,7 @@ class Spreadsheet {
 			this.render();
 			return;
 		}
+
 		// Handles cell selection using keyboard
 		else if (this.model.activeCell && e.key.length !== 1) {
 			if (e.shiftKey) {
@@ -259,7 +269,7 @@ class Spreadsheet {
 			const { newWidth, newHeight } =
 				this.selectCell.updateEditorCellWidth(this.cellEditor, this);
 
-			console.log("newWidth", newWidth);
+			// console.log("newWidth", newWidth);
 
 			this.cellEditor.style.width = `${newWidth}px`;
 			this.cellEditor.style.height = `${newHeight}px`;
@@ -332,7 +342,7 @@ class Spreadsheet {
 	 * Handles double-clicking on the grid to start editing a cell.
 	 */
 	handleDoubleClick(e) {
-		console.log("this handle double click ran");
+		// console.log("this handle double click ran");
 		const mainGridContainer = this.container.querySelector(
 			".main-grid-container"
 		);
@@ -423,16 +433,18 @@ class Spreadsheet {
 			const { row, col } = this.model.activeCell;
 			const newValue = this.cellEditor.value;
 			const oldValue = this.model.getCellValue(row, col) || "";
-			this.model.setCellValue(row, col, newValue);
+			// this.model.setCellValue(row, col, newValue);
 
-			const command = new SetCellValueCommand(
-				this.model,
-				row,
-				col,
-				newValue,
-				oldValue
-			);
-			this.commandManager.execute(command);
+			if (newValue !== oldValue) {
+				const command = new SetCellValueCommand(
+					this.model,
+					row,
+					col,
+					newValue,
+					oldValue
+				);
+				this.commandManager.execute(command);
+			}
 		}
 
 		this.cellEditor.style.display = "none";
@@ -504,20 +516,8 @@ class Spreadsheet {
 			this.model.addColumns(50);
 		}
 
-		// Prevent scrolling beyond the *actual* content size, minus one viewport.
-		const maxScrollTop = Math.max(0, actualTotalHeight - viewHeight);
-		const maxScrollLeft = Math.max(0, actualTotalWidth - viewWidth);
-
-		this.viewport.scrollLeft = Math.max(
-			0,
-			this.viewport.scrollLeft
-			// Math.min(this.viewport.scrollLeft, maxScrollLeft)
-		);
-		this.viewport.scrollTop = Math.max(
-			0,
-			this.viewport.scrollTop
-			// Math.min(this.viewport.scrollTop, maxScrollTop)
-		);
+		this.viewport.scrollLeft = Math.max(0, this.viewport.scrollLeft);
+		this.viewport.scrollTop = Math.max(0, this.viewport.scrollTop);
 	}
 
 	handlePointerDown(e) {
@@ -525,16 +525,15 @@ class Spreadsheet {
 			this.hideCellEditor(true);
 		}
 
-		for (const currEvent of this.mouseEventHandlers) {
-			if (currEvent.hitTest(e, this)) {
+		for (const currFeature of this.mouseEventHandlers) {
+			if (currFeature.hitTest(e, this)) {
 				// console.log("yes column/row event called");
-				this.activeEvent = currEvent;
-				this.activeEvent.onPointerDown(e, this);
+				this.activeHandler = currFeature;
+				this.activeHandler.onPointerDown(e, this);
 				return;
 			}
 		}
 	}
-
 	isPointerInHeader(e) {
 		const mainGridContainer = this.container.querySelector(
 			".main-grid-container"
@@ -587,19 +586,26 @@ class Spreadsheet {
 	}
 
 	handlePointerMove(e) {
-		this.isPointerInHeader(e);
+		// this.isPointerInHeader(e);
 
-		if (this.activeEvent) {
-			this.activeEvent.onPointerMove(e, this);
+		if (this.activeHandler) {
+			this.activeHandler.onPointerMove(e, this);
+		} else {
+			for (const currFeature of this.resizeEventHandler) {
+				// if (currFeature.hitTest(e, this)) {
+				// 	currFeature.updateCursor(e, this);
+				// }
+				currFeature.updateCursor(e, this);
+			}
 		}
 	}
 
 	handlePointerUp(e) {
 		this.scrollbarController.handlePointerUp(e);
 
-		if (this.activeEvent) {
-			this.activeEvent.onPointerUp(e, this);
-			this.activeEvent = null;
+		if (this.activeHandler) {
+			this.activeHandler.onPointerUp(e, this);
+			this.activeHandler = null;
 		}
 	}
 

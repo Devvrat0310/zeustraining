@@ -29,7 +29,6 @@ export class SelectCell extends Renderer {
 
 		// 1. Draw the main selection area
 		if (model.selection) {
-			console.log("model.selection", model.selection);
 			const { start, end } = model.selection;
 			let minRow = Math.min(start.row, end.row);
 
@@ -265,7 +264,7 @@ export class SelectCell extends Renderer {
 
 		const nextColWidth = nextCol.width;
 
-		console.log("colCoord", colCoord);
+		// console.log("colCoord", colCoord);
 
 		const nextColEndPixel = nextCol.x + nextCol.width;
 
@@ -282,10 +281,10 @@ export class SelectCell extends Renderer {
 
 		const nextRow = spreadsheet.model.getCellDimensions(rowCoord.row, col);
 
-		console.log("nextRow", nextRow);
+		// console.log("nextRow", nextRow);
 		const nextRowHeight = nextRow.height;
 
-		console.log("rowCoord", rowCoord);
+		// console.log("rowCoord", rowCoord);
 
 		const nextRowEndPixel = nextRow.y + nextRow.height;
 
@@ -314,7 +313,6 @@ export class SelectCell extends Renderer {
 		const eachLetterWidth = this.ctx.measureText("a").width;
 
 		const { row, col } = spreadsheet.model.activeCell;
-		// const
 
 		// const currColWidth = spreadsheet.model.getCellDimensions(row, col).width;
 
@@ -364,7 +362,7 @@ export class SelectCell extends Renderer {
 			nextRowEndPixel - spreadsheet.viewport.scrollTop <
 			spreadsheet.viewport.height - rect.top
 		) {
-			const requiredRows = textWidth / editorWidth + 1;
+			const requiredRows = Math.floor(textWidth / editorWidth) + 1;
 
 			const totalRows = rowCoord.row - row;
 

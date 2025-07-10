@@ -22,7 +22,7 @@ export class Viewport {
 	}
 
 	/**
-	 * Updates the viewport dimensions, e.g., on window resize.
+	 * Updates the viewport dimensions, on window resize.
 	 * @param {number} width The new width.
 	 * @param {number} height The new height.
 	 */

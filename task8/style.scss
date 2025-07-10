@@ -29,8 +29,8 @@ html {
 	// flex-grow: 1; // Take up remaining space in flex container
 	display: grid;
 	grid-template-areas:
-		"corner columns"
-		"rows   main";
+		'corner columns'
+		'rows   main';
 	grid-template-columns: 50px 1fr;
 	grid-template-rows: 20px 1fr; // Second row takes all available space
 	// min-height: 0; // Allow shrinking in flexbox
@@ -131,6 +131,11 @@ html {
 }
 .row-resize-cursor {
 	cursor: ns-resize;
+}
+
+.row-selection-cursor {
+	// cursor: url("./assets/arrow-down.png");
+	// cursor: url('arrowDown.png') 20 20, auto;
 }
 
 // .row-resize-cursor-hover:hover {

@@ -18,17 +18,14 @@ class createMockData {
 				firstName: `user_${i + 1}`,
 				lastName: `last_${i + 1}`,
 				age: Math.floor(Math.random() * 40) + 20,
-				salary: (Math.floor(Math.random() * 440) + 60) * 10000,
+				salary: (Math.floor(Math.random() * 100) + 600) * 10000,
 			};
 			userRecords.push(curr);
 		}
 
 		userRecords = JSON.stringify(userRecords, null, 2);
-		writeFileSync(
-			"./DB/tables/userRecords.js",
-			`export const userRecords = ${userRecords};`
-		);
+		writeFileSync("./DB/tables/userRecords.json", userRecords);
 	}
 }
 
-createMockData(50000);
+new createMockData(50000);

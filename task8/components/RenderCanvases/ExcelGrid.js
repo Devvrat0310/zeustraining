@@ -85,10 +85,17 @@ export class ExcelGrid extends Renderer {
 					let spanCol = c;
 					let totalWidth = width;
 
+					// Clamp text to fit within the spanned width
+					let displayText = text;
+
+					let displayTextWidth =
+						this.ctx.measureText(displayText).width;
+
 					// Check how many next cells are empty and extend width
 					while (
 						spanCol + 1 <= endCol &&
-						model.getCellValue(r, spanCol + 1) === undefined
+						(model.getCellValue(r, spanCol + 1) === undefined ||
+							model.getCellValue(r, spanCol + 1) === "")
 					) {
 						const nextCellDims = model.getCellDimensions(
 							r,
@@ -96,12 +103,11 @@ export class ExcelGrid extends Renderer {
 						);
 						totalWidth += nextCellDims.width;
 						spanCol++;
+						if (totalWidth >= displayTextWidth) {
+							break;
+						}
 					}
 
-					// console.log("spanCol", spanCol);
-
-					// Clamp text to fit within the spanned width
-					let displayText = text;
 					let maxWidth = totalWidth;
 					while (
 						this.ctx.measureText(displayText).width > maxWidth &&
@@ -109,16 +115,6 @@ export class ExcelGrid extends Renderer {
 					) {
 						displayText = displayText.slice(0, -1);
 					}
-
-					// console.log("maxWidth", maxWidth);
-
-					// Add ellipsis if text was truncated
-					// if (
-					// 	displayText.length < text.length &&
-					// 	displayText.length > 0
-					// ) {
-					// 	displayText = displayText.slice(0, -1);
-					// }
 
 					// Calculate the actual width the text will take
 					const textWidth = Math.min(
@@ -128,7 +124,6 @@ export class ExcelGrid extends Renderer {
 
 					// Remove vertical grid lines between spanned cells, but only up to where text ends
 					if (spanCol > c) {
-						this.ctx.save();
 						this.ctx.strokeStyle = "#fff";
 						this.ctx.lineWidth = 1 / this.dpr;
 						let coveredWidth = width;
@@ -140,7 +135,7 @@ export class ExcelGrid extends Renderer {
 							const snappedX = this.snap(cellX);
 
 							// Only erase the border if it's within the text width
-							if (coveredWidth <= textWidth + 5) {
+							if (coveredWidth <= textWidth) {
 								this.ctx.beginPath();
 								this.ctx.moveTo(
 									snappedX,
@@ -154,7 +149,6 @@ export class ExcelGrid extends Renderer {
 							}
 							coveredWidth += nextCellDims.width;
 						}
-						this.ctx.restore();
 					}
 
 					// Draw text after erasing borders

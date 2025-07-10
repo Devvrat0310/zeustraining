@@ -1,0 +1,13 @@
+body {
+	height: 100vw;
+	width: 100vh;
+}
+
+.div {
+	background-color: pink;
+	height: 300px;
+	width: 300px;
+	cursor: url('arrow-down.cur') 15 8, pointer;
+
+	/* cursor: url('./arrow-down.cur') 8 15, cell; */
+}

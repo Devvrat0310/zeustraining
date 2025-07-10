@@ -32,3 +32,6 @@ Classes
 - cell selecter
 
 Update script.js as well 
+
+
+move animation frame into render function to reduce the render amount and make render function inside it private or something. 

@@ -18,7 +18,7 @@ export class CellSelectionHandler {
 	}
 
 	/**
-	 * Handles pointer down function, calculates
+	 * Handles pointer down function, calculates cell coordinates and sets active cell selected and range selected to the clicked cell.
 	 *
 	 * @param {PointerEvent} e
 	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
@@ -52,7 +52,7 @@ export class CellSelectionHandler {
 
 	/**
 	 * Handles pointer move function, for cell selection handler.
-	 * Handles cell selection and screen scrolling.
+	 * Handles cell selection and screen scrolling as we click and drag.
 	 *
 	 * @param {PointerEvent} e
 	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
@@ -64,7 +64,7 @@ export class CellSelectionHandler {
 			this.selectionScrollAnimationFrameId = null;
 		}
 
-		console.log("spreadsheet.model.selection", spreadsheet.model.selection);
+		// console.log("spreadsheet.model.selection", spreadsheet.model.selection);
 
 		/**
 		 * Updates the selected cell range to reflect the mouse movement.

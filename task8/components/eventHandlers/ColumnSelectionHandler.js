@@ -14,6 +14,13 @@ export class ColumnSelectionHandler {
 		return headerContainer.contains(e.target);
 	}
 
+	/**
+	 * Handles pointer down function, calculates column coordinates and sets selected column in cell selection and updates variable that column is being selected.
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerDown(e, spreadsheet) {
 		e.target.setPointerCapture(e.pointerId);
 		spreadsheet.model.columnHeaderSelecting = true;
@@ -43,8 +50,6 @@ export class ColumnSelectionHandler {
 			e.clientY - rect.top
 		);
 
-		console.log("Coord", coord);
-
 		spreadsheet.model.selection.start = { col: coord.col, row: 0 };
 		spreadsheet.model.selection.end = {
 			col: coord.col,
@@ -59,6 +64,13 @@ export class ColumnSelectionHandler {
 		spreadsheet.render();
 	}
 
+	/**
+	 * Handles column selection and screen scrolling as we click and drag.
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerMove(e, spreadsheet) {
 		if (this.selectionScrollAnimationFrameId) {
 			cancelAnimationFrame(this.selectionScrollAnimationFrameId);
@@ -109,6 +121,13 @@ export class ColumnSelectionHandler {
 		}
 	}
 
+	/**
+	 * Handles freeing of animationFrame variable and releasing pointer capture
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerUp(e, spreadsheet) {
 		e.target.releasePointerCapture(e.pointerId);
 

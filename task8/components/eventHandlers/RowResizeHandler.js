@@ -1,4 +1,4 @@
-import { ResizeRowCommand } from "../commands/ResizeRowCommand.js";
+import { ResizeRowCommand } from '../commands/ResizeRowCommand.js';
 
 export class RowResizeHandler {
 	constructor() {
@@ -12,14 +12,14 @@ export class RowResizeHandler {
 	 *
 	 */
 	hitTest(e, spreadsheet) {
-		console.log("row Pointer hitt");
+		console.log('row Pointer hitt');
 		const rowContainer = spreadsheet.container.querySelector(
-			".row-header-container"
+			'.row-header-container'
 		); // Get the row header container
 
 		if (!rowContainer.contains(e.target)) return false;
 
-		console.log("validated row pointer");
+		console.log('validated row pointer');
 		const y = e.offsetY + spreadsheet.viewport.scrollTop;
 		// Check if pointer is near a row edge
 		for (let i = 0; i < spreadsheet.model.rowHeights.length; i++) {
@@ -39,11 +39,25 @@ export class RowResizeHandler {
 		return false;
 	}
 
+	/**
+	 * Handles pointer down function, updates cursor styling to ns-resize
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerDown(e, spreadsheet) {
-		spreadsheet.container.classList.add("row-resize-cursor");
+		spreadsheet.container.classList.add('row-resize-cursor');
 		// e.target.setPointerCapture(e.pointerId);
 	}
 
+	/**
+	 * Handles changing the column width as we click and drag.
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 * @returns {boolean}
+	 */
 	onPointerMove(e, spreadsheet) {
 		const diffY = e.clientY - this.startY;
 		const newHeight = this.startHeight + diffY;
@@ -51,8 +65,14 @@ export class RowResizeHandler {
 		spreadsheet.render();
 	}
 
+	/**
+	 * Sets new row width, executes command.
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 */
 	onPointerUp(e, spreadsheet) {
-		spreadsheet.container.classList.remove("row-resize-cursor");
+		spreadsheet.container.classList.remove('row-resize-cursor');
 		// e.target.releasePointerCapture(e.pointerId);
 
 		const newHeight = spreadsheet.model.rowHeights[this.rowIndex];
@@ -65,5 +85,45 @@ export class RowResizeHandler {
 		);
 		spreadsheet.commandManager.execute(command);
 		spreadsheet.render();
+	}
+
+	/**
+	 * Updates the mouse cursor as we hover over the row sidebar
+	 *
+	 * @param {PointerEvent} e
+	 * @param {Spreadsheet} spreadsheet - The main spreadsheet that integrates each class under it, making an excel spreadsheet.
+	 */
+	updateCursor(e, spreadsheet) {
+		console.log('resizing');
+		const mainGridContainer = spreadsheet.container.querySelector(
+			'.main-grid-container'
+		);
+
+		const rect = mainGridContainer.getBoundingClientRect();
+		const pointerY = e.clientY - rect.top;
+
+		const gridY = pointerY + spreadsheet.viewport.scrollTop;
+
+		let nearRowEdge = false;
+
+		// Check for row resize hover in the row header area
+		if (e.target.closest('.row-header-container')) {
+			for (let i = 0; i < spreadsheet.model.rowCount; i++) {
+				const rowEdgeY = spreadsheet.model.cumulativeRowHeights[i];
+				if (Math.abs(gridY - rowEdgeY) < 5) {
+					nearRowEdge = true;
+					break;
+				}
+			}
+		}
+
+		// Apply/remove cursors
+		if (nearRowEdge) {
+			// spreadsheet.container.classList.add("row-selection-cursor");
+			spreadsheet.container.classList.add('row-resize-cursor');
+		} else {
+			spreadsheet.container.classList.remove('row-resize-cursor');
+			// spreadsheet.container.classList.add("row-selection-cursor");
+		}
 	}
 }

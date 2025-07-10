@@ -273,4 +273,6 @@ export class SheetModel {
 		// if (mathFunc. === "sum") return res.sum;
 		return res;
 	}
+
+	functionParser() {}
 }
