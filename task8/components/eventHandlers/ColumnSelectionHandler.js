@@ -136,5 +136,7 @@ export class ColumnSelectionHandler {
 			cancelAnimationFrame(this.selectionScrollAnimationFrameId);
 			this.selectionScrollAnimationFrameId = null;
 		}
+
+		spreadsheet.setFunctionValues.getSelectionResult(spreadsheet, "col");
 	}
 }

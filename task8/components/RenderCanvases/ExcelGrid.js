@@ -65,7 +65,7 @@ export class ExcelGrid extends Renderer {
 
 		// Draw cell data
 		this.ctx.fillStyle = "#333";
-		this.ctx.font = "14px Arial";
+		this.ctx.font = "12px Arial";
 		this.ctx.textAlign = "left";
 		this.ctx.textBaseline = "middle";
 
@@ -78,7 +78,7 @@ export class ExcelGrid extends Renderer {
 						c
 					);
 					const drawX = x - viewport.scrollLeft + 5;
-					const drawY = y - viewport.scrollTop + height / 2;
+					const drawY = y - viewport.scrollTop + height / 2 + 3;
 
 					// Extend text across empty cells to the right
 					let text = value.toString();

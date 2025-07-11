@@ -20,6 +20,9 @@ import { RowResizeHandler } from "./components/eventHandlers/RowResizeHandler.js
 import { ColumnSelectionHandler } from "./components/eventHandlers/ColumnSelectionHandler.js";
 import { RowSelectionHandler } from "./components/eventHandlers/RowSelectionHandler.js";
 import { CellSelectionHandler } from "./components/eventHandlers/CellSelectionHandler.js";
+import { SetFunctionValues } from "./components/SetFunctionValues.js";
+
+// import userRecords from "./DB/tables/userRecords.json" assert { type: "json" };
 
 /**
  * The main application class, acting as the Controller.
@@ -33,6 +36,15 @@ class Spreadsheet {
 		this.selectedCell = this.container.querySelector(".selected-cell");
 
 		this.corner = this.container.querySelector(".corner");
+		// this.calculations = this.container.querySelector(".calculations");
+
+		this.setFunctionValues = new SetFunctionValues();
+
+		// this.temp = this.container
+		// 	.querySelector(".calculations")
+		// 	.querySelector("#average");
+
+		// this.temp.innerHTML = "blah blah";
 
 		this.zoomManager = new ZoomManager();
 
@@ -89,45 +101,59 @@ class Spreadsheet {
 
 	initHTML() {
 		const templateString = `
-			<!DOCTYPE html>
-			<html lang="en">
-				<head>
-					<meta charset="UTF-8" />
-					<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-					<title>Document</title>
-					<link rel="stylesheet" href="style.css" />
-				</head>
-				<body>
-					<div class="spreadsheet">
-						<canvas class="corner"></canvas>
-						<div class="column-wrapper">
-							<div class="pushed-overlay-column" style="width: 0px"></div>
-							<div class="columns"></div>
-						</div>
-						<div class="rows--canvas">
-							<div class="row-wrapper">
-								<div class="pushed-overlay-row" style="height: 0px"></div>
-								<div class="rows"></div>
-							</div>
-							<div class="main-canvas-wrapper">
-								<div class="excel-top-space" style="height: 0"></div>
-								<div class="left-space-wrapper">
-									<div class="excel-left-space" style="width: 0"></div>
-									<div class="main-canvas"></div>
-								</div>
-							</div>
-						</div>
-						<canvas class="select-cell-canvas" style="left: 0; top: 0"></canvas>
+		<div id="spreadsheet-container">
+			<div class="spreadsheet">
+				<div class="content-bar">
+					<input
+						type="text"
+						class="selected-cell"
+						value="A1"
+					/>
+					<div class="formulas"></div>
+					<input
+						type="text"
+						class="bar-input"
+						value=""
+					/>
+				</div>
+				<div class="canvases">
+					<canvas class="corner"></canvas>
+					<div class="column-header-container">
+						<canvas class="columns-canvas"></canvas>
 					</div>
-					<script type="module" src="script.js"></script>
-				</body>
-			</html>
+
+					<div class="row-header-container">
+						<canvas class="rows-canvas"></canvas>
+					</div>
+
+					<div class="main-grid-container">
+						<canvas class="main-canvas"></canvas>
+					</div>
+					<canvas class="selection-canvas"></canvas>
+					<div class="scrollbar-track scrollbar-track-vertical">
+						<div
+							class="scrollbar-thumb scrollbar-thumb-vertical"
+						></div>
+					</div>
+				</div>
+				<div class="scrollbar-track scrollbar-track-horizontal">
+					<div
+						class="scrollbar-thumb scrollbar-thumb-horizontal"
+					></div>
+				</div>
+			</div>
+			<textarea
+				id="cell-editor"
+				class="cell-editor"
+			></textarea>
+		</div>
 			 `;
 	}
 
 	init() {
 		this.addEventListeners();
-		this.render();
+		this.model.loadJsonData(this);
+		// this.render();
 	}
 
 	/**
@@ -204,10 +230,7 @@ class Spreadsheet {
 			this.handlePointerUp.bind(this)
 		);
 
-		this.container.addEventListener(
-			"keydown",
-			this.handleKeyDown.bind(this)
-		);
+		document.addEventListener("keydown", this.handleKeyDown.bind(this));
 
 		window.addEventListener("resize", this.handleWindowResizing.bind(this));
 
@@ -289,6 +312,8 @@ class Spreadsheet {
 			this.commandManager.undo();
 			this.render();
 		}
+
+		console.log("before delete");
 
 		// Delete selected area
 		if (e.key === "Delete" && this.model.selection) {
@@ -592,10 +617,9 @@ class Spreadsheet {
 			this.activeHandler.onPointerMove(e, this);
 		} else {
 			for (const currFeature of this.resizeEventHandler) {
-				// if (currFeature.hitTest(e, this)) {
-				// 	currFeature.updateCursor(e, this);
-				// }
-				currFeature.updateCursor(e, this);
+				if (currFeature.updateCursor(e, this)) {
+					return;
+				}
 			}
 		}
 	}

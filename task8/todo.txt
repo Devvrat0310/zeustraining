@@ -34,4 +34,18 @@ Classes
 Update script.js as well 
 
 
-move animation frame into render function to reduce the render amount and make render function inside it private or something. 
+move animation frame into render function to reduce the render amount and make render function inside it private or something. sengage SAM project.Monday tuesday and thursday
+
+Code refactoring.
+Custom cursor for row and column hover. - fri
+Refactored code to move hover logic to rowResize and columnResizeHandler respectively. - thur
+Completed mathematical function calculation feature. - thur
+Fixed incorrect column selection when columns were resized. - wed
+Fixed scroll on row dragging. - wed
+Optimized row selection and column selection rendering. - thur
+Generated mock data. - thur
+Implement loading of json records in excel. - fri
+Text display when writing strings longer than cell. -wed
+Properly handled Text Editor display when writing near edges, extending editor width till space available and then increasing size till space available to the bottom of the editor. - wed
+Added debouncing feature. - fri
+Completed display of calculated functions on bottom bar. - fri

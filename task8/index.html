@@ -2,17 +2,30 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta
+			name="viewport"
+			content="width=device-width, initial-scale=1.0"
+		/>
 		<title>Document</title>
-		<link rel="stylesheet" href="style.css" />
+		<link
+			rel="stylesheet"
+			href="style.css"
+		/>
 	</head>
 	<body>
 		<div id="spreadsheet-container">
 			<div class="spreadsheet">
 				<div class="content-bar">
-					<input type="text" class="selected-cell" value="A1" />
-					<div class="formulas"></div>
-					<input type="text" class="bar-input" value="" />
+					<input
+						type="text"
+						class="selected-cell"
+						value="A1"
+					/>
+					<input
+						type="text"
+						class="bar-input"
+						value=""
+					/>
 				</div>
 				<div class="canvases">
 					<canvas class="corner"></canvas>
@@ -34,14 +47,59 @@
 						></div>
 					</div>
 				</div>
-				<div class="scrollbar-track scrollbar-track-horizontal">
-					<div
-						class="scrollbar-thumb scrollbar-thumb-horizontal"
-					></div>
+				<div class="bottom-bar">
+					<div class="scrollbar-track scrollbar-track-horizontal">
+						<div
+							class="scrollbar-thumb scrollbar-thumb-horizontal"
+						></div>
+					</div>
+					<div class="calculations">
+						<div
+							id="average"
+							class="calcResult"
+						>
+							<p>Average:</p>
+							<p class="result"></p>
+						</div>
+						<div
+							id="count"
+							class="calcResult"
+						>
+							<p>Count:</p>
+							<p class="result"></p>
+						</div>
+						<div
+							id="min"
+							class="calcResult"
+						>
+							<p>Min:</p>
+							<p class="result"></p>
+						</div>
+						<div
+							id="max"
+							class="calcResult"
+						>
+							<p>Max:</p>
+							<p class="result"></p>
+						</div>
+						<div
+							id="sum"
+							class="calcResult"
+						>
+							<p>Sum:</p>
+							<p class="result"></p>
+						</div>
+					</div>
 				</div>
 			</div>
-			<textarea id="cell-editor" class="cell-editor"></textarea>
+			<textarea
+				id="cell-editor"
+				class="cell-editor"
+			></textarea>
 		</div>
-		<script type="module" src="script.js"></script>
+		<script
+			type="module"
+			src="script.js"
+		></script>
 	</body>
 </html>

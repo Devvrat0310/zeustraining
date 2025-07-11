@@ -48,6 +48,7 @@ export class CellSelectionHandler {
 		spreadsheet.selectedCell.value = `${colCoord}${coords.row}`;
 
 		spreadsheet.render();
+		spreadsheet.setFunctionValues.getSelectionResult(spreadsheet, "cell");
 	}
 
 	/**
@@ -143,6 +144,15 @@ export class CellSelectionHandler {
 			updateSelection();
 			spreadsheet.render();
 		}
+
+		// debounce timer
+		clearTimeout(spreadsheet.model.debounceTimer);
+		spreadsheet.model.debounceTimer = setTimeout(() => {
+			spreadsheet.setFunctionValues.getSelectionResult(
+				spreadsheet,
+				"cell"
+			);
+		}, 300);
 	}
 
 	/**
@@ -160,6 +170,7 @@ export class CellSelectionHandler {
 			cancelAnimationFrame(this.selectionScrollAnimationFrameId);
 			this.selectionScrollAnimationFrameId = null;
 		}
+		spreadsheet.setFunctionValues.getSelectionResult(spreadsheet, "cell");
 	}
 
 	onKeyDown(e, spreadsheet, isShift) {
@@ -258,5 +269,14 @@ export class CellSelectionHandler {
 		}
 
 		spreadsheet.render();
+
+		clearTimeout(spreadsheet.model.debounceTimer);
+		spreadsheet.model.debounceTimer = setTimeout(() => {
+			spreadsheet.setFunctionValues.getSelectionResult(
+				spreadsheet,
+				"cell"
+			);
+		}, 300);
+		// spreadsheet.setFunctionValues.getSelectionResult(spreadsheet, "cell");
 	}
 }

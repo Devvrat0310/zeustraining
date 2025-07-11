@@ -92,11 +92,13 @@ export class SheetModel {
 			avg: 0,
 		};
 
-		/**
-		 * Stores the if the current cell is a function and deriving value from other cells.
-		 * @type {{function: string}}
-		 */
-		this.isCellFunction = {};
+		// Last row index with values of each particular column
+		this.maxRowOfColSet = {};
+
+		// Last col index with values of each particular row
+		this.maxColOfRowSet = {};
+
+		this.debounceTimer;
 	}
 
 	/**
@@ -149,6 +151,18 @@ export class SheetModel {
 	setCellValue(row, col, value) {
 		const key = `${col}_${row}`;
 		this.cellData[key] = { value };
+
+		if (this.maxRowOfColSet[col] === undefined)
+			this.maxRowOfColSet[col] = row;
+		else {
+			this.maxRowOfColSet[col] = Math.max(this.maxRowOfColSet[col], row);
+		}
+
+		if (this.maxColOfRowSet[row] === undefined)
+			this.maxColOfRowSet[row] = col;
+		else {
+			this.maxColOfRowSet[row] = Math.max(this.maxColOfRowSet[row], col);
+		}
 	}
 
 	/**
@@ -230,49 +244,25 @@ export class SheetModel {
 		return { x, y, width, height };
 	}
 
-	/**
-	 *
-	 * @param {string} mathFunc - count, min, max, sum and average
-	 * @returns {{count: number, min: number, max: number, sum: number, average: number}}
-	 */
-	getSelectedResult(mathFunc) {
-		if (!this.selection) return null;
+	async loadJsonData(spreadsheet) {
+		const dataJSON = await fetch("./DB/tables/userRecords.json");
+		const data = await dataJSON.json();
+		// .then((response) => response.json())
+		// .then((data) => {
+		console.log(data); // use your userRecords data here
+		// });
 
-		const { start, end } = this.selection;
+		if (!data || data.length === 0) return;
 
-		const startRow = Math.min(start.row, end.row);
-		const endRow = Math.max(start.row, end.row);
-		const startCol = Math.min(start.col, end.col);
-		const endCol = Math.max(start.col, end.col);
+		const recordKeys = Object.keys(data[0]);
 
-		let res = {
-			count: 0,
-			min: Number.MAX_VALUE,
-			max: -Number.MAX_VALUE,
-			sum: 0,
-			avg: 0,
-		};
+		data.forEach((record, rowId) => {
+			// console.log("record", record);
+			recordKeys.forEach((currRecord, colId) => {
+				this.setCellValue(rowId, colId, record[currRecord]);
+			});
+		});
 
-		// if (mathFunc.toLocaleLowerCase() === "sum") {
-		for (let r = startRow; r <= endRow; r++) {
-			for (let c = startCol; c <= endCol; c++) {
-				const curr = parseFloat(this.getCellValue(r, c));
-				if (curr !== undefined || !isNaN(curr)) continue;
-
-				// console.log("adding to res");
-				res.sum += curr;
-				res.max = Math.max(res.max, curr);
-				res.min = Math.min(res.min, curr);
-				res.count += 1;
-				res.avg = res.sum / res.count;
-			}
-		}
-		// }
-
-		// console.log("res: ", res);
-		// if (mathFunc. === "sum") return res.sum;
-		return res;
+		spreadsheet.render();
 	}
-
-	functionParser() {}
 }

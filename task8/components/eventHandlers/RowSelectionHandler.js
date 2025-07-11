@@ -162,5 +162,6 @@ export class RowSelectionHandler {
 			cancelAnimationFrame(this.selectionScrollAnimationFrameId);
 			this.selectionScrollAnimationFrameId = null;
 		}
+		spreadsheet.setFunctionValues.getSelectionResult(spreadsheet, "row");
 	}
 }

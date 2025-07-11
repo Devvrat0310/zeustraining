@@ -1,4 +1,4 @@
-import { ResizeColumnCommand } from '../commands/ResizeColumnCommand.js';
+import { ResizeColumnCommand } from "../commands/ResizeColumnCommand.js";
 
 export class ColumnResizeHandler {
 	constructor() {
@@ -16,7 +16,7 @@ export class ColumnResizeHandler {
 	 */
 	hitTest(e, spreadsheet) {
 		const headerContainer = spreadsheet.container.querySelector(
-			'.column-header-container'
+			".column-header-container"
 		);
 
 		if (!headerContainer.contains(e.target)) return false;
@@ -27,7 +27,7 @@ export class ColumnResizeHandler {
 				this.colIndex = i;
 				this.startX = e.clientX;
 				this.startWidth = spreadsheet.model.columnWidths[i];
-				spreadsheet.container.classList.add('col-resize-cursor');
+				spreadsheet.container.classList.add("col-resize-cursor");
 				return true;
 			}
 		}
@@ -43,7 +43,7 @@ export class ColumnResizeHandler {
 	 * @returns {boolean}
 	 */
 	onPointerDown(e, spreadsheet) {
-		spreadsheet.container.classList.add('col-resize-cursor');
+		spreadsheet.container.classList.add("col-resize-cursor");
 	}
 
 	/**
@@ -68,7 +68,7 @@ export class ColumnResizeHandler {
 	 * @returns {boolean}
 	 */
 	onPointerUp(e, spreadsheet) {
-		spreadsheet.container.classList.remove('col-resize-cursor');
+		spreadsheet.container.classList.remove("col-resize-cursor");
 		// const { colIndex, startWidth } = spreadsheet.isResizingColumn;
 
 		const newWidth = spreadsheet.model.columnWidths[this.colIndex];
@@ -86,7 +86,7 @@ export class ColumnResizeHandler {
 
 	updateCursor(e, spreadsheet) {
 		const mainGridContainer = spreadsheet.container.querySelector(
-			'.main-grid-container'
+			".main-grid-container"
 		);
 
 		const rect = mainGridContainer.getBoundingClientRect();
@@ -94,33 +94,28 @@ export class ColumnResizeHandler {
 
 		const gridX = pointerX + spreadsheet.viewport.scrollLeft;
 
-		let nearColEdge = false;
-
 		// Check for column resize hover in the column header area
-		if (e.target.closest('.column-header-container')) {
+		if (e.target.closest(".column-header-container")) {
 			for (let i = 0; i < spreadsheet.model.colCount; i++) {
 				const colEdgeX = spreadsheet.model.cumulativeColWidths[i];
 				if (Math.abs(gridX - colEdgeX) < 5) {
-					nearColEdge = true;
-					break;
+					spreadsheet.container.classList.remove(
+						"col-selection-cursor"
+					);
+					spreadsheet.container.classList.remove(
+						"row-selection-cursor"
+					);
+					spreadsheet.container.classList.add("col-resize-cursor");
+					return true;
 				}
 			}
+			spreadsheet.container.classList.remove("row-selection-cursor");
+			spreadsheet.container.classList.add("col-selection-cursor");
+			return true;
 		}
 
-		// Apply/remove cursors
-		if (nearColEdge) {
-			spreadsheet.container.classList.remove('row-selection-cursor');
-			spreadsheet.container.classList.add('col-resize-cursor');
-		} else {
-			spreadsheet.container.classList.add('row-selection-cursor');
-			spreadsheet.container.style.cursor =
-				"url('./assets/arrowDown.png') 8 16, cell";
+		spreadsheet.container.classList.remove("col-resize-cursor");
 
-			// console.log(
-			// 	'spreadsheet.container.style.cursor',
-			// 	spreadsheet.container.style.cursor
-			// );
-			spreadsheet.container.classList.remove('col-resize-cursor');
-		}
+		return false;
 	}
 }

@@ -28,4 +28,4 @@ class createMockData {
 	}
 }
 
-new createMockData(50000);
+new createMockData(100000);

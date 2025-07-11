@@ -102,7 +102,7 @@ export class SelectCell extends Renderer {
 			// this.ctx.fillRect(viewX + gridContainerOffsetLeft, 0, width, 40);
 			//
 
-			// model.getSelectedResult();
+			// spreadsheet.setFunctionValues.getSelectionResult(spreadsheet);
 		}
 
 		// 2. Draw a border around the active cell
@@ -216,10 +216,15 @@ export class SelectCell extends Renderer {
 			endRowPixel
 		);
 
-		mainController.model.selection.end.row = Math.max(
+		mainController.model.selection.end.row = Math.min(
 			endRowId.row + 100,
 			maxRow - 1
 		); // Add 100 row for buffer
+
+		console.log(
+			"mainController.model.selection",
+			mainController.model.selection
+		);
 	}
 
 	/**
